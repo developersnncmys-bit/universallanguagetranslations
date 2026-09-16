@@ -1,0 +1,260 @@
+/* Language Story — pinned 600vh scroll-driven 3D section.
+   Sits between the hero transition and Services on the homepage. */
+
+.lstory {
+  position: relative;
+  background: linear-gradient(180deg, #050a1e 0%, #030818 55%, #050a1e 100%);
+  color: #eaf1ff;
+  isolation: isolate;
+  /* Full scroll distance = pin + 500vh of scrub inside ScrollTrigger.
+     The pin element itself is 100vh; ScrollTrigger extends the effective
+     scroll by end: `+=500vh`. */
+}
+
+.lstory__pin {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.lstory__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.lstory__canvas > * {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.lstory__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 480px) 1fr;
+  align-items: end;
+  padding: clamp(96px, 12vh, 160px) clamp(32px, 6vw, 96px) clamp(48px, 6vh, 96px);
+  pointer-events: none;
+}
+
+.lstory__overlay > * {
+  pointer-events: auto;
+}
+
+/* Stages stack in the same slot; only the active one shows */
+.lstory__stages {
+  position: relative;
+  min-height: 220px;
+  grid-column: 1;
+}
+
+.lstory__stage {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  will-change: opacity, transform;
+}
+
+.lstory__stage--active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.lstory__eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8ab4ff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(43, 107, 255, 0.12);
+  border: 1px solid rgba(138, 180, 255, 0.24);
+  margin-bottom: 20px;
+}
+
+.lstory__title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.4vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 18px;
+  max-width: 15ch;
+}
+
+.lstory__lede {
+  color: rgba(207, 224, 255, 0.78);
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.6;
+  max-width: 46ch;
+}
+
+/* CTA sits in the right column, bottom-aligned */
+.lstory__cta-wrap {
+  grid-column: 2;
+  justify-self: end;
+  align-self: end;
+}
+
+.lstory__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.lstory__cta:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+}
+
+.lstory__cta span {
+  transition: transform 0.25s ease;
+}
+
+.lstory__cta:hover span {
+  transform: translateX(3px);
+}
+
+/* Scroll-progress hint at the bottom-left */
+.lstory__scroll-hint {
+  position: absolute;
+  bottom: clamp(24px, 4vh, 40px);
+  left: clamp(32px, 6vw, 96px);
+  right: clamp(32px, 6vw, 96px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(207, 224, 255, 0.55);
+  pointer-events: none;
+}
+
+.lstory__scroll-track {
+  flex: 1;
+  height: 1px;
+  background: rgba(207, 224, 255, 0.15);
+  overflow: hidden;
+}
+
+.lstory__scroll-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f8bff 0%, #4fc3f7 100%);
+  transition: width 0.5s ease;
+}
+
+/* Reduced-motion / static fallback */
+.lstory--static {
+  min-height: auto;
+  padding: 96px 0;
+}
+
+.lstory--static .lstory__inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 5vw, 48px);
+  text-align: center;
+}
+
+.lstory--static .lstory__title {
+  font-size: clamp(32px, 4vw, 56px);
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 20ch;
+}
+
+.lstory--static .lstory__lede {
+  margin: 0 auto 24px;
+  max-width: 60ch;
+}
+
+.lstory__static-list {
+  list-style: none;
+  padding: 0;
+  margin: 32px auto;
+  max-width: 520px;
+  text-align: left;
+  color: rgba(207, 224, 255, 0.82);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.lstory__static-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(207, 224, 255, 0.12);
+}
+
+.lstory__static-list li:last-child {
+  border-bottom: none;
+}
+
+.lstory__static-copy .lstory__cta {
+  margin-top: 12px;
+}
+
+/* Screen-reader-only content — never visually rendered */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Tablet: stack overlay, reduce padding, shorter titles */
+@media (max-width: 960px) {
+  .lstory__overlay {
+    grid-template-columns: 1fr;
+    padding: clamp(72px, 10vh, 120px) clamp(20px, 5vw, 40px) clamp(48px, 6vh, 80px);
+    align-items: end;
+    row-gap: 24px;
+  }
+  .lstory__cta-wrap {
+    grid-column: 1;
+    justify-self: start;
+  }
+  .lstory__stages {
+    min-height: 190px;
+  }
+  .lstory__scroll-hint {
+    display: none;
+  }
+}
+
+/* Mobile: keep the section functional but tighten copy */
+@media (max-width: 560px) {
+  .lstory__title {
+    font-size: 26px;
+  }
+  .lstory__lede {
+    font-size: 14px;
+  }
+  .lstory__stages {
+    min-height: 210px;
+  }
+}

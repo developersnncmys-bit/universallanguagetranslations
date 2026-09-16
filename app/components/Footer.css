@@ -1,0 +1,175 @@
+.site-footer {
+  background: #ffffff;
+  color: #0a1638;
+  padding: 56px 0 0;
+  margin-top: auto;
+  border-top: 1px solid rgba(10, 22, 56, 0.08);
+}
+
+.site-footer__inner {
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  gap: 48px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid rgba(10, 22, 56, 0.08);
+}
+
+.site-footer__brand-name {
+  font-family: var(--font-audiowide), "Audiowide", var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: #0a1638;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.site-footer__tagline {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(10, 22, 56, 0.7);
+  max-width: 380px;
+}
+
+.site-footer__email {
+  display: inline-block;
+  margin-top: 16px;
+  color: #0a1638;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(10, 22, 56, 0.3);
+  padding-bottom: 2px;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.site-footer__email:hover {
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.site-footer__nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.site-footer__col h4 {
+  font-family: var(--font-display);
+  color: #0a1638;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.site-footer__col ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.site-footer__col a {
+  color: rgba(10, 22, 56, 0.7);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s var(--ease), padding-left 0.2s var(--ease);
+  display: inline-block;
+}
+
+.site-footer__col a:hover {
+  color: #0a1638;
+  padding-left: 4px;
+}
+
+.site-footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 0;
+  font-size: 12.5px;
+  color: rgba(10, 22, 56, 0.55);
+  flex-wrap: wrap;
+}
+
+.site-footer__legal {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.site-footer__legal a {
+  color: rgba(10, 22, 56, 0.7);
+  transition: color 0.2s var(--ease);
+}
+
+.site-footer__legal a:hover {
+  color: #0a1638;
+}
+
+/* Big dotted wordmark row — canvas UNIVERSAL on the left, stacked small
+   "LANGUAGE / TRANSLATIONS" labels on the right */
+.site-footer__wordmark-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.4vw, 40px);
+  padding: 0 clamp(20px, 4vw, 60px);
+}
+
+.site-footer__wordmark {
+  flex: 1;
+  min-width: 0;
+  height: clamp(90px, 11vw, 170px);
+  cursor: crosshair;
+}
+
+.site-footer__wordmark-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.site-footer__wordmark-sub {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2px, 0.4vw, 8px);
+  font-family: var(--font-audiowide), "Audiowide", var(--font-display);
+  font-size: clamp(16px, 2vw, 34px);
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: #0a1638;
+  white-space: nowrap;
+}
+
+@media (max-width: 960px) {
+  .site-footer__inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .site-footer__nav {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .site-footer__nav {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 20px;
+  }
+  .site-footer__bottom {
+    justify-content: flex-start;
+  }
+  .site-footer__wordmark-row {
+    padding: 0 12px;
+    gap: 12px;
+  }
+  .site-footer__wordmark {
+    height: clamp(60px, 15vw, 100px);
+  }
+  .site-footer__wordmark-sub {
+    font-size: clamp(11px, 3.2vw, 18px);
+  }
+}

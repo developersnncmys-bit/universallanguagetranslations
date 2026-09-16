@@ -1,0 +1,251 @@
+.hero {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: #fff;
+  background:
+    /* radial-gradient(1000px 700px at 0% 0%, rgba(40, 110, 255, 0.42) 0%, rgba(30, 80, 220, 0.16) 32%, transparent 62%), */
+    radial-gradient(700px 400px at 90% 95%, #05070f 0%, transparent 60%),
+    linear-gradient(180deg, #000000 0%, #010204 55%, #02030a 100%);
+  overflow: hidden;
+  isolation: isolate;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: clamp(88px, 11vh, 128px);
+  padding-bottom: clamp(24px, 5vh, 64px);
+}
+
+/* Foreground layout */
+.hero__inner {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: minmax(0, 620px) 1fr;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-left: clamp(64px, 12vw, 220px);
+  padding-right: clamp(48px, 7vw, 120px);
+}
+
+.hero__copy {
+  max-width: 620px;
+  /* GSAP sets initial hidden state, but if JS never runs we don't want a blank hero */
+  will-change: transform, opacity;
+}
+
+.eyebrow__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.2);
+  animation: pulse 2s var(--ease) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.25); }
+  50% { box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); }
+}
+
+.hero__title {
+  color: #fff;
+  font-family: var(--font-audiowide), "Audiowide", var(--font-display);
+  font-size: clamp(34px, 4.2vw, 60px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin-top: 22px;
+  font-weight: 400;
+  text-transform: uppercase;
+  padding-bottom: 0.2em;
+  -webkit-text-stroke: 1.3px currentColor;
+}
+
+.hero__title-line,
+.hero__title-line--muted,
+.hero__title-accent {
+  color: #fff;
+  display: block;
+  white-space: nowrap;
+}
+
+.hero__title-accent .hero__word,
+.hero__title-accent .hero__letter {
+  color: inherit;
+}
+
+/* Each word gets a nowrap container so the browser only breaks BETWEEN words,
+   not between individual letter spans. Fixes the "worl / d in every languag / e"
+   wrap that the old inline-block-per-letter approach produced. */
+.hero__word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.hero__letter {
+  display: inline-block;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+
+.hero__lede {
+  margin-top: 22px;
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.6;
+  color: rgba(233, 240, 255, 0.78);
+  max-width: 520px;
+}
+
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.hero__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 28px;
+  margin-top: 42px;
+  padding: 0;
+  list-style: none;
+}
+
+.hero__badges li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(207, 224, 255, 0.85);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.hero__badges svg {
+  color: #4ade80;
+}
+
+/* PLANET — large sphere anchored near the RIGHT edge of the viewport with a
+   small crop. Balanced between too-far-right (only sliver visible) and too-
+   far-left (crossing the headline). Diameter tuned so 80-90% of the sphere
+   is visible on desktop and the LEFT EDGE of the sphere lands just after the
+   620px text column. translateY(-33%) shifts the sphere DOWN by ~17% of its
+   own height so the top of the globe sits ~20% into the hero. */
+/* IMPORTANT: this element must NOT carry the .parallax-y-fast class.
+   PageAnimations.jsx applies a GSAP `yPercent` scrub to that class every
+   frame, which writes transform:translate3d(0, N%, 0) directly onto the
+   element's inline style and clobbers any CSS transform we set here.
+   Position lives entirely in `top`, `right`, and `width` — no transform. */
+.hero__planet {
+  position: absolute;
+  /* Width capped by BOTH 45vw AND 85vh so the container can never exceed the
+     hero's visible height — guarantees the complete sphere fits vertically
+     with breathing room top and bottom regardless of window shape.
+     translateY(-50%) centers the container vertically inside the hero. */
+  /* Vertical anchor is the MIDPOINT of the available space (navbar_bottom to
+     viewport_bottom): (80 + 100vh) / 2 = 40 + 50vh. Combined with the width
+     cap at 85vh, this guarantees the complete sphere is visible at any
+     viewport height with symmetric breathing room top and bottom.
+     Horizontal offset interpolates so the sphere center lands ~x=1395 at
+     1650-wide viewport and ~x=1525 at 1920-wide viewport. */
+  top: calc(40px + 50vh);
+  right: clamp(-180px, calc(46vw - 830px), 100px);
+  transform: translateY(-50%);
+  width: min(680px, 45vw, 85vh);
+  aspect-ratio: 1;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* The atmospheric glow is now rendered inside the WebGL scene as a Fresnel
+   shader on a slightly-larger backside sphere (see GlobeCanvas.jsx). Keeping
+   the .hero__atmo divs invisible so the old markup still works. */
+.hero__atmo {
+  display: none;
+}
+
+/* Location labels — HTML overlay divs positioned every frame by GlobeCanvas
+   using the projected 3D anchor point of each city. */
+.globe-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(6, 8, 18, 0.9);
+  color: rgba(240, 246, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  padding: 3px 7px;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: opacity 160ms ease-out;
+}
+
+.hero__globe {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow__dot {
+    animation: none;
+  }
+}
+
+@media (max-width: 1200px) {
+  .hero__planet {
+    right: clamp(-80px, -3vw, 20px);
+    width: min(560px, 44vw);
+  }
+}
+
+@media (max-width: 960px) {
+  .hero {
+    min-height: unset;
+    height: auto;
+  }
+  .hero__inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-top: 72px;
+    padding-bottom: 60vw;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .hero__planet {
+    /* On tablet/phone the copy is single-column, so drop the globe below and
+       behind the CTAs. Reset the desktop right/aspect-ratio positioning. */
+    top: auto;
+    bottom: -18vw;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(680px, 130vw);
+    height: min(680px, 130vw);
+    aspect-ratio: auto;
+    opacity: 0.85;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero__inner {
+    padding-bottom: 70vw;
+  }
+  .hero__planet {
+    width: min(540px, 140vw);
+    height: min(540px, 140vw);
+    bottom: -20vw;
+  }
+}

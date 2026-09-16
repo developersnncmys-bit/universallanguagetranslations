@@ -1,40 +1,96 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Blue palette inspired by unitedcarriers.com */
+  --navy-950: #050d24;
+  --navy-900: #0a1638;
+  --navy-800: #0f2555;
+  --navy-700: #14306e;
+  --blue-700: #1e3a8a;
+  --blue-600: #1e4fd6;
+  --blue-500: #2b6bff;
+  --blue-400: #4f8bff;
+  --blue-300: #8ab4ff;
+  --sky-200: #cfe0ff;
+  --sky-100: #eaf1ff;
+
+  /* Teal accent */
+  --teal-700: #0a4b58;
+  --teal-600: #116c80;
+  --teal-500: #1a8ba3;
+  --teal-400: #3fb0c8;
+  --teal-300: #7bcadb;
+  --teal-100: #d8f0f5;
+
+  --ink-900: #0b1526;
+  --ink-700: #2b3852;
+  --ink-500: #566179;
+  --ink-400: #7a8399;
+  --ink-300: #a7aec1;
+  --line: #e4e9f2;
+  --line-strong: #cfd6e4;
+
+  --bg: #ffffff;
+  --bg-alt: #f6f8fd;
+  --bg-tint: #eef3fb;
+
+  --whatsapp: #25d366;
+  --whatsapp-dark: #1ebd5b;
+
+  --shadow-sm: 0 1px 2px rgba(10, 22, 56, 0.06);
+  --shadow-md: 0 8px 24px rgba(10, 22, 56, 0.08);
+  --shadow-lg: 0 24px 60px rgba(10, 22, 56, 0.12);
+  --shadow-blue: 0 20px 40px rgba(30, 79, 214, 0.25);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+
+  --container: 1200px;
+  --gutter: 24px;
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  --font-sans: var(--font-jakarta), "Plus Jakarta Sans", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-display: var(--font-jakarta), "Plus Jakarta Sans", var(--font-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
 }
 
 html {
   height: 100%;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  /* `clip` prevents horizontal overflow WITHOUT creating a scroll container
+     (which would break `position: sticky` on descendants like Services). */
+  overflow-x: clip;
 }
 
 body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ink-900);
+  background: var(--bg);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
 a {
@@ -42,8 +98,350 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: var(--font-display);
+  color: var(--ink-900);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+p {
+  color: var(--ink-500);
+}
+
+/* Utilities */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.section {
+  padding: 96px 0;
+}
+
+.section-tight {
+  padding: 64px 0;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-600);
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--sky-100);
+  border: 1px solid rgba(43, 107, 255, 0.15);
+}
+
+.eyebrow--on-dark {
+  color: #cfe0ff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.section-title {
+  font-size: clamp(28px, 3.4vw, 44px);
+  margin-top: 16px;
+  max-width: 720px;
+}
+
+.section-lede {
+  margin-top: 14px;
+  font-size: 17px;
+  max-width: 640px;
+  color: var(--ink-500);
+}
+
+.section-head {
+  text-align: center;
+  margin: 0 auto 56px;
+  max-width: 780px;
+}
+
+.section-head .section-title,
+.section-head .section-lede {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease),
+    background 0.2s var(--ease), color 0.2s var(--ease);
+  white-space: nowrap;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: var(--blue-600);
+  color: #fff;
+  box-shadow: var(--shadow-blue);
+}
+
+.btn-primary:hover {
+  background: var(--blue-500);
+  box-shadow: 0 24px 48px rgba(30, 79, 214, 0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--ink-900);
+  border: 1.5px solid var(--line-strong);
+}
+
+.btn-outline:hover {
+  border-color: var(--blue-600);
+  color: var(--blue-600);
+}
+
+.btn-outline--on-dark {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.btn-outline--on-dark:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.btn-whatsapp {
+  background: rgba(37, 211, 102, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  box-shadow: none;
+}
+
+.btn-whatsapp:hover {
+  background: rgba(37, 211, 102, 0.2);
+  border-color: rgba(74, 222, 128, 0.55);
+  color: #6ee7a0;
+}
+
+.btn-ghost {
+  color: var(--blue-600);
+  padding: 10px 4px;
+}
+
+.btn-ghost:hover {
+  color: var(--blue-500);
+}
+
+/* Every non-hero section stacks above the pinned hero so it visibly slides
+   over it on scroll. Section backgrounds are opaque, which fully hides the
+   hero as later sections rise into view. */
+main > *:not(.hero):not(.why) {
+  position: relative;
+  z-index: 2;
+}
+
+/* Word-by-word color reveal — see PageAnimations.jsx. The blue "from"
+   color and transition are applied INLINE by JS on each word span (so they
+   guarantee to beat any parent CSS), then the inline color is removed to
+   reveal the natural cascaded color. No CSS class hooks needed here. */
+
+/* Sunrise transition — a wide concave arc of blue rises up from below over
+   the sticky hero as the user scrolls. Two radial gradients anchored just
+   past the bottom-corners of the element create a horizon that swells on
+   the left and right and dips in the middle (inward / concave arc), the
+   way a planet horizon looks from close up. A bottom linear gradient fills
+   in the remaining base and hands off to white for the next section. */
+.hero-sunrise {
+  height: 110vh;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 60%,
+      rgba(37, 99, 235, 0.35) 72%,
+      rgba(96, 165, 250, 0.75) 84%,
+      #bfdbfe 94%,
+      #ffffff 100%
+    ),
+    radial-gradient(
+      ellipse 75% 105% at -5% 108%,
+      #ffffff 0%,
+      #bfdbfe 10%,
+      #60a5fa 24%,
+      #2563eb 40%,
+      #1e40af 54%,
+      rgba(23, 51, 140, 0.55) 68%,
+      transparent 84%
+    ),
+    radial-gradient(
+      ellipse 75% 105% at 105% 108%,
+      #ffffff 0%,
+      #bfdbfe 10%,
+      #60a5fa 24%,
+      #2563eb 40%,
+      #1e40af 54%,
+      rgba(23, 51, 140, 0.55) 68%,
+      transparent 84%
+    );
+}
+
+/* Dark backdrop that sits sticky at top:0 for the duration of the
+   Process-sunrise scroll. The process-sunrise (which has a transparent
+   top) then scrolls up over this stage, giving the same "rising over
+   dark space" sliding effect the hero-sunrise gets from the sticky hero. */
+.process-stage {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 55vh;
+  margin-bottom: -55vh;
+  background:
+    radial-gradient(60% 80% at 10% 20%, rgba(30, 79, 214, 0.18) 0%, transparent 60%),
+    radial-gradient(50% 70% at 90% 10%, rgba(17, 108, 128, 0.18) 0%, transparent 60%),
+    radial-gradient(70% 60% at 50% 0%, rgba(43, 107, 255, 0.12) 0%, transparent 55%),
+    #000000;
+  pointer-events: none;
+}
+
+/* Sunrise wash before the How It Works (Process) section. Top is
+   transparent so the sticky dark .process-stage behind shows through
+   as user scrolls; concave blue arc rises from the bottom corners;
+   ends in white to hand off into the white Process section below. */
+.process-sunrise {
+  position: relative;
+  z-index: 2;
+  height: 120vh;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 42%,
+      rgba(37, 99, 235, 0.32) 60%,
+      rgba(96, 165, 250, 0.62) 76%,
+      rgba(147, 197, 253, 0.78) 86%,
+      rgba(219, 234, 254, 0.9) 93%,
+      #eff6ff 97%,
+      #ffffff 100%
+    ),
+    radial-gradient(
+      ellipse 70% 90% at -5% 118%,
+      #ffffff 0%,
+      #bfdbfe 10%,
+      #60a5fa 24%,
+      #2563eb 40%,
+      #1e40af 54%,
+      rgba(23, 51, 140, 0.55) 62%,
+      transparent 74%
+    ),
+    radial-gradient(
+      ellipse 70% 90% at 105% 118%,
+      #ffffff 0%,
+      #bfdbfe 10%,
+      #60a5fa 24%,
+      #2563eb 40%,
+      #1e40af 54%,
+      rgba(23, 51, 140, 0.55) 62%,
+      transparent 74%
+    );
+}
+
+/* Section theme variants */
+.section-dark {
+  background:
+    radial-gradient(900px 500px at 15% 0%, rgba(17, 108, 128, 0.22) 0%, transparent 55%),
+    radial-gradient(700px 500px at 90% 100%, rgba(30, 79, 214, 0.22) 0%, transparent 55%),
+    linear-gradient(180deg, #050d24 0%, #071232 100%);
+  color: #eaf1ff;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.section-dark .section-title,
+.section-dark h3,
+.section-dark h4 {
+  color: #fff;
+}
+
+.section-dark .section-lede,
+.section-dark p {
+  color: rgba(207, 224, 255, 0.78);
+}
+
+.section-dark .eyebrow {
+  color: var(--teal-300);
+  background: rgba(17, 108, 128, 0.18);
+  border-color: rgba(63, 176, 200, 0.28);
+}
+
+.section-light {
+  background: var(--bg);
+  color: var(--ink-900);
+}
+
+/* Reveal utility — hidden until GSAP animates in */
+.reveal,
+.reveal-stagger > * {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* When JS is disabled or animations skipped, show content anyway */
+.no-js .reveal,
+.no-js .reveal-stagger > *,
+.revealed {
+  opacity: 1 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-stagger > * {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 72px 0;
+  }
+  .section-tight {
+    padding: 48px 0;
+  }
+  .section-head {
+    margin-bottom: 40px;
   }
 }

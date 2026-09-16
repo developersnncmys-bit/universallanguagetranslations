@@ -1,0 +1,910 @@
+.services {
+  background: #ffffff;
+  color: var(--ink-900);
+  padding: 72px 0 120px;
+  position: relative;
+}
+
+/* Break the intro row out of the narrow centered container so the big
+   headline aligns with the hero's left edge instead of being ~360px indented
+   on wide screens. */
+.services > .container:first-of-type {
+  max-width: none;
+  padding-left: clamp(48px, 7vw, 120px);
+  padding-right: clamp(48px, 7vw, 120px);
+}
+
+/* Intro row — big headline left (STICKY, pins while right column scrolls
+   past), description + CTA + stats right. `align-items: start` is required
+   for the sticky child to actually stick — grid cells stretch to row height
+   by default which breaks position: sticky. */
+.services__intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+  padding-bottom: 80px;
+  margin-bottom: 100px;
+  border-bottom: 1px solid var(--line);
+}
+
+.services__intro-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.6vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin: 0;
+  position: sticky;
+  top: 120px;
+  align-self: start;
+}
+
+.services__intro-title-thin {
+  display: block;
+  font-weight: 800;
+  color: var(--ink-400);
+}
+
+.services__intro-title-bold {
+  display: block;
+  font-weight: 800;
+  color: var(--navy-900);
+  margin-top: 12px;
+}
+
+.services__intro-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 520px;
+  justify-self: end;
+}
+
+.services__intro-right p {
+  color: var(--ink-900);
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 600;
+  margin: 0;
+}
+
+.services__intro-cta {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 14px 24px;
+  border-radius: 999px;
+  border-color: var(--ink-900);
+  color: var(--ink-900);
+}
+
+.services__intro-cta:hover {
+  background: var(--ink-900);
+  color: #fff;
+  border-color: var(--ink-900);
+}
+
+/* UC-style vertical stat stack: huge display numbers, tiny uppercase
+   label under each, hairline dividers between rows. Sits BELOW the
+   description paragraphs + CTA in the right column of the intro grid. */
+.services__intro-stats {
+  list-style: none;
+  padding: 0;
+  margin: 40px 0 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.intro-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 48px 0;
+  border-top: 1px solid var(--line);
+}
+
+.intro-stat:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.intro-stat:last-child {
+  padding-bottom: 0;
+}
+
+.intro-stat__value {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 6vw, 100px);
+  font-weight: 800;
+  color: var(--navy-900);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.intro-stat__label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+/* NEW clean icon-card grid */
+.svc-grid-head {
+  max-width: 780px;
+  margin: 0 0 56px;
+}
+
+/* Plain uppercase eyebrow — no pill/badge background. Matches the tone
+   of the "WHY US" label in WhyChooseUs and the "F.A.Q" label in the FAQ
+   section: a small dot + spaced caps, sitting on the page background. */
+.svc-grid-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--blue-500);
+  margin-bottom: 16px;
+}
+
+.svc-grid-eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue-500);
+  box-shadow: 0 0 0 3px rgba(43, 107, 255, 0.18);
+}
+
+.svc-grid-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 42px);
+  color: var(--navy-900);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 16px 0 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.svc-grid-lede {
+  color: var(--ink-500);
+  font-size: 16px;
+  line-height: 1.65;
+  max-width: 560px;
+}
+
+/* ── Editorial showcase — big numbered list + sticky preview panel ── */
+.svc-showcase {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: clamp(32px, 5vw, 80px);
+  align-items: start;
+  perspective: 1500px;
+}
+
+.svc-showcase__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+
+.svc-row {
+  border-bottom: 1px solid var(--line);
+  transition: background 0.3s var(--ease);
+}
+
+.svc-row.is-active {
+  background: linear-gradient(90deg, rgba(43, 107, 255, 0.06), transparent 70%);
+}
+
+.svc-row__link {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 26px 8px 26px 4px;
+  color: var(--ink-900);
+  transition: padding 0.35s var(--ease), color 0.3s var(--ease);
+}
+
+.svc-row.is-active .svc-row__link {
+  padding-left: 20px;
+}
+
+.svc-row__num {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-400);
+  letter-spacing: 0.18em;
+  transition: color 0.3s var(--ease);
+}
+
+.svc-row.is-active .svc-row__num {
+  color: var(--blue-500);
+}
+
+.svc-row__title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.4vw, 36px);
+  font-weight: 700;
+  color: var(--navy-900);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.svc-row__arrow {
+  color: var(--ink-400);
+  transform: translateX(-6px);
+  opacity: 0;
+  transition: transform 0.35s var(--ease), opacity 0.3s var(--ease),
+    color 0.3s var(--ease);
+}
+
+.svc-row.is-active .svc-row__arrow {
+  transform: translateX(0);
+  opacity: 1;
+  color: var(--blue-500);
+}
+
+/* Right — sticky image preview panel */
+.svc-showcase__preview {
+  position: sticky;
+  top: 100px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.svc-showcase__stack {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--bg-alt);
+  box-shadow: 0 40px 80px rgba(10, 22, 56, 0.15),
+    0 2px 6px rgba(10, 22, 56, 0.08);
+}
+
+.svc-showcase__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: opacity, transform;
+}
+
+.svc-showcase__meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 32px 28px 28px;
+  color: #fff;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(5, 13, 36, 0.4) 40%,
+    rgba(5, 13, 36, 0.9) 100%
+  );
+  z-index: 2;
+}
+
+.svc-showcase__meta-num {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--blue-300);
+  margin-bottom: 8px;
+}
+
+.svc-showcase__meta-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.svc-showcase__meta-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(233, 240, 255, 0.85);
+  max-width: 90%;
+}
+
+@media (max-width: 900px) {
+  .svc-showcase {
+    grid-template-columns: 1fr;
+  }
+  .svc-showcase__preview {
+    position: relative;
+    top: auto;
+    order: -1;
+  }
+  .svc-row__link {
+    grid-template-columns: 48px 1fr auto;
+    padding: 20px 4px;
+  }
+}
+
+/* ─── Split-scroll: numbered list left, sticky preview right ─────────
+   Left column is a tall vertical list of services (number + name); the
+   right column is a sticky panel that swaps its image + description to
+   match whichever list row is currently in the vertical center band of
+   the viewport. `align-items: start` on the grid parent is required for
+   position: sticky to work — otherwise the right cell stretches to the
+   full row height and there's nothing to stick against. */
+.svc-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(48px, 6vw, 120px);
+  align-items: start;
+}
+
+/* Left column — numbered list, each row tall enough that the sticky
+   panel has room to swap between activations. */
+.svc-split__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.svc-split__row {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(20px, 2vw, 36px);
+  padding: clamp(40px, 7vh, 80px) 0;
+  border-top: 1px solid var(--line);
+  opacity: 0.28;
+  transition: opacity 0.5s var(--ease);
+}
+
+.svc-split__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.svc-split__row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.svc-split__row.is-active {
+  opacity: 1;
+}
+
+.svc-split__num {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--blue-500);
+  min-width: 40px;
+  transition: color 0.5s var(--ease);
+}
+
+.svc-split__title {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.4vw, 24px);
+  font-weight: 900;
+  color: var(--navy-900);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Right column — sticky panel. Pins at top:120px while the list scrolls
+   past. Contains a stacked image stage + a stacked description block;
+   the .is-active variant of each cross-fades in. */
+.svc-split__preview {
+  position: sticky;
+  top: 120px;
+  align-self: start;
+  height: fit-content;
+  width: 100%;
+  max-width: 460px;
+  justify-self: start;
+}
+
+/* Section eyebrow + title + lede sit above the image inside the sticky
+   left column so the framing copy stays pinned as the right list scrolls. */
+.svc-split__head {
+  margin-bottom: 24px;
+}
+
+.svc-split__head .svc-grid-title {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.svc-split__head .svc-grid-lede {
+  margin: 0;
+}
+
+.svc-split__stage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  max-height: 42vh;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bg-alt);
+  box-shadow: 0 30px 60px rgba(10, 22, 56, 0.14);
+}
+
+.svc-split__panel {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 0.55s var(--ease), transform 0.7s var(--ease);
+}
+
+.svc-split__panel.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.svc-split__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Description now sits inline in the left list, under each row's title.
+   No swap animation — the parent row's opacity ramp already handles the
+   active/inactive states. */
+.svc-split__desc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-500);
+  margin: 6px 0 0;
+  max-width: 460px;
+}
+
+/* Below the 2-column breakpoint, drop the sticky preview entirely —
+   just show a normal stacked list where each row inlines its own image
+   + description. */
+@media (max-width: 900px) {
+  .svc-split {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .svc-split__preview {
+    position: static;
+    order: -1;
+  }
+  .svc-split__row {
+    padding: 48px 0;
+    opacity: 1;
+  }
+  .svc-split__title {
+    font-size: clamp(30px, 8vw, 44px);
+  }
+}
+
+
+.svc-mem-tile--a { grid-area: a; }
+.svc-mem-tile--b { grid-area: b; }
+.svc-mem-tile--c { grid-area: c; }
+.svc-mem-tile--d { grid-area: d; }
+.svc-mem-tile--e { grid-area: e; }
+.svc-mem-tile--f { grid-area: f; }
+.svc-mem-tile--g { grid-area: g; }
+
+.svc-mem-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  background: var(--bg-alt);
+}
+
+.svc-mem-tile__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.9s var(--ease);
+}
+
+.svc-mem-tile:hover .svc-mem-tile__img {
+  transform: scale(1.06);
+}
+
+/* Overlay: dark scrim + text stack. Hidden at rest via opacity. */
+.svc-mem-tile__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(16px, 1.8vw, 26px);
+  background: linear-gradient(
+    180deg,
+    rgba(5, 13, 36, 0.15) 0%,
+    rgba(5, 13, 36, 0.82) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+
+.svc-mem-tile:hover .svc-mem-tile__overlay {
+  opacity: 1;
+}
+
+.svc-mem-tile__num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 8px;
+  transform: translateY(6px);
+  transition: transform 0.45s var(--ease);
+}
+
+.svc-mem-tile__title {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.6vw, 24px);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+  transform: translateY(8px);
+  transition: transform 0.45s var(--ease) 0.05s;
+}
+
+.svc-mem-tile__desc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0;
+  transform: translateY(10px);
+  transition: transform 0.45s var(--ease) 0.1s;
+}
+
+.svc-mem-tile:hover .svc-mem-tile__num,
+.svc-mem-tile:hover .svc-mem-tile__title,
+.svc-mem-tile:hover .svc-mem-tile__desc {
+  transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+  .svc-mem-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: clamp(150px, 22vh, 200px);
+    grid-template-areas:
+      "a b"
+      "a b"
+      "c d"
+      "e d"
+      "f g";
+  }
+}
+
+@media (max-width: 560px) {
+  .svc-mem-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: clamp(180px, 32vh, 240px);
+    grid-template-areas:
+      "a" "b" "c" "d" "e" "f" "g";
+  }
+  .svc-mem-tile__overlay {
+    opacity: 1;
+  }
+  .svc-mem-tile__num,
+  .svc-mem-tile__title,
+  .svc-mem-tile__desc {
+    transform: translateY(0);
+  }
+}
+
+.svc-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
+  color: inherit;
+}
+
+.svc-card:hover {
+  border-color: var(--blue-400);
+  box-shadow: 0 30px 60px rgba(10, 22, 56, 0.12);
+}
+
+.svc-card__img-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--bg-alt);
+}
+
+.svc-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease);
+  display: block;
+}
+
+.svc-card:hover .svc-card__img {
+  transform: scale(1.06);
+}
+
+.svc-card__num {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 22, 56, 0.8);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.svc-card__body {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 22px 24px;
+  flex: 1;
+}
+
+.svc-card__title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.svc-card__desc {
+  color: var(--ink-500);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.svc-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--teal-600);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+  transition: gap 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.svc-card__link:hover {
+  gap: 10px;
+  color: var(--teal-500);
+}
+
+@media (max-width: 1100px) {
+  .svc-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 780px) {
+  .svc-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .svc-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Legacy services scroll grid (kept for reference — no longer rendered) */
+.services__inner {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: 80px;
+  align-items: start;
+}
+
+/* LEFT — sticky panel (pins while the right side scrolls past) */
+.services__left {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 120px;
+  align-self: start;
+  padding-right: 20px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.services__left::-webkit-scrollbar {
+  display: none;
+}
+
+.services__left-title {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.6vw, 34px);
+  color: var(--navy-900);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 20px 0 18px;
+  font-weight: 700;
+}
+
+.services__left-lede {
+  color: var(--ink-500);
+  font-size: 15px;
+  line-height: 1.65;
+  max-width: 420px;
+  margin-bottom: 24px;
+}
+
+/* RIGHT — scrolling list */
+.services__right {
+  display: flex;
+  flex-direction: column;
+}
+
+.svc-row {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 36px;
+  padding: 44px 0;
+  border-top: 1px solid var(--line);
+  align-items: center;
+  transition: background 0.3s var(--ease);
+}
+
+.svc-row:first-child {
+  border-top: none;
+  padding-top: 8px;
+}
+
+.svc-row:last-child {
+  padding-bottom: 0;
+}
+
+.svc-row__img-wrap {
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--bg-alt);
+}
+
+.svc-row__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s var(--ease);
+}
+
+.svc-row:hover .svc-row__img {
+  transform: scale(1.04);
+}
+
+.svc-row__num {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--teal-600);
+  letter-spacing: 0.08em;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.svc-row__title {
+  font-size: clamp(24px, 2.3vw, 32px);
+  color: var(--navy-900);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.svc-row__desc {
+  color: var(--ink-500);
+  font-size: 16px;
+  line-height: 1.65;
+  margin-bottom: 18px;
+  max-width: 560px;
+}
+
+.svc-row__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--teal-600);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.005em;
+  transition: gap 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.svc-row__link:hover {
+  gap: 12px;
+  color: var(--teal-500);
+}
+
+@media (max-width: 1024px) {
+  .services__inner {
+    gap: 48px;
+  }
+  .services__intro {
+    gap: 48px;
+  }
+}
+
+@media (max-width: 860px) {
+  .services {
+    padding: 96px 0;
+  }
+  .services__intro {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-bottom: 56px;
+    margin-bottom: 72px;
+    align-items: start;
+  }
+  .services__intro-title {
+    position: static;
+    top: auto;
+  }
+  .services__intro-right {
+    justify-self: start;
+  }
+  .services__inner {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+  .services__left {
+    position: static;
+    padding-right: 0;
+    max-height: none;
+    overflow: visible;
+  }
+  .services__caption {
+    display: none;
+  }
+  .svc-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 36px 0;
+    align-items: stretch;
+  }
+  .svc-row__img-wrap {
+    aspect-ratio: 16 / 9;
+  }
+}
