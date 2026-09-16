@@ -67,24 +67,45 @@ export default function Services() {
   const [activeIdx, setActiveIdx] = useState(0);
   const rowRefs = useRef([]);
 
-  // Watch each list row: whichever one crosses the vertical center band of
-  // the viewport becomes the active service, driving the sticky preview
-  // on the right to swap its image + description.
+  // On every scroll frame, find whichever list row's vertical center is
+  // closest to the viewport's vertical center and mark it active. Uses
+  // requestAnimationFrame throttling. This is more reliable than an
+  // IntersectionObserver with a narrow center band, which can skip rows
+  // when they don't happen to cross the band on a fast scroll.
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            const idx = Number(entry.target.dataset.idx);
-            setActiveIdx(idx);
-          }
+    let rafId = 0;
+
+    const compute = () => {
+      const viewportCenter = window.innerHeight / 2;
+      let closestIdx = 0;
+      let closestDist = Infinity;
+      rowRefs.current.forEach((el, idx) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const center = rect.top + rect.height / 2;
+        const dist = Math.abs(center - viewportCenter);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestIdx = idx;
         }
-      },
-      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
-    );
-    const els = rowRefs.current.filter(Boolean);
-    els.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+      });
+      setActiveIdx(closestIdx);
+    };
+
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(compute);
+    };
+
+    compute();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   return (

@@ -343,7 +343,7 @@ main > *:not(.hero):not(.why) {
 .process-sunrise {
   position: relative;
   z-index: 2;
-  height: 120vh;
+  height: 80vh;
   pointer-events: none;
   background:
     linear-gradient(
