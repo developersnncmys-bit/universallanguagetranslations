@@ -88,9 +88,17 @@
 .subsvc__hscroll {
   position: relative;
   overflow: hidden;
-  padding: 0 0 200px;
+  padding: 0 0 120px;
   background: #000000;
   color: #eaf1ff;
+  /* Fill the viewport so during the pin the section always covers the
+     full screen. Otherwise the natural (header + cards + bottom padding)
+     height can be shorter than 100vh, and the area below the pinned
+     element would show whatever's beyond in the document flow — which
+     reads as an empty black band and, near pin release, looks like the
+     section is briefly appearing twice. */
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 /* Header block sits inside the pinned area so it stays visible during
@@ -133,7 +141,7 @@
 .subsvc__sticky-cta {
   position: absolute;
   left: 50%;
-  bottom: 60px;
+  bottom: clamp(96px, 14vh, 160px);
   transform: translateX(-50%);
   z-index: 3;
   pointer-events: auto;

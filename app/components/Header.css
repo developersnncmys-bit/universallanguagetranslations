@@ -72,8 +72,8 @@
 }
 
 .brand__wordmark {
-  font-family: var(--font-audiowide), "Audiowide", var(--font-display);
-  font-weight: 400;
+  font-family: var(--font-hero), var(--font-display);
+  font-weight: 800;
   font-size: 14px;
   letter-spacing: 0.08em;
   color: #fff;

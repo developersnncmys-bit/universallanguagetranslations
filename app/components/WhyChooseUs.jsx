@@ -119,30 +119,29 @@ const FEATURES = [
 
 export default function WhyChooseUs() {
   const sectionRef = useRef(null);
-  const gridRef = useRef(null);
+  const featRefs = useRef([]);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      const cards = gridRef.current?.querySelectorAll(".why-card");
-      if (!cards || cards.length === 0) return;
-
-      gsap.set(cards, { opacity: 0, y: 60, scale: 0.92, rotateX: -12 });
-
-      gsap.to(cards, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        rotateX: 0,
-        duration: 0.9,
-        ease: "power3.out",
-        stagger: { each: 0.09, from: "start" },
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          toggleActions: "play none none reverse",
-        },
+      featRefs.current.forEach((el) => {
+        if (!el) return;
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 60 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 82%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
       });
     }, sectionRef);
 
@@ -152,30 +151,44 @@ export default function WhyChooseUs() {
   return (
     <section className="why" id="why" ref={sectionRef}>
       <div className="why__container">
-        {/* Intro */}
-        <div className="why__intro">
-          <span className="why__label">
-            <span className="why__label-dot" />
-            WHY US
-          </span>
-          <h2 className="why__title">
-            Translation that scales as fast as you do.
-          </h2>
-          <p className="why__intro-desc">
-            Six reasons global teams keep choosing us — quality, speed, and
-            transparency that scale with your ambition.
-          </p>
-        </div>
+        <div className="why__layout">
+          {/* Left column — pins in place while the feature list scrolls past. */}
+          <aside className="why__sticky">
+            <span className="why__label">
+              <span className="why__label-dot" />
+              WHY US
+            </span>
+            <h2 className="why__title">
+              Translation that scales as fast as you do.
+            </h2>
+            <p className="why__intro-desc">
+              Six reasons global teams keep choosing us — quality, speed, and
+              transparency that scale with your ambition.
+            </p>
+          </aside>
 
-        {/* Grid of 6 feature cards */}
-        <div className="why__grid" ref={gridRef}>
-          {FEATURES.map((f) => (
-            <article className="why-card" key={f.title}>
-              <span className="why-card__icon">{f.icon}</span>
-              <h3 className="why-card__title">{f.title}</h3>
-              <p className="why-card__desc">{f.desc}</p>
-            </article>
-          ))}
+          {/* Right column — features reveal one at a time as they enter view. */}
+          <div className="why__scroll">
+            {FEATURES.map((f, i) => (
+              <article
+                className="why-feat"
+                key={f.title}
+                ref={(el) => (featRefs.current[i] = el)}
+              >
+                <div className="why-feat__head">
+                  <span className="why-feat__num">
+                    {String(i + 1).padStart(2, "0")}
+                    <span className="why-feat__num-sep" aria-hidden="true" />
+                  </span>
+                  <span className="why-feat__icon" aria-hidden="true">
+                    {f.icon}
+                  </span>
+                </div>
+                <h3 className="why-feat__title">{f.title}</h3>
+                <p className="why-feat__desc">{f.desc}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>

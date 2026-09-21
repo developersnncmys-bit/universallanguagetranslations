@@ -109,26 +109,27 @@ export default function TranslationSubservices() {
 
           const distance = () =>
             Math.max(0, track.scrollWidth - scroller.offsetWidth);
-          // Extra scroll distance to burn AT THE START before the cards
-          // begin sliding — makes the section pin and read as a static
-          // headline for a moment before the horizontal reveal starts.
-          const HOLD_PX = 700;
 
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: scroller,
               start: "top top+=80",
-              end: () => `+=${distance() + HOLD_PX}`,
+              end: () => `+=${distance()}`,
               pin: true,
               pinSpacing: true,
+              // Lower refreshPriority than Services (10) and GLN (5) so this
+              // pin refreshes LAST — its position depends on both upstream
+              // pinSpacers being in place first.
+              refreshPriority: 0,
               scrub: 0.6,
               invalidateOnRefresh: true,
               anticipatePin: 1,
             },
           });
-          // Hold phase — nothing moves; user scrolls but section stays pinned.
-          tl.to({}, { duration: HOLD_PX });
-          // Scroll phase — cards slide horizontally as scroll continues.
+          // Cards slide horizontally as scroll progresses — no artificial
+          // hold phase. Every pixel of scroll moves the track, so there is
+          // never an empty "stuck" window where the pin holds but nothing
+          // visually changes.
           tl.to(track, {
             x: () => -distance(),
             duration: () => distance(),

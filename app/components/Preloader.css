@@ -70,7 +70,8 @@ body.preloading {
 .preloader__wordmark {
   position: relative;
   z-index: 1;
-  font-family: var(--font-audiowide), "Audiowide", system-ui, sans-serif;
+  font-family: var(--font-hero), system-ui, sans-serif;
+  font-weight: 800;
   font-size: clamp(14px, 1.6vw, 22px);
   letter-spacing: 0.28em;
   color: rgba(255, 255, 255, 0.92);

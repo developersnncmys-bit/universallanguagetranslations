@@ -1,17 +1,135 @@
 .services {
   background: #ffffff;
   color: var(--ink-900);
-  padding: 72px 0 120px;
+  padding: 0 0 120px;
   position: relative;
 }
 
 /* Break the intro row out of the narrow centered container so the big
    headline aligns with the hero's left edge instead of being ~360px indented
    on wide screens. */
-.services > .container:first-of-type {
+.services > .container:first-of-type,
+.services__intro-pin > .container {
   max-width: none;
   padding-left: clamp(48px, 7vw, 120px);
   padding-right: clamp(48px, 7vw, 120px);
+}
+
+/* Pinned intro wrapper — sticks in place while the scroll-scrubbed
+   timeline reveals headline words and stat cards.
+   Padding-top increased so the tall headline clears the fixed navbar
+   (~200px) with breathing room. */
+.services__intro-pin {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  padding: clamp(200px, 24vh, 280px) 0 clamp(60px, 8vh, 96px);
+  background: #000000;
+  transition: background 0.6s ease;
+}
+
+/* Light-on-black palette while the section is pinned. Every rule below
+   has a matching `.services__intro-pin--released` override further down
+   that swaps back to the dark-on-white palette once the pin ends. */
+.services__intro-pin .services__intro-title,
+.services__intro-pin .services__intro-title-bold {
+  color: #ffffff;
+  transition: color 0.6s ease;
+}
+
+.services__intro-pin .services__intro-title-thin {
+  color: rgba(255, 255, 255, 0.45);
+  transition: color 0.6s ease;
+}
+
+.services__intro-pin .services__intro-right p {
+  color: rgba(255, 255, 255, 0.9);
+  transition: color 0.6s ease;
+}
+
+.services__intro-pin .services__intro-cta {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.55);
+  transition: color 0.6s ease, border-color 0.6s ease, background 0.6s ease;
+}
+
+.services__intro-pin .services__intro-cta:hover {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
+.services__intro-pin .intro-stat__value {
+  color: #ffffff;
+  transition: color 0.6s ease;
+}
+
+.services__intro-pin .intro-stat__label {
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 0.6s ease;
+}
+
+.services__intro-pin .intro-stat--live .intro-stat__value {
+  color: var(--blue-500);
+}
+
+/* Text words render at full opacity during the dark phase so they read
+   as crisp white on black. Overrides the base `.scrub-word { opacity:
+   0.18 }` rule that dimmed everything else. GSAP no longer tweens these
+   at all — they stay at 1 the whole time. */
+.services__intro-pin .scrub-word {
+  opacity: 1;
+}
+
+.services__intro-pin .intro-stat {
+  border-left-color: rgba(255, 255, 255, 0.12);
+  transition: border-color 0.6s ease;
+}
+
+/* ─── AFTER PIN RELEASE — flip to white bg + dark palette ─── */
+.services__intro-pin--released {
+  background: #ffffff;
+}
+
+.services__intro-pin--released .services__intro-title,
+.services__intro-pin--released .services__intro-title-bold {
+  color: #000000;
+}
+
+.services__intro-pin--released .services__intro-title-thin {
+  color: #8B929A;
+}
+
+.services__intro-pin--released .services__intro-right p {
+  color: var(--ink-900);
+}
+
+.services__intro-pin--released .services__intro-cta {
+  color: var(--ink-900);
+  border-color: var(--ink-900);
+}
+
+.services__intro-pin--released .services__intro-cta:hover {
+  background: var(--ink-900);
+  color: #ffffff;
+  border-color: var(--ink-900);
+}
+
+.services__intro-pin--released .intro-stat__value {
+  color: var(--navy-900);
+}
+
+.services__intro-pin--released .intro-stat--live .intro-stat__value {
+  color: #000000;
+}
+
+.services__intro-pin--released .intro-stat__label {
+  color: var(--ink-500);
+}
+
+.services__intro-pin--released .intro-stat {
+  border-left-color: var(--line);
 }
 
 /* Intro row — big headline left (STICKY, pins while right column scrolls
@@ -20,52 +138,104 @@
    by default which breaks position: sticky. */
 .services__intro {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(48px, 6vw, 96px);
   align-items: start;
-  padding-bottom: 80px;
-  margin-bottom: 100px;
+  text-align: left;
+  padding-bottom: 64px;
+  margin-bottom: 80px;
   border-bottom: 1px solid var(--line);
 }
 
+@media (max-width: 960px) {
+  .services__intro {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
 .services__intro-title {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 3.6vw, 52px);
+  /* Plus Jakarta Sans (loaded via next/font under --font-jakarta in
+     app/layout.js). Both lines render in solid black. Trimmed from
+     clamp(28px, 4.6vw, 56px) → clamp(22px, 3.6vw, 44px) — bigger than
+     the original 36px cap but not overwhelming. */
+  font-family: var(--font-jakarta), var(--font-display);
+  font-size: clamp(22px, 3.6vw, 44px);
   line-height: 1.05;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   margin: 0;
-  position: sticky;
-  top: 120px;
-  align-self: start;
+  max-width: none;
+  font-weight: 800;
+  color: #000000;
 }
 
-.services__intro-title-thin {
+/* Enlarged full-stop / period. Wrapped periods in the JSX get scaled up
+   and dropped slightly so they read as a design accent rather than
+   ordinary punctuation. line-height:0 prevents them from expanding the
+   line box; vertical-align keeps them baseline-locked. */
+.services__intro-title .big-dot {
+  font-size: 2.4em;
+  line-height: 0;
+  display: inline-block;
+  vertical-align: baseline;
+  margin-left: 0.04em;
+}
+
+/* Both spans render as block-level lines. `white-space: normal` allows
+   the text to soft-wrap within the grid column so it can never overflow
+   into the description column on the right. The <br /> inside the thin
+   span still forces a hard break at "subtitles,". */
+.services__intro-title-thin,
+.services__intro-title-bold {
   display: block;
+  white-space: normal;
   font-weight: 800;
-  color: var(--ink-400);
+}
+
+/* First half of the headline reads as medium grey so the bold black
+   "Across 100+ languages." line becomes the visual anchor. */
+.services__intro-title-thin {
+  color: #8B929A;
 }
 
 .services__intro-title-bold {
-  display: block;
-  font-weight: 800;
-  color: var(--navy-900);
-  margin-top: 12px;
+  color: #000000;
+}
+
+.services__intro-title-bold {
+  margin-top: 10px;
+}
+
+/* Base state for scroll-scrubbed word reveal. GSAP starts every word at
+   opacity 0.15 on the SSR/no-JS path this rule matches, then scrubs each
+   one up to 1 as it enters the viewport. Users with prefers-reduced-motion
+   get the fully-lit fallback via the media query below. */
+.scrub-word {
+  opacity: 0.18;
+  transition: opacity 0.25s var(--ease);
+  will-change: opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrub-word {
+    opacity: 1;
+  }
 }
 
 .services__intro-right {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  max-width: 520px;
-  justify-self: end;
+  align-items: flex-start;
+  gap: 14px;
+  max-width: 720px;
 }
 
 .services__intro-right p {
   color: var(--ink-900);
-  font-size: 18px;
+  font-size: 15px;
   line-height: 1.6;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0;
 }
 
@@ -84,15 +254,16 @@
   border-color: var(--ink-900);
 }
 
-/* UC-style vertical stat stack: huge display numbers, tiny uppercase
-   label under each, hairline dividers between rows. Sits BELOW the
-   description paragraphs + CTA in the right column of the intro grid. */
+/* Horizontal stat row — huge display numbers side-by-side across the full
+   container width, hairline dividers between columns. Sits BELOW the
+   two-column intro grid so the numbers get room to breathe. */
 .services__intro-stats {
   list-style: none;
   padding: 0;
-  margin: 40px 0 0;
-  display: flex;
-  flex-direction: column;
+  margin: 40px 0 clamp(96px, 12vw, 160px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 32px;
   width: 100%;
 }
 
@@ -100,27 +271,32 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 48px 0;
-  border-top: 1px solid var(--line);
+  padding: 0 24px;
+  border-left: 1px solid var(--line);
 }
 
 .intro-stat:first-child {
-  border-top: none;
-  padding-top: 0;
+  border-left: none;
+  padding-left: 0;
 }
 
 .intro-stat:last-child {
-  padding-bottom: 0;
+  padding-right: 0;
 }
 
 .intro-stat__value {
   font-family: var(--font-display);
-  font-size: clamp(48px, 6vw, 100px);
+  font-size: clamp(22px, 2.6vw, 42px);
   font-weight: 800;
   color: var(--navy-900);
-  line-height: 0.9;
-  letter-spacing: -0.04em;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
 }
+
 
 .intro-stat__label {
   font-family: var(--font-display);
@@ -129,6 +305,50 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ink-500);
+}
+
+.intro-stat--live .intro-stat__value {
+  color: #000000;
+}
+
+.intro-stat--live .intro-stat__label {
+  color: var(--ink-500);
+}
+
+.intro-stat__pulse {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #22c55e;
+  position: relative;
+  flex: none;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+}
+
+.intro-stat__pulse::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.5);
+  animation: intro-stat-pulse 1.8s ease-out infinite;
+}
+
+@keyframes intro-stat-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-stat__pulse::after {
+    animation: none;
+  }
 }
 
 /* NEW clean icon-card grid */
@@ -164,7 +384,7 @@
 
 .svc-grid-title {
   font-family: var(--font-display);
-  font-size: clamp(28px, 3vw, 42px);
+  font-size: clamp(22px, 2.3vw, 32px);
   color: var(--navy-900);
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -351,6 +571,75 @@
   grid-template-columns: 1fr 1fr;
   gap: clamp(48px, 6vw, 120px);
   align-items: start;
+}
+
+/* Full-width panel that visually covers the bottom of the stats section
+   above. Sits with a negative margin-top so its natural position
+   OVERLAPS the stats — the overlap is the "slide-up over the services
+   section" effect. GSAP translates the whole panel up from below the
+   viewport as the user scrolls into it. */
+.offerings-panel {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  background: #000000;
+  color: #ffffff;
+  border-radius: 40px 40px 0 0;
+  margin-top: clamp(-140px, -14vw, -80px);
+  padding: clamp(72px, 9vw, 140px) 0 clamp(48px, 6vw, 96px);
+  will-change: transform, opacity;
+}
+
+/* Dark-mode overrides — headings/copy/dividers inside the dark panel need
+   to flip to light values, otherwise the section renders invisible text
+   on near-black. Scoped to `.offerings-panel` so the same classes keep
+   their original colors when used elsewhere. */
+.offerings-panel .svc-grid-title {
+  color: #ffffff;
+}
+
+.offerings-panel .svc-grid-lede {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.offerings-panel .svc-split__list {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.offerings-panel .svc-split__row {
+  padding-left: clamp(20px, 2.5vw, 36px);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.offerings-panel .svc-split__row.is-active {
+  background: linear-gradient(
+    90deg,
+    rgba(43, 107, 255, 0.14) 0%,
+    rgba(43, 107, 255, 0.05) 55%,
+    transparent 100%
+  );
+  box-shadow: inset 3px 0 0 var(--blue-500);
+}
+
+.offerings-panel .svc-split__link {
+  color: #ffffff;
+}
+
+.offerings-panel .svc-split__num {
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.02em;
+}
+
+.offerings-panel .svc-split__row.is-active .svc-split__num {
+  color: var(--blue-500);
+}
+
+.offerings-panel .svc-split__title {
+  color: #ffffff;
+}
+
+.offerings-panel .svc-split__desc {
+  color: rgba(255, 255, 255, 0.65);
 }
 
 /* Left column — numbered list, each row tall enough that the sticky
@@ -890,6 +1179,14 @@
   .services__intro-right {
     justify-self: start;
   }
+  .services__intro-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 20px;
+  }
+  .intro-stat {
+    padding: 0;
+    border-left: none;
+  }
   .services__inner {
     grid-template-columns: 1fr;
     gap: 56px;
@@ -911,5 +1208,205 @@
   }
   .svc-row__img-wrap {
     aspect-ratio: 16 / 9;
+  }
+}
+
+/* ── Stacked offering cards (Pinterest "Our Benefits" reference) ─────────
+   Cream rounded panels stacked vertically. Each panel is a two-column
+   split: small tag + icon + description on the left, big display headline
+   on the right. Sits INSIDE .container so it aligns with the intro row. */
+
+.offerings {
+  margin-top: clamp(48px, 6vh, 96px);
+}
+
+.offerings__head {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.offerings__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #f3ede2;
+  color: var(--ink-700);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.offerings__tag-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--navy-900);
+}
+
+.offerings__title {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.6vw, 36px);
+  font-weight: 500;
+  color: var(--navy-900);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0;
+  text-align: center;
+}
+
+.offerings__all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-700);
+  transition: color 0.2s var(--ease);
+}
+
+.offerings__all:hover {
+  color: var(--blue-600);
+}
+
+.offerings__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.offer-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 60px);
+  align-items: center;
+  padding: clamp(28px, 4vw, 44px);
+  background: #f6f2e9;
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.35s var(--ease);
+}
+
+/* Subtle diagonal line texture behind the card body, matching the wavy
+   fabric-ish feel of the Pinterest reference. */
+.offer-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    -68deg,
+    transparent 0 22px,
+    rgba(139, 128, 100, 0.06) 22px 23px
+  );
+  pointer-events: none;
+}
+
+.offer-card:hover {
+  background: #f1eadb;
+}
+
+.offer-card__left,
+.offer-card__right {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.offer-card__left {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 480px;
+}
+
+.offer-card__tag {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--ink-700);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.offer-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--navy-900);
+  color: #ffffff;
+}
+
+.offer-card__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.offer-card__desc {
+  color: var(--ink-700);
+  font-size: 14px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.offer-card__right {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.offer-card__prefix {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-500);
+}
+
+.offer-card__headline {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 44px);
+  font-weight: 500;
+  color: var(--navy-900);
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .offerings__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .offerings__title {
+    text-align: left;
+  }
+  .offer-card {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 28px;
+  }
+  .offer-card__headline {
+    font-size: clamp(24px, 6vw, 32px);
   }
 }

@@ -8,16 +8,13 @@ import "./GlobalLanguageNetwork.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Languages shown on the left rail. Order matches the highlight sweep timing.
-const LANGUAGES = [
-  "ENGLISH",
-  "SPANISH",
-  "FRENCH",
-  "GERMAN",
-  "ARABIC",
-  "HINDI",
-  "MANDARIN",
-  "JAPANESE",
+// Capability items shown on the left rail. Order matches the highlight sweep timing.
+const COVERAGE = [
+  "GLOBAL LANGUAGE SUPPORT",
+  "MULTILINGUAL CONTENT",
+  "CROSS-LANGUAGE COMMUNICATION",
+  "LOCALIZATION & ADAPTATION",
+  "LANGUAGE DATA SERVICES",
 ];
 
 // Service categories on the right rail — mirror the Services section list.
@@ -107,6 +104,7 @@ export default function GlobalLanguageNetwork() {
   const rootRef = useRef(null);
   const pinRef = useRef(null);
   const hubRefs = useRef({});
+  const hubGlowRefs = useRef({});
   const arcRefs = useRef([]);
   const langRefs = useRef([]);
   const serviceRefs = useRef([]);
@@ -114,6 +112,7 @@ export default function GlobalLanguageNetwork() {
   const statusRoutesRef = useRef(null);
   const mapRef = useRef(null);
   const captionRef = useRef(null);
+  const particlesLayerRef = useRef(null);
 
   const { svgInner, width, height, hubCoords } = useMemo(buildMapAssets, []);
 
@@ -135,6 +134,24 @@ export default function GlobalLanguageNetwork() {
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
+    // Collect and spatially sort every dot in the injected map SVG so we can
+    // stagger their reveal as a west→east wave (with a small y jitter so it
+    // reads as an organic network forming rather than a rigid column sweep).
+    const dotsGroup = mapRef.current?.querySelector(
+      ".ult-global-language-network__map-dots"
+    );
+    const dots = dotsGroup
+      ? Array.from(dotsGroup.querySelectorAll("circle"))
+      : [];
+    dots.sort((a, b) => {
+      const ax = parseFloat(a.getAttribute("cx")) || 0;
+      const ay = parseFloat(a.getAttribute("cy")) || 0;
+      const bx = parseFloat(b.getAttribute("cx")) || 0;
+      const by = parseFloat(b.getAttribute("cy")) || 0;
+      // Primary sort by X (west→east), tiny y bias so bands blur together
+      return ax + ay * 0.15 - (bx + by * 0.15);
+    });
+
     // Measure each arc path length for stroke-dashoffset drawing.
     arcRefs.current.forEach((path) => {
       if (!path) return;
@@ -143,139 +160,276 @@ export default function GlobalLanguageNetwork() {
       path.style.strokeDashoffset = `${len}`;
     });
 
+    const hubGroups = HUBS.map((h) => hubRefs.current[h.id]).filter(Boolean);
+    const langItems = langRefs.current.filter(Boolean);
+    const svcItems = serviceRefs.current.filter(Boolean);
+
     if (reduced) {
       // Skip pin + scrub; snap to a fully-revealed static composition.
-      hubRefs.current &&
-        Object.values(hubRefs.current).forEach(
-          (el) => el && el.classList.add("is-active")
-        );
+      gsap.set(dots, { opacity: 1 });
+      hubGroups.forEach((el) => el.classList.add("is-active"));
+      gsap.set(hubGroups, { opacity: 1, scale: 1, transformOrigin: "center" });
       arcRefs.current.forEach((path) => {
         if (!path) return;
         path.style.strokeDashoffset = "0";
         path.style.opacity = "1";
       });
-      langRefs.current.forEach((el) => el && el.classList.add("is-active"));
-      serviceRefs.current.forEach((el) => el && el.classList.add("is-active"));
+      langItems.forEach((el) => el.classList.add("is-active"));
+      svcItems.forEach((el) => el.classList.add("is-active"));
+      gsap.set(langItems, { opacity: 1, y: 0 });
+      gsap.set(svcItems, { opacity: 1, x: 0 });
+      if (mapRef.current) mapRef.current.style.opacity = "1";
+      if (captionRef.current) {
+        captionRef.current.style.opacity = "1";
+        captionRef.current.style.transform = "translateY(0)";
+      }
       if (statusHubsRef.current)
         statusHubsRef.current.textContent = String(HUBS.length).padStart(2, "0");
       if (statusRoutesRef.current)
-        statusRoutesRef.current.textContent = String(CONNECTIONS.length).padStart(
-          2,
-          "0"
-        );
+        statusRoutesRef.current.textContent = String(
+          CONNECTIONS.length
+        ).padStart(2, "0");
       return;
     }
 
+    // ---- INITIAL HIDDEN STATE ----
+    // Map container is visible from the start — the dots themselves handle
+    // the reveal (was previously fading the whole container, which delayed
+    // hub/arc anchoring calculations by the container fade).
+    if (mapRef.current) mapRef.current.style.opacity = "1";
+    gsap.set(dots, { opacity: 0 });
+    gsap.set(hubGroups, {
+      opacity: 0,
+      scale: 0.6,
+      transformOrigin: "center",
+      transformBox: "fill-box",
+    });
+    gsap.set(langItems, { opacity: 0, y: 10 });
+    gsap.set(svcItems, { opacity: 0, x: 12 });
+    if (captionRef.current) {
+      captionRef.current.style.opacity = "0";
+      captionRef.current.style.transform = "translateY(8px)";
+    }
+
+    // Set staggered per-hub CSS animation delays so the ambient pulses
+    // are asynchronous instead of every hub breathing in lock-step.
+    hubGroups.forEach((hub, i) => {
+      const dotEl = hub.querySelector(".ult-global-language-network__hub-dot");
+      const glowEl = hub.querySelector(".ult-global-language-network__hub-glow");
+      const ringEl = hub.querySelector(".ult-global-language-network__hub-ring");
+      const delay = `${(i * 0.35).toFixed(2)}s`;
+      if (dotEl) dotEl.style.animationDelay = delay;
+      if (glowEl) glowEl.style.animationDelay = delay;
+      if (ringEl) ringEl.style.animationDelay = delay;
+    });
+
+    // Storage for cancelling the ambient particle loop on unmount.
+    const particleControllers = [];
+
     const ctx = gsap.context(() => {
-      const st = ScrollTrigger.create({
-        trigger: rootRef.current,
-        start: "top top",
-        end: () => `+=${window.innerHeight * 4.5}`,
-        pin: pinRef.current,
-        scrub: 0.6,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          const p = self.progress;
-
-          // Map fade-in through the first 8% of scroll.
-          if (mapRef.current) {
-            mapRef.current.style.opacity = String(Math.min(1, p / 0.08));
-          }
-
-          // Hubs activate one after another between 0.08 and 0.55.
-          const hubIds = HUBS.map((h) => h.id);
-          const hubWindow = [0.08, 0.55];
-          hubIds.forEach((id, i) => {
-            const threshold =
-              hubWindow[0] +
-              ((hubWindow[1] - hubWindow[0]) * i) / (hubIds.length - 1);
-            const el = hubRefs.current[id];
-            if (!el) return;
-            if (p >= threshold - 0.01) el.classList.add("is-active");
-            else el.classList.remove("is-active");
-          });
-
-          // Arcs draw between 0.15 and 0.75, staggered per connection.
-          const arcWindow = [0.15, 0.75];
-          arcRefs.current.forEach((path, i) => {
-            if (!path) return;
-            const stagger =
-              arcWindow[0] +
-              ((arcWindow[1] - arcWindow[0]) * i) / (arcRefs.current.length - 1);
-            const localSpan = 0.08;
-            const local = Math.min(
-              1,
-              Math.max(0, (p - stagger) / localSpan)
-            );
-            const len = parseFloat(path.style.strokeDasharray) || 200;
-            path.style.strokeDashoffset = String(len * (1 - local));
-            // Cap max opacity so lines settle at a quiet baseline after
-            // drawing rather than staying at full brightness.
-            path.style.opacity = String(local * 0.55);
-          });
-
-          // Languages highlight sweep between 0.30 and 0.85.
-          const langWindow = [0.30, 0.85];
-          langRefs.current.forEach((el, i) => {
-            if (!el) return;
-            const threshold =
-              langWindow[0] +
-              ((langWindow[1] - langWindow[0]) * i) /
-                (langRefs.current.length - 1);
-            if (p >= threshold - 0.01) el.classList.add("is-active");
-            else el.classList.remove("is-active");
-          });
-
-          // Services highlight sweep between 0.55 and 0.98.
-          const svcWindow = [0.55, 0.98];
-          serviceRefs.current.forEach((el, i) => {
-            if (!el) return;
-            const threshold =
-              svcWindow[0] +
-              ((svcWindow[1] - svcWindow[0]) * i) /
-                (serviceRefs.current.length - 1);
-            if (p >= threshold - 0.01) el.classList.add("is-active");
-            else el.classList.remove("is-active");
-          });
-
-          // Status counters tick as the network builds.
-          if (statusHubsRef.current) {
-            const activated = hubIds.filter((id, i) => {
-              const threshold =
-                hubWindow[0] +
-                ((hubWindow[1] - hubWindow[0]) * i) / (hubIds.length - 1);
-              return p >= threshold - 0.01;
-            }).length;
-            statusHubsRef.current.textContent = String(activated).padStart(
-              2,
-              "0"
-            );
-          }
-          if (statusRoutesRef.current) {
-            const drawn = arcRefs.current.filter((_, i) => {
-              const stagger =
-                arcWindow[0] +
-                ((arcWindow[1] - arcWindow[0]) * i) /
-                  (arcRefs.current.length - 1);
-              return p >= stagger + 0.06;
-            }).length;
-            statusRoutesRef.current.textContent = String(drawn).padStart(2, "0");
-          }
-
-          // Caption fade at the very end.
-          if (captionRef.current) {
-            const c = Math.min(1, Math.max(0, (p - 0.85) / 0.1));
-            captionRef.current.style.opacity = String(c);
-            captionRef.current.style.transform = `translateY(${(1 - c) * 8}px)`;
-          }
+      // Play-once entry timeline — no scrub, no pin. Fires when the section
+      // enters view and completes in real time (~1.2s) so the network
+      // activates as one coordinated wave regardless of scroll speed.
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: rootRef.current,
+          start: "top 75%",
+          end: "bottom 25%",
+          toggleActions: "play none none reverse",
+          refreshPriority: 5,
         },
+        onComplete: startParticleLoop,
       });
 
-      return () => st.kill();
+      // ---- MAP FORMATION (0.00 → ~0.75s) ----
+      // Fast west→east wave. stagger.amount compressed so the whole map
+      // is nearly complete by 0.70 (spec: "map is almost completely formed"
+      // at 0.70) and fully complete before the 1.0–1.2s total.
+      tl.to(
+        dots,
+        {
+          opacity: 1,
+          duration: 0.10,
+          ease: "power1.out",
+          stagger: { amount: 0.65, from: "start" },
+        },
+        0
+      );
+
+      // ---- LANGUAGE COVERAGE (0.15 → ~0.70s) ----
+      // Spec: "list items begin appearing" at 0.15. All items visible by 0.70.
+      tl.to(
+        langItems,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.30,
+          ease: "power2.out",
+          stagger: 0.06,
+          onStart: () => langItems.forEach((el) => el.classList.add("is-active")),
+        },
+        0.15
+      );
+
+      // ---- SERVICES (0.15 → ~0.70s) ----
+      tl.to(
+        svcItems,
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.30,
+          ease: "power2.out",
+          stagger: 0.06,
+          onStart: () => svcItems.forEach((el) => el.classList.add("is-active")),
+        },
+        0.15
+      );
+
+      // ---- HUBS (0.15 → ~0.85s) ----
+      // First hubs at 0.15 (spec), more join at 0.35, last hub lands by ~0.85.
+      // Everything runs in parallel with the map wave so it reads as a
+      // single global network activating, not a sequence.
+      hubGroups.forEach((hub, i) => {
+        const at = 0.15 + (0.55 * i) / Math.max(1, hubGroups.length - 1);
+        tl.to(
+          hub,
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.24,
+            ease: "back.out(1.5)",
+            onStart: () => hub.classList.add("is-active"),
+            onReverseComplete: () => hub.classList.remove("is-active"),
+          },
+          at
+        );
+      });
+
+      // ---- ROUTES (0.35 → ~1.15s) ----
+      // Progressive stroke-dashoffset draw with power2.out ease (spec).
+      // Each route draws in 0.35s and routes stagger evenly across the
+      // 0.35→0.80 window so the last stroke lands within the 1.2s budget.
+      arcRefs.current.forEach((path, i) => {
+        if (!path) return;
+        const len = parseFloat(path.style.strokeDasharray) || 200;
+        const at = 0.35 + (0.45 * i) / Math.max(1, arcRefs.current.length - 1);
+        tl.fromTo(
+          path,
+          { strokeDashoffset: len, opacity: 0 },
+          {
+            strokeDashoffset: 0,
+            opacity: 1,
+            duration: 0.35,
+            ease: "power2.out",
+          },
+          at
+        );
+      });
+
+      // ---- STATUS COUNTERS ----
+      // Tick counters based on active hub/arc classes as the timeline runs.
+      tl.eventCallback("onUpdate", () => {
+        if (statusHubsRef.current) {
+          const active = hubGroups.filter((h) =>
+            h.classList.contains("is-active")
+          ).length;
+          statusHubsRef.current.textContent = String(active).padStart(2, "0");
+        }
+        if (statusRoutesRef.current) {
+          const drawn = arcRefs.current.filter(
+            (p) => p && parseFloat(p.style.strokeDashoffset) < 1
+          ).length;
+          statusRoutesRef.current.textContent = String(drawn).padStart(2, "0");
+        }
+      });
+
+      // ---- FINAL CAPTION (0.85 → ~1.05s) ----
+      // Fades in near the end of the network formation so it reads as the
+      // final piece landing, not a separate step after everything else.
+      if (captionRef.current) {
+        tl.to(
+          captionRef.current,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.22,
+            ease: "power2.out",
+          },
+          0.85
+        );
+      }
+
+      // -------------------------------------------------------------
+      // AMBIENT: data-flow particles travelling along the routes.
+      // Started via onComplete once the entry timeline finishes.
+      // -------------------------------------------------------------
+      function startParticleLoop() {
+        const paths = arcRefs.current.filter(Boolean);
+        const layer = particlesLayerRef.current;
+        if (!layer || paths.length === 0) return;
+
+        const SVG_NS = "http://www.w3.org/2000/svg";
+        const PARTICLE_COUNT = 2;
+
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          const el = document.createElementNS(SVG_NS, "circle");
+          el.setAttribute("r", "1.2");
+          el.setAttribute("class", "ult-global-language-network__particle");
+          el.setAttribute("opacity", "0");
+          layer.appendChild(el);
+          // Larger stagger between particles (1.2s * i) so at most one bead
+          // is typically visible at a time — reinforces the "occasional
+          // signal" feel rather than a busy stream.
+          particleControllers.push(runParticle(el, i * 1.2));
+        }
+
+        function runParticle(el, delay) {
+          const state = { alive: true };
+          const tick = () => {
+            if (!state.alive) return;
+            const path = paths[Math.floor(Math.random() * paths.length)];
+            if (!path) {
+              state.tween = gsap.delayedCall(1, tick);
+              return;
+            }
+            const len = path.getTotalLength();
+            const p = { t: 0 };
+            state.tween = gsap.to(p, {
+              t: 1,
+              duration: 2.2 + Math.random() * 1.3,
+              delay,
+              ease: "power1.inOut",
+              onUpdate: () => {
+                const pt = path.getPointAtLength(len * p.t);
+                el.setAttribute("cx", pt.x);
+                el.setAttribute("cy", pt.y);
+                // Fade in for the first 12% of the run and out for the last 12%.
+                const fadeIn = Math.min(1, p.t / 0.12);
+                const fadeOut = Math.min(1, (1 - p.t) / 0.12);
+                el.setAttribute(
+                  "opacity",
+                  String(Math.min(fadeIn, fadeOut))
+                );
+              },
+              onComplete: () => {
+                delay = 0.6 + Math.random() * 1.4;
+                tick();
+              },
+            });
+          };
+          tick();
+          return () => {
+            state.alive = false;
+            state.tween?.kill?.();
+          };
+        }
+      }
     }, rootRef);
 
-    return () => ctx.revert();
+    return () => {
+      particleControllers.forEach((cancel) => cancel && cancel());
+      ctx.revert();
+    };
   }, [arcs]);
 
   return (
@@ -301,16 +455,16 @@ export default function GlobalLanguageNetwork() {
         </header>
 
         <div className="ult-global-language-network__stage">
-          <ul className="ult-global-language-network__rail ult-global-language-network__rail--left" aria-label="Languages">
-            <li className="ult-global-language-network__rail-title">LANGUAGES</li>
-            {LANGUAGES.map((lang, i) => (
+          <ul className="ult-global-language-network__rail ult-global-language-network__rail--left" aria-label="Language coverage">
+            <li className="ult-global-language-network__rail-title">LANGUAGE COVERAGE</li>
+            {COVERAGE.map((item, i) => (
               <li
-                key={lang}
+                key={item}
                 className="ult-global-language-network__rail-item"
                 ref={(el) => (langRefs.current[i] = el)}
               >
                 <span className="ult-global-language-network__rail-marker" aria-hidden="true" />
-                {lang}
+                {item}
               </li>
             ))}
           </ul>
@@ -340,7 +494,7 @@ export default function GlobalLanguageNetwork() {
                 ))}
               </g>
 
-              {/* Active hub markers — bright dot + ring, activated on scroll */}
+              {/* Active hub markers — glow disc + expanding ring + bright core dot */}
               <g className="ult-global-language-network__map-hubs">
                 {HUBS.map((hub) => {
                   const p = hubCoords[hub.id];
@@ -351,12 +505,24 @@ export default function GlobalLanguageNetwork() {
                       ref={(el) => (hubRefs.current[hub.id] = el)}
                       transform={`translate(${p.x} ${p.y})`}
                     >
-                      <circle className="ult-global-language-network__hub-ring" r="4" />
-                      <circle className="ult-global-language-network__hub-dot" r="0.85" />
+                      <circle
+                        className="ult-global-language-network__hub-glow"
+                        r="7"
+                        ref={(el) => (hubGlowRefs.current[hub.id] = el)}
+                      />
+                      <circle className="ult-global-language-network__hub-ring" r="6" />
+                      <circle className="ult-global-language-network__hub-dot" r="4" />
                     </g>
                   );
                 })}
               </g>
+
+              {/* Data-flow particles — small beads traveling along routes.
+                  Dynamically populated by the animation useEffect below. */}
+              <g
+                className="ult-global-language-network__map-particles"
+                ref={particlesLayerRef}
+              />
             </svg>
           </div>
 

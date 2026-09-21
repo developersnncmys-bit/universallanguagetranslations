@@ -34,10 +34,10 @@ export default function Testimonials() {
         {/* LEFT COLUMN — sticky headline block that stays visible while the
             right column scrolls through every testimonial. */}
         <div className="tst__sticky">
-          <span className="tst__eyebrow">
+          {/* <span className="tst__eyebrow">
             <span className="tst__eyebrow-dot" />
             WHAT CLIENTS SAY
-          </span>
+          </span> */}
           <h2 className="tst__mega">
             Trusted
             <br />

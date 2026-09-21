@@ -66,7 +66,7 @@
 }
 
 .ult-global-language-network__status b {
-  color: #0b7ccb;
+  color: #1687D9;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.06em;
@@ -82,8 +82,8 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #168bdb;
-  box-shadow: 0 0 0 2px rgba(22, 139, 219, 0.14);
+  background: #1687D9;
+  box-shadow: 0 0 0 2px rgba(22, 135, 217, 0.20);
   animation: ult-gln-pulse 2.4s ease-in-out infinite;
 }
 
@@ -96,9 +96,11 @@
 .ult-global-language-network__stage {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(140px, 180px) 1fr minmax(160px, 200px);
+  /* Left column widened so "CROSS-LANGUAGE COMMUNICATION" fits on one line
+     instead of wrapping awkwardly, and all coverage items align cleanly. */
+  grid-template-columns: minmax(210px, 250px) 1fr minmax(180px, 220px);
   align-items: center;
-  gap: clamp(48px, 6vw, 120px);
+  gap: clamp(40px, 5vw, 96px);
   min-height: 0;
 }
 
@@ -134,9 +136,13 @@
 .ult-global-language-network__rail-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: #52627a;
   transition: color 0.5s ease;
+  /* Keep each item on a single line — the left column is wide enough now
+     that no wrapping is needed. If a viewport is unusually narrow, ellipsis
+     is better than the previous mid-word wrap. */
+  white-space: nowrap;
 }
 
 .ult-global-language-network__rail--right .ult-global-language-network__rail-item {
@@ -153,12 +159,12 @@
 }
 
 .ult-global-language-network__rail-item.is-active {
-  color: #0b7ccb;
+  color: #1687D9;
 }
 
 .ult-global-language-network__rail-item.is-active .ult-global-language-network__rail-marker {
-  background: #168bdb;
-  box-shadow: 0 0 4px rgba(22, 139, 219, 0.4);
+  background: #1687D9;
+  box-shadow: 0 0 4px rgba(22, 135, 217, 0.40);
 }
 
 /* ---------- MAP: SVG dotted world map + arcs + hubs ---------- */
@@ -169,8 +175,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  /* Container stays visible; the individual dots handle the reveal via
+     the GSAP timeline (west→east wave). Also ensures the map is visible
+     if JS is disabled — dots inherit their fill from CSS. */
+  opacity: 1;
 }
 
 .ult-global-language-network__map-svg {
@@ -179,58 +187,108 @@
   max-height: 60vh;
   display: block;
   overflow: visible;
+  /* Sub-pixel dots need explicit geometric precision to render as clean
+     circles rather than soft/fuzzy blobs when the SVG scales up. */
+  shape-rendering: geometricPrecision;
 }
 
-/* Base dot cloud — subtle blue-gray, visible enough that continents are
-   clearly recognizable on black without dominating the composition. */
+/* Base dot cloud — #4FA3E3 at 60% alpha per spec. Establishes the world
+   map as the dominant substrate; hubs and routes sit brighter on top. */
 .ult-global-language-network__map-dots circle {
-  fill: #8a98ad;
+  fill: rgba(79, 163, 227, 0.6);
   pointer-events: none;
 }
 
-/* Connection arcs — hairline blue, minimal glow. Opacity is capped in JS
-   so lines settle at a quiet baseline instead of full brightness. */
+/* Connection arcs — 1px hairlines in #1687D9 @ 35% alpha per spec.
+   `non-scaling-stroke` keeps visual width at exactly 1 CSS px regardless
+   of how the SVG viewBox is scaled to fit the container. */
 .ult-global-language-network__map-arcs path {
-  stroke: #168bdb;
-  stroke-width: 0.25;
+  stroke: rgba(22, 135, 217, 0.35);
+  stroke-width: 1;
   stroke-linecap: round;
   fill: none;
   opacity: 0;
   vector-effect: non-scaling-stroke;
 }
 
-/* Active hubs — tiny bright dot + a slow, restrained pulse. No permanent
-   ring, no glow halo, no floating label. */
+/* Active hubs — central bright dot + subtle glow + expanding ring. */
 .ult-global-language-network__hub {
   pointer-events: none;
 }
 
 .ult-global-language-network__hub-dot {
-  fill: rgba(38, 54, 79, 0.28);
+  fill: rgba(22, 135, 217, 0.55);
   transition: fill 0.5s ease;
+  transform-origin: center;
+  transform-box: fill-box;
 }
 
+/* Soft glow layer — spec fill rgba(33,169,232,0.18) — sits beneath the
+   bright core dot. Deliberately subtle so the hub reads as a connection
+   point rather than a glowing button. */
+.ult-global-language-network__hub-glow {
+  fill: rgba(33, 169, 232, 0.18);
+  opacity: 0;
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: opacity 0.5s ease;
+}
+
+/* Outer pulse ring — very thin (0.5px non-scaling), low base opacity. */
 .ult-global-language-network__hub-ring {
   fill: none;
-  stroke: rgba(22, 139, 219, 0);
-  stroke-width: 0.4;
+  stroke: rgba(33, 169, 232, 0);
+  stroke-width: 0.5;
   transform-origin: center;
   transform-box: fill-box;
   transition: stroke 0.5s ease;
+  vector-effect: non-scaling-stroke;
 }
 
 .ult-global-language-network__hub.is-active .ult-global-language-network__hub-dot {
-  fill: #168bdb;
+  fill: #1687D9;
+  animation: ult-gln-hub-pulse 3.2s ease-in-out infinite;
+}
+
+.ult-global-language-network__hub.is-active .ult-global-language-network__hub-glow {
+  opacity: 1;
+  animation: ult-gln-hub-glow 3.2s ease-in-out infinite;
 }
 
 .ult-global-language-network__hub.is-active .ult-global-language-network__hub-ring {
-  stroke: rgba(22, 139, 219, 0.35);
-  animation: ult-gln-ring 3.6s ease-out infinite;
+  stroke: rgba(33, 169, 232, 0.25);
+  animation: ult-gln-ring 3.4s ease-out infinite;
 }
 
+/* Central dot pulse — scale 0.95→1→0.95, over ~3.2s. Very restrained
+   heartbeat so the hub feels alive without demanding attention. */
+@keyframes ult-gln-hub-pulse {
+  0%, 100% { transform: scale(0.95); opacity: 0.85; }
+  50%      { transform: scale(1);    opacity: 1; }
+}
+
+/* Glow disc — breathes gently with the core. Peak opacity multiplies
+   against the base 0.18 fill so the halo stays whisper-soft. */
+@keyframes ult-gln-hub-glow {
+  0%, 100% { transform: scale(0.9); opacity: 0.6; }
+  50%      { transform: scale(1.1); opacity: 1; }
+}
+
+/* Expanding outer ring — grows from r=6 to r=13 (12→26px diameter, in
+   the spec's 22–28px max range) and fades to transparent. */
 @keyframes ult-gln-ring {
-  0% { r: 1.5; opacity: 0.45; }
-  100% { r: 5; opacity: 0; }
+  0%   { r: 6;  opacity: 0.25; }
+  100% { r: 13; opacity: 0; }
+}
+
+/* Data-flow particles — small #21A9E8 beads travelling along routes.
+   Position (cx, cy) is set by JS each frame from getPointAtLength.
+   Subtle drop-shadow so the bead reads as a "signal" rather than a
+   glowing button. */
+.ult-global-language-network__particle {
+  fill: #21A9E8;
+  filter: drop-shadow(0 0 1.5px rgba(33, 169, 232, 0.55));
+  pointer-events: none;
 }
 
 /* ---------- FOOTER: small heading + caption, restrained ---------- */
@@ -267,11 +325,11 @@
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 1024px) {
   .ult-global-language-network__stage {
-    grid-template-columns: minmax(120px, 160px) 1fr minmax(140px, 180px);
-    gap: 20px;
+    grid-template-columns: minmax(180px, 210px) 1fr minmax(160px, 190px);
+    gap: 24px;
   }
   .ult-global-language-network__rail {
-    font-size: 11px;
+    font-size: 10.5px;
     gap: 8px;
   }
   .ult-global-language-network__map-svg {

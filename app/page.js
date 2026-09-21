@@ -6,15 +6,18 @@ import Services from "./components/Services";
 import TranslationSubservices from "./components/TranslationSubservices";
 import WhyChooseUs from "./components/WhyChooseUs";
 import Process from "./components/Process";
-import Testimonials from "./components/Testimonials";
+// import Testimonials from "./components/Testimonials";
 import FAQ from "./components/FAQ";
 import EnquirySection from "./components/EnquirySection";
 
 export default function Home() {
   return (
     <>
-      <Hero />
-      <div className="hero-sunrise" aria-hidden="true" />
+       <div className="hero-scroll-stage">
+       <Hero />
+      </div>
+      {/* <div className="hero-sunrise" aria-hidden="true" /> */}
+
       {/* <TrustedBy /> */}
       {/* <LanguageStory /> */}
       <Services />
@@ -23,7 +26,7 @@ export default function Home() {
       <WhyChooseUs />
       <div className="process-sunrise" aria-hidden="true" />
       <Process />
-      <Testimonials />
+      {/* <Testimonials /> */}
       <FAQ />
       <EnquirySection />
     </>

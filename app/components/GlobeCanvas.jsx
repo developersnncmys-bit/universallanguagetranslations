@@ -55,7 +55,7 @@ function buildLand() {
     seed = (seed * 1664525 + 1013904223) | 0;
     return ((seed >>> 0) % 1000000) / 1000000;
   };
-  const emitProb = 0.16;
+  const emitProb = 0.1;
 
   for (let y = 0; y < H; y++) {
     const lat = 90 - (y / H) * 180;
@@ -83,40 +83,44 @@ function buildLand() {
 }
 
 // Logistics hubs highlighted on the globe.
-// Balanced global logistics network — 27 cities spanning Asia, Middle East,
-// Africa, Europe, Americas and Oceania. Each entry: [NAME, lat, lon].
+// Abstract communication hubs — 27 anchor points distributed across the
+// globe. Names are internal identifiers used only by the CONNECTIONS graph
+// (routes are drawn between indices); NO labels ever render, so the visual
+// stays language-neutral. Every entry: [NAME, lat, lon]. Do NOT add a 4th
+// language field here — the client wants the globe to represent ALL
+// languages equally through abstraction, not visually prioritize any few.
 const CITIES = [
   // Asia + Oceania
-  ["CHINA", 34.5, 108.5], // 0
-  ["JAPAN", 36.2, 138.2], // 1
-  ["HONG KONG", 22.3, 114.2], // 2
-  ["THAILAND", 15.9, 100.9], // 3
-  ["SINGAPORE", 1.35, 103.8], // 4
-  ["INDIA", 20.6, 78.9], // 5
-  ["AUSTRALIA", -25.3, 133.8], // 6
+  ["APAC-1", 34.5, 108.5], // 0
+  ["APAC-2", 36.2, 138.2], // 1
+  ["APAC-3", 22.3, 114.2], // 2
+  ["APAC-4", 15.9, 100.9], // 3
+  ["APAC-5", 1.35, 103.8], // 4
+  ["APAC-6", 20.6, 78.9], // 5
+  ["APAC-7", -25.3, 133.8], // 6
   // Middle East + Africa
-  ["UAE", 24.4, 54.0], // 7
-  ["SAUDI ARABIA", 23.9, 45.1], // 8
-  ["QATAR", 25.4, 51.2], // 9
-  ["ISRAEL", 31.0, 34.9], // 10
-  ["EGYPT", 26.8, 30.8], // 11
-  ["KENYA", -0.02, 37.9], // 12
-  ["SOUTH AFRICA", -30.6, 22.9], // 13
+  ["MEA-1", 24.4, 54.0], // 7
+  ["MEA-2", 23.9, 45.1], // 8
+  ["MEA-3", 25.4, 51.2], // 9
+  ["MEA-4", 31.0, 34.9], // 10
+  ["MEA-5", 26.8, 30.8], // 11
+  ["MEA-6", -0.02, 37.9], // 12
+  ["MEA-7", -30.6, 22.9], // 13
   // Europe
-  ["TURKEY", 39.0, 35.2], // 14
-  ["ITALY", 42.5, 12.5], // 15
-  ["SPAIN", 40.0, -3.7], // 16
-  ["FRANCE", 46.2, 2.2], // 17
-  ["GERMANY", 51.2, 10.5], // 18
-  ["UK", 55.4, -3.4], // 19
+  ["EU-1", 39.0, 35.2], // 14
+  ["EU-2", 42.5, 12.5], // 15
+  ["EU-3", 40.0, -3.7], // 16
+  ["EU-4", 46.2, 2.2], // 17
+  ["EU-5", 51.2, 10.5], // 18
+  ["EU-6", 55.4, -3.4], // 19
   // Americas
-  ["USA", 39.8, -98.6], // 20
-  ["CANADA", 56.1, -106.3], // 21
-  ["MEXICO", 23.6, -102.5], // 22
-  ["COLOMBIA", 4.6, -74.1], // 23
-  ["BRAZIL", -14.2, -51.9], // 24
-  ["ARGENTINA", -38.4, -63.6], // 25
-  ["CHILE", -35.7, -71.5], // 26
+  ["AM-1", 39.8, -98.6], // 20
+  ["AM-2", 56.1, -106.3], // 21
+  ["AM-3", 23.6, -102.5], // 22
+  ["AM-4", 4.6, -74.1], // 23
+  ["AM-5", -14.2, -51.9], // 24
+  ["AM-6", -38.4, -63.6], // 25
+  ["AM-7", -35.7, -71.5], // 26
 ];
 
 // Each entry is an INDEPENDENT two-city arc (not a shared polyline). Chosen
@@ -232,9 +236,26 @@ export default function GlobeCanvas() {
     renderer.domElement.style.height = "100%";
     container.appendChild(renderer.domElement);
 
+    // Load the Earth night-lights texture (Black Marble style) that powers
+    // the photorealistic continent look. Drop the file at
+    //   public/textures/earth_night.jpg
+    // (Solar System Scope 2k_earth_nightmap.jpg works well — CC BY 4.0).
+    const textureLoader = new THREE.TextureLoader();
+    const nightTexture = textureLoader.load("/textures/earth_night.jpg");
+    nightTexture.colorSpace = THREE.SRGBColorSpace;
+    nightTexture.wrapS = THREE.RepeatWrapping;
+    nightTexture.wrapT = THREE.ClampToEdgeWrapping;
+    nightTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
     const scene = new THREE.Scene();
+    // FOV widened from 32° → 38° so the sphere silhouette sits comfortably
+    // inside the frustum with a ~10% margin. At FOV 32 the silhouette top
+    // was landing at ~100.8% of frustum half-height on-axis, which clipped
+    // the sphere's uppermost cap into a flat horizontal edge. The rest of
+    // the scene (globe geometry, radii, land dots, waves, hubs) is
+    // unchanged; only the camera framing gets more breathing room.
     const camera = new THREE.PerspectiveCamera(
-      32,
+      38,
       rect.width / Math.max(rect.height, 1),
       0.1,
       100
@@ -243,27 +264,139 @@ export default function GlobeCanvas() {
 
     // ── GlobeGroup — everything below rotates together ───────────────────
     const globeGroup = new THREE.Group();
-    globeGroup.rotation.x = (14 * Math.PI) / 180; // axial tilt
+    // More pronounced tilt + diagonal roll so the sphere reads as a dynamic
+    // 3D orb, not a flat circular Earth. Combined X + Z rotation gives the
+    // "digital language orb" tilted-axis feel the redesign asks for.
+    globeGroup.rotation.x = (23 * Math.PI) / 180;
+    globeGroup.rotation.z = (8 * Math.PI) / 180;
     // Starting yaw so the East-Asia region (China/Hong Kong/Thailand/Singapore/
     // Japan/Australia) faces the camera on first paint. Rotation slowly carries
     // other hubs into view.
     globeGroup.rotation.y = -2.0;
     scene.add(globeGroup);
 
-    // 1) Earth — near-black sphere with DIRECTIONAL FRESNEL lighting built
-    //    directly into its own shader. Orange from world +Y illuminates the
-    //    upper hemisphere; blue from world -Y illuminates the lower. The
-    //    Fresnel term concentrates each color at the silhouette rim so the
-    //    sphere reads as "lit from above/below" instead of "encircled by a
-    //    colored ring". This IS the atmosphere — no separate shell needed.
+    // 0) Cosmic starfield — small distant stars distributed in a spherical
+    //    shell around the globe. Ties the composition to the "Universal"
+    //    part of the brand: the Earth sits inside a larger universe of
+    //    languages, not on a black rectangle. Kept subtle so the Earth
+    //    remains the main visual.
+    {
+      const STAR_COUNT = 320;
+      const starPositions = new Float32Array(STAR_COUNT * 3);
+      const starSizes = new Float32Array(STAR_COUNT);
+      const starAlphas = new Float32Array(STAR_COUNT);
+      const starSeeds = new Float32Array(STAR_COUNT);
+      for (let i = 0; i < STAR_COUNT; i++) {
+        // Uniform points on a sphere (Marsaglia method) — no polar bias.
+        let u = Math.random() * 2 - 1;
+        let phi = Math.random() * Math.PI * 2;
+        let s = Math.sqrt(1 - u * u);
+        // Shell radius well beyond the globe so stars read as a
+        // background field, never inside/on the Earth.
+        const r = 14 + Math.random() * 8;
+        starPositions[i * 3 + 0] = r * s * Math.cos(phi);
+        starPositions[i * 3 + 1] = r * s * Math.sin(phi);
+        starPositions[i * 3 + 2] = r * u;
+        // Size + alpha distribution: many faint tiny stars, few brighter.
+        const b = Math.pow(Math.random(), 2.2);
+        starSizes[i] = 0.6 + b * 2.6;
+        starAlphas[i] = 0.25 + b * 0.75;
+        starSeeds[i] = Math.random() * Math.PI * 2;
+      }
+      const starGeom = new THREE.BufferGeometry();
+      starGeom.setAttribute(
+        "position",
+        new THREE.BufferAttribute(starPositions, 3)
+      );
+      starGeom.setAttribute(
+        "aSize",
+        new THREE.BufferAttribute(starSizes, 1)
+      );
+      starGeom.setAttribute(
+        "aAlpha",
+        new THREE.BufferAttribute(starAlphas, 1)
+      );
+      starGeom.setAttribute(
+        "aSeed",
+        new THREE.BufferAttribute(starSeeds, 1)
+      );
+      const starMat = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        uniforms: {
+          // Cool white-cyan star tint matches the atmospheric rim family.
+          uColor: { value: new THREE.Color("#CFE9F0") },
+          uWarm: { value: new THREE.Color("#F6C87A") },
+          uTime: { value: 0 },
+          uDpr: { value: dpr },
+        },
+        vertexShader: /* glsl */ `
+          uniform float uTime;
+          uniform float uDpr;
+          attribute float aSize;
+          attribute float aAlpha;
+          attribute float aSeed;
+          varying float vAlpha;
+          varying float vSeed;
+          void main() {
+            vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+            gl_Position = projectionMatrix * mvPos;
+            // Subtle asynchronous twinkle — different phase per star.
+            float twinkle = 0.75 + 0.25 * sin(uTime * 0.0012 + aSeed);
+            vAlpha = aAlpha * twinkle;
+            vSeed = aSeed;
+            gl_PointSize = aSize * uDpr;
+          }
+        `,
+        fragmentShader: /* glsl */ `
+          uniform vec3 uColor;
+          uniform vec3 uWarm;
+          varying float vAlpha;
+          varying float vSeed;
+          void main() {
+            vec2 uv = gl_PointCoord - vec2(0.5);
+            float d = length(uv);
+            if (d > 0.5) discard;
+            float core = smoothstep(0.50, 0.0, d);
+            // Very rare warm star among the cool-white majority.
+            vec3 col = mix(uColor, uWarm, step(6.10, vSeed));
+            gl_FragColor = vec4(col, core * vAlpha);
+          }
+        `,
+      });
+      const stars = new THREE.Points(starGeom, starMat);
+      scene.add(stars);
+      // Hologram-dot aesthetic — pure black background, no starfield.
+      stars.visible = false;
+      // Expose to the animate loop so the twinkle uniform can be driven.
+      scene.userData.stars = { mat: starMat, geom: starGeom };
+    }
+
+    // 1) Earth — dark-teal sphere with DIRECTIONAL FRESNEL lighting built
+    //    directly into its own shader. Teal from world +Y illuminates the
+    //    upper hemisphere; lime from world -Y illuminates the lower, with a
+    //    very subtle warm accent baked into the mid-body. The Fresnel term
+    //    concentrates each color at the silhouette rim so the sphere reads
+    //    as "lit from above/below" instead of "encircled by a colored ring".
+    //    This IS the atmosphere — no separate shell needed.
+    //
+    //    Palette (v2 — client language-brand): deep teal + turquoise + lime.
     const earthGeom = new THREE.SphereGeometry(1, 128, 128);
     const earthMat = new THREE.ShaderMaterial({
       uniforms: {
-        uCore: { value: new THREE.Color("#03060e") },
-        uOrange: { value: new THREE.Color(1.0, 0.42, 0.13) },
-        uBlue: { value: new THREE.Color(0.09, 0.36, 1.0) },
-        uOMul: { value: 0.85 },
-        uBMul: { value: 1.15 },
+        // Very dark navy core so the dot cloud + rim colors dominate.
+        uCore: { value: new THREE.Color("#03121F") },
+        // Upper atmosphere — sky blue from the reference photo.
+        uAtmoTop: { value: new THREE.Color("#1B8FC7") },
+        // Lower atmosphere — grass green from the reference photo.
+        uAtmoBot: { value: new THREE.Color("#6DB639") },
+        // Warm horizon reflection — orange sunset arc from the reference.
+        uWarm: { value: new THREE.Color("#E88A37") },
+        uTopMul: { value: 1.15 },
+        uBotMul: { value: 0.70 },
+        uWarmMul: { value: 0.28 },
+        uLowerFade: { value: 1.0 },
       },
       vertexShader: /* glsl */ `
         varying vec3 vNormalW;
@@ -279,10 +412,13 @@ export default function GlobeCanvas() {
       `,
       fragmentShader: /* glsl */ `
         uniform vec3 uCore;
-        uniform vec3 uOrange;
-        uniform vec3 uBlue;
-        uniform float uOMul;
-        uniform float uBMul;
+        uniform vec3 uAtmoTop;
+        uniform vec3 uAtmoBot;
+        uniform vec3 uWarm;
+        uniform float uTopMul;
+        uniform float uBotMul;
+        uniform float uWarmMul;
+        uniform float uLowerFade;
         varying vec3 vNormalW;
         varying vec3 vViewDir;
         varying vec3 vWorldPos;
@@ -290,30 +426,24 @@ export default function GlobeCanvas() {
           float ndv = max(dot(vNormalW, vViewDir), 0.0);
           vec3 base = uCore * pow(ndv, 1.2);
 
-          // Softened Fresnel (power 1.5) so orange/blue extend gently into
-          // the sphere instead of clipping to a sharp rim ring.
+          // Sharp Fresnel — concentrates the atmospheric glow at the
+          // silhouette so the sphere reads with a bright cyan outline.
           float fres = 1.0 - ndv;
-          fres = pow(fres, 1.5);
+          fres = pow(fres, 2.6);
 
-          // Directional mask — world-space Y decides top/bottom.
           float ny = vWorldPos.y;
-          float upperMask = smoothstep(-0.15, 0.85, ny);
-          float lowerMask = smoothstep(0.15, -0.85, ny);
+          float upperMask = smoothstep(-0.4, 0.85, ny);
+          float lowerMask = smoothstep(0.4, -0.85, ny);
 
-          // 1) RIM atmosphere (Fresnel-weighted).
           vec3 col = base;
-          col += uOrange * fres * upperMask * uOMul;
-          col += uBlue * fres * lowerMask * uBMul;
+          col += uAtmoTop * fres * upperMask * uTopMul;
+          col += uAtmoBot * fres * lowerMask * uBotMul;
 
-          // 2) BODY illumination — subtle non-Fresnel term so the orange
-          //    warms the upper hemisphere and the blue lights the lower
-          //    hemisphere across the whole sphere face, not just at the rim.
-          //    Weighted by ndv^1.4 so it fades at the horizon.
-          float bodyLit = pow(ndv, 1.4);
-          float upperBody = smoothstep(-0.35, 0.95, ny) * bodyLit;
-          float lowerBody = smoothstep(0.35, -0.95, ny) * bodyLit;
-          col += uOrange * upperBody * 0.09;
-          col += uBlue * lowerBody * 0.22;
+          float warmMask = fres * smoothstep(0.15, -0.55, ny);
+          col += uWarm * warmMask * uWarmMul;
+
+          float fadeWeight = smoothstep(0.55, -0.15, ny) * uLowerFade;
+          col = mix(col, vec3(0.0), fadeWeight);
 
           gl_FragColor = vec4(col, 1.0);
         }
@@ -335,10 +465,14 @@ export default function GlobeCanvas() {
     const pointsMat = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
-      blending: THREE.NormalBlending,
+      blending: THREE.AdditiveBlending,
       uniforms: {
-        uColor: { value: new THREE.Color("#dde3ef") },
-        uSize: { value: 1.35 * dpr },
+        // Dimmed cyan continent dots — quieter, more atmospheric feel.
+        uColor: { value: new THREE.Color("#38DCE8") },
+        uColorBright: { value: new THREE.Color("#C7F8FF") },
+        // Warm color unused in this palette (kept for shader compat).
+        uWarm: { value: new THREE.Color("#38DCE8") },
+        uSize: { value: 1.9 * dpr },
       },
       vertexShader: /* glsl */ `
         uniform float uSize;
@@ -357,6 +491,8 @@ export default function GlobeCanvas() {
       `,
       fragmentShader: /* glsl */ `
         uniform vec3 uColor;
+        uniform vec3 uColorBright;
+        uniform vec3 uWarm;
         varying float vDepth;
         varying float vJitter;
         void main() {
@@ -364,12 +500,16 @@ export default function GlobeCanvas() {
           vec2 uv = gl_PointCoord - vec2(0.5);
           float d = length(uv);
           if (d > 0.5) discard;
-          // Steeper depth gradient — front dots read as bright ~0.85-1.0,
-          // side ~0.35-0.55, back ~0.07-0.15. Meets user's readability target.
-          float depthAlpha = smoothstep(0.02, 0.8, vDepth);
-          float a = (0.08 + depthAlpha * 0.95) * (0.7 + vJitter * 0.35);
-          a *= smoothstep(0.50, 0.22, d);
-          gl_FragColor = vec4(uColor, a);
+          // Dimmed dots — lower baseline + gentler depth ramp so the
+          // dot cloud sits quietly under the atmospheric rim rather
+          // than dominating the composition.
+          float depthAlpha = smoothstep(0.05, 0.85, vDepth);
+          float sparkle = 0.85 + vJitter * 0.15;
+          float a = (0.24 + depthAlpha * 0.85) * sparkle;
+          a *= smoothstep(0.50, 0.15, d);
+          // ~85% cyan base, ~15% brighter near-white sparkle highlights.
+          vec3 col = mix(uColor, uColorBright, step(0.85, vJitter));
+          gl_FragColor = vec4(col, a);
         }
       `,
     });
@@ -382,77 +522,160 @@ export default function GlobeCanvas() {
     // the composition read as "dark globe + colored halo globe", exactly the
     // outer-glow / second-sphere artifact we needed to eliminate.
 
-    // 4) City markers — tiny orange bloom points on the front hemisphere.
+    // 4) Communication nodes — subtle cyan glowing points that pulse
+    //    asynchronously. Each marker carries a random phase attribute so
+    //    their brightness cycles independently, and their base size is
+    //    smaller than before so they read as calm, premium nodes rather
+    //    than bright bloom points.
     const markerMat = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       uniforms: {
-        uColor: { value: new THREE.Color(1.0, 0.55, 0.2) },
-        uSize: { value: 8.0 * dpr },
+        // Bright cyan communication hubs — prominent glowing nodes.
+        uColor: { value: new THREE.Color("#67E8F9") },
+        uSize: { value: 9.0 * dpr },
+        uTime: { value: 0 },
       },
       vertexShader: /* glsl */ `
         uniform float uSize;
+        uniform float uTime;
+        attribute float aPhase;
+        attribute float aPulse;
         varying float vDepth;
+        varying float vPulse;
+        varying float vArrival;
         void main() {
           vec4 wp = modelMatrix * vec4(position, 1.0);
           vec3 nrm = normalize(mat3(modelMatrix) * normalize(position));
           vec3 vd = normalize(cameraPosition - wp.xyz);
           vDepth = dot(nrm, vd);
+          // Slow (~7s cycle) asynchronous idle "breathing" — each hub
+          // gently expands and contracts on its own phase so the sphere
+          // reads as populated with living communication nodes, not
+          // static dots.
+          float idle = 0.75 + 0.25 * sin(uTime * 0.00090 + aPhase);
+          // Brief arrival ripple layered on top when a signal reaches
+          // this node. aPulse decays from 1 → 0 in the JS loop.
+          float arrival = aPulse * 0.55;
+          vPulse = idle;
+          vArrival = arrival;
           gl_Position = projectionMatrix * viewMatrix * wp;
-          gl_PointSize = uSize;
+          gl_PointSize = uSize * (idle + arrival);
         }
       `,
       fragmentShader: /* glsl */ `
         uniform vec3 uColor;
         varying float vDepth;
+        varying float vPulse;
+        varying float vArrival;
         void main() {
           if (vDepth < 0.05) discard;
           vec2 uv = gl_PointCoord - vec2(0.5);
           float d = length(uv);
           if (d > 0.5) discard;
-          // Bright core + soft halo.
-          float core = smoothstep(0.18, 0.0, d);
-          float halo = smoothstep(0.5, 0.15, d);
-          float a = (core * 0.95 + halo * 0.35) * smoothstep(0.05, 0.3, vDepth);
-          gl_FragColor = vec4(uColor, a);
+          // Three concentric zones — bright center + medium glow + soft
+          // outer halo — so each hub reads as center · glow · halo.
+          float core = smoothstep(0.14, 0.0, d);
+          float glow = smoothstep(0.32, 0.10, d);
+          float halo = smoothstep(0.50, 0.28, d);
+          float depthFade = smoothstep(0.05, 0.3, vDepth);
+          float baseA = (core * 0.95 + glow * 0.40 + halo * 0.18) *
+                        depthFade * vPulse;
+          // Arrival ripple: expanding halo during the pulse decay.
+          float rippleA = (glow * 0.45 + halo * 0.55) *
+                          vArrival * depthFade;
+          gl_FragColor = vec4(uColor, baseA + rippleA);
         }
       `,
     });
-    const markerPositions = new Float32Array(CITIES.length * 3);
+    // Nodes are ONLY placed at route endpoints so every route visibly
+    // begins and ends at a communication node — no floating routes.
+    // ROUTES is defined below, so we derive endpoint indices here.
+    // Since ROUTES is a const declared later in the same scope, we
+    // scan it forward at initialisation time.
+    // 9 communication hubs — every hub is an endpoint of at least one
+    // route, no floating hubs. Positions deterministic from CITIES lat/lon.
+    const NODE_CITY_INDICES = [
+      0,  // China
+      1,  // Japan
+      5,  // India
+      7,  // UAE
+      14, // Turkey
+      19, // British Isles
+      20, // North America
+      24, // Brazil
+      13, // Southern Africa
+    ];
+    const NODE_COUNT = NODE_CITY_INDICES.length;
+    const markerPositions = new Float32Array(NODE_COUNT * 3);
+    const markerPhases = new Float32Array(NODE_COUNT);
+    // Dynamic arrival-pulse energy per node (0..1) — briefly boosted when
+    // a signal particle arrives, then decays each frame.
+    const markerPulses = new Float32Array(NODE_COUNT);
     const cityAnchors = [];
-    CITIES.forEach(([name, lat, lon], idx) => {
+    // Map city index → node index for particle-arrival lookups.
+    const cityToNodeIndex = new Map();
+    NODE_CITY_INDICES.forEach((cityIdx, ni) => {
+      const [name, lat, lon, langs] = CITIES[cityIdx];
       const p = latLonToVec3(lat, lon, 1.01);
-      markerPositions[idx * 3 + 0] = p.x;
-      markerPositions[idx * 3 + 1] = p.y;
-      markerPositions[idx * 3 + 2] = p.z;
-      cityAnchors.push({ name, local: p });
+      markerPositions[ni * 3 + 0] = p.x;
+      markerPositions[ni * 3 + 1] = p.y;
+      markerPositions[ni * 3 + 2] = p.z;
+      // Random phase per node so pulses stay asynchronous.
+      markerPhases[ni] = Math.random() * Math.PI * 2;
+      cityAnchors.push({ name, langs, local: p });
+      cityToNodeIndex.set(cityIdx, ni);
     });
     const markerGeom = new THREE.BufferGeometry();
     markerGeom.setAttribute(
       "position",
       new THREE.BufferAttribute(markerPositions, 3)
     );
+    markerGeom.setAttribute(
+      "aPhase",
+      new THREE.BufferAttribute(markerPhases, 1)
+    );
+    markerGeom.setAttribute(
+      "aPulse",
+      new THREE.BufferAttribute(markerPulses, 1)
+    );
     const markers = new THREE.Points(markerGeom, markerMat);
     globeGroup.add(markers);
+    // Hologram-dot aesthetic — hide the communication overlay.
+    // Flip to true to bring the hub network back.
+    markers.visible = false;
 
-    // 5) Routes — pure GREAT-CIRCLE SLERP at a fixed radius (1.012, ~1.2%
-    //    above the sphere). No lifted midpoint / no Bezier ballooning; each
-    //    route hugs the spherical surface exactly like a real flight path
-    //    printed onto the globe. Rendered as thin TubeGeometry so the arc
-    //    has visible thickness at any camera angle. Progressive-draw
-    //    animation (start → end, hold, fade, wait) staggered per route.
-    // 5) Routes — TWO-PASS rendering per route so the line reads CRISP with
-    //    a subtle luminous halo, not a thick fuzzy tube:
-    //      pass 1 (glow): wide tube, low alpha, soft warm orange — bloom
-    //      pass 2 (core): very thin tube, high alpha, vivid orange — sharp
-    //    Both share the same GreatCircleCurve so they animate in lockstep.
-    //    Additive blending sums the two additively — the core sits on top of
-    //    the glow because it's added second (renderOrder tie-broken by add
-    //    order for additive-blended transparent meshes).
-    const routes = [];
-    const ROUTE_RADIUS = 1.008;
-    const routeVertex = /* glsl */ `
+    // 5) Communication routes — one QuadraticBezierCurve3 per HUB→HUB
+    //    pair. Control point is the normalized midpoint pushed slightly
+    //    outward from the sphere so the arc reads as a shallow surface
+    //    path (not an orbit, not a straight line). Uses the same
+    //    latLonToVec3 coordinate system as the geographic particles, so
+    //    endpoints land exactly on the hub markers.
+
+    // 11 communication routes — a denser mesh that reads as a truly
+    // global communication network. Every route connects two rendered
+    // hubs. Mix of short, medium and long paths.
+    const ROUTES = [
+      // East Asia + South Asia
+      [0, 1],   // China ↔ Japan          (short)
+      [0, 5],   // China ↔ India          (medium)
+      // South Asia ↔ Middle East ↔ Europe
+      [5, 7],   // India ↔ UAE            (short)
+      [7, 14],  // UAE ↔ Turkey           (short)
+      [14, 19], // Turkey ↔ UK            (medium)
+      // Transatlantic + Americas
+      [19, 20], // UK ↔ USA               (long)
+      [20, 24], // USA ↔ Brazil           (long)
+      // Southern hemisphere + Africa loop
+      [24, 13], // Brazil ↔ S.Africa      (long)
+      [7, 13],  // UAE ↔ S.Africa         (long)
+      // Extra cross-connectors for network density
+      [1, 20],  // Japan ↔ USA            (very long — trans-Pacific)
+      [14, 24], // Turkey ↔ Brazil        (long)
+    ];
+
+    const waveVertex = /* glsl */ `
       varying vec2 vUv;
       varying float vDepth;
       void main() {
@@ -464,92 +687,175 @@ export default function GlobeCanvas() {
         gl_Position = projectionMatrix * viewMatrix * wp;
       }
     `;
+    const waveFragment = /* glsl */ `
+      uniform vec3 uColorA;
+      uniform vec3 uColorB;
+      uniform float uOpacity;
+      varying vec2 vUv;
+      varying float vDepth;
+      void main() {
+        // Fade around the silhouette so back-facing sections dim naturally.
+        float depthMask = smoothstep(-0.15, 0.35, vDepth);
+        vec3 col = mix(uColorA, uColorB, vUv.y);
+        // Fade both tips so the arc doesn't clip abruptly at ends.
+        float tipFade =
+          smoothstep(0.0, 0.08, vUv.y) *
+          smoothstep(1.0, 0.92, vUv.y);
+        gl_FragColor = vec4(col, uOpacity * depthMask * tipFade);
+      }
+    `;
 
-    CONNECTIONS.forEach(([i, j], idx) => {
-      const a = latLonToVec3(CITIES[i][1], CITIES[i][2], 1);
-      const b = latLonToVec3(CITIES[j][1], CITIES[j][2], 1);
-      const curve = new GreatCircleCurve(a, b, ROUTE_RADIUS);
-
-      // Pass 1 — soft outer glow
-      const glowGeo = new THREE.TubeGeometry(curve, 96, 0.007, 8, false);
-      const glowMat = new THREE.ShaderMaterial({
+    // Route hub positions must match the marker positions exactly (same
+    // radius, same latLonToVec3 helper). Markers sit at radius 1.01, so
+    // curve endpoints do too — no visible gap between hub and route.
+    const HUB_RADIUS = 1.01;
+    const commWaves = ROUTES.map(([aIdx, bIdx]) => {
+      const start = latLonToVec3(
+        CITIES[aIdx][1],
+        CITIES[aIdx][2],
+        HUB_RADIUS
+      );
+      const end = latLonToVec3(
+        CITIES[bIdx][1],
+        CITIES[bIdx][2],
+        HUB_RADIUS
+      );
+      // Control point: midpoint direction pushed outward. Lift scales
+      // with the chord length so short hops stay flat and long hops
+      // arc slightly higher — but never so high that they look orbital.
+      const chord = start.distanceTo(end);
+      const midRadius = HUB_RADIUS + Math.min(0.06, 0.09 * chord);
+      const mid = new THREE.Vector3()
+        .addVectors(start, end)
+        .normalize()
+        .multiplyScalar(midRadius);
+      const curve = new THREE.QuadraticBezierCurve3(start, mid, end);
+      // Thin, smooth tube geometry — one clean line, no faceting.
+      const geom = new THREE.TubeGeometry(curve, 96, 0.0038, 8, false);
+      const mat = new THREE.ShaderMaterial({
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
         uniforms: {
-          uColor: { value: new THREE.Color(1.0, 0.55, 0.16) },
-          uDrawProgress: { value: 0 },
-          uOpacity: { value: 0 },
+          uColorA: { value: new THREE.Color("#22D3EE") }, // primary route
+          uColorB: { value: new THREE.Color("#67E8F9") }, // brighter end
+          uOpacity: { value: 0.60 },
         },
-        vertexShader: routeVertex,
-        fragmentShader: /* glsl */ `
-          uniform vec3 uColor;
-          uniform float uDrawProgress;
-          uniform float uOpacity;
-          varying vec2 vUv;
-          varying float vDepth;
-          void main() {
-            if (vDepth < -0.02) discard;
-            if (vUv.y > uDrawProgress) discard;
-            float depthMask = smoothstep(-0.02, 0.25, vDepth);
-            float baseA = 0.16;
-            float a = baseA * depthMask * uOpacity;
-            gl_FragColor = vec4(uColor, a);
-          }
-        `,
+        vertexShader: waveVertex,
+        fragmentShader: waveFragment,
       });
-      const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-      globeGroup.add(glowMesh);
-
-      // Pass 2 — sharp vivid core, added AFTER the glow so it sits on top
-      const coreGeo = new THREE.TubeGeometry(curve, 96, 0.0018, 6, false);
-      const coreMat = new THREE.ShaderMaterial({
-        transparent: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        uniforms: {
-          uColor: { value: new THREE.Color(1.0, 0.48, 0.0) },
-          uDrawProgress: { value: 0 },
-          uOpacity: { value: 0 },
-        },
-        vertexShader: routeVertex,
-        fragmentShader: /* glsl */ `
-          uniform vec3 uColor;
-          uniform float uDrawProgress;
-          uniform float uOpacity;
-          varying vec2 vUv;
-          varying float vDepth;
-          void main() {
-            if (vDepth < -0.02) discard;
-            if (vUv.y > uDrawProgress) discard;
-            float depthMask = smoothstep(-0.02, 0.25, vDepth);
-            // Bright leading head at the drawing front-line.
-            float head = smoothstep(0.03, 0.0, uDrawProgress - vUv.y);
-            float baseA = 0.85;
-            float a = min(1.0, baseA + head * 0.55) * depthMask * uOpacity;
-            gl_FragColor = vec4(uColor, a);
-          }
-        `,
-      });
-      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-      globeGroup.add(coreMesh);
-
-      // Stagger per-route phase so all routes don't draw simultaneously.
-      routes.push({
-        coreMat,
-        glowMat,
-        coreGeo,
-        glowGeo,
-        phaseOffset: idx * 0.55,
-      });
+      const mesh = new THREE.Mesh(geom, mat);
+      globeGroup.add(mesh);
+      // Hologram-dot aesthetic — hide route arcs.
+      mesh.visible = false;
+      return { curve, mesh, geom, mat };
     });
 
+    // 5a) Signal particles — only a subset of routes (4 of them) carry a
+    //     traveling signal. Concept: information moving between two points
+    //     of the world. Kept intentionally low so the effect stays subtle.
+    //     Selected routes span both clusters + the transatlantic connector
+    //     + the southern regional edge, so activity is spatially spread.
+    // Traveling signals — geographically spread across the network to
+    // read as constant global information flow.
+    //   0 = China ↔ Japan      (short — East Asia)
+    //   5 = UK ↔ USA           (long transatlantic)
+    //   6 = USA ↔ Brazil       (long Americas)
+    //   9 = Japan ↔ USA        (long trans-Pacific)
+    const SIGNAL_ROUTE_INDICES = [0, 5, 6, 9];
+    const particleStates = SIGNAL_ROUTE_INDICES.map((waveIdx) => ({
+      wave: waveIdx,
+      t: Math.random(),
+      prevT: 0,
+    }));
+    const particleCount = particleStates.length;
+    const particlePositions = new Float32Array(particleCount * 3);
+    // Per-particle progress along its route (0 → 1) — drives a subtle
+    // two-stage color transition inside the shader.
+    const particleTs = new Float32Array(particleCount);
+    const particleGeom = new THREE.BufferGeometry();
+    particleGeom.setAttribute(
+      "position",
+      new THREE.BufferAttribute(particlePositions, 3)
+    );
+    particleGeom.setAttribute(
+      "aT",
+      new THREE.BufferAttribute(particleTs, 1)
+    );
+    const particleMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      uniforms: {
+        // Two-stage signal color: leaves origin as cyan, peaks white at
+        // mid-flight, arrives as bright cyan.
+        uColorA: { value: new THREE.Color("#00C7D9") },
+        uColorMid: { value: new THREE.Color("#FFFFFF") },
+        uColorB: { value: new THREE.Color("#67E8F9") },
+        uSize: { value: 6.5 * dpr },
+      },
+      vertexShader: /* glsl */ `
+        uniform float uSize;
+        attribute float aT;
+        varying float vDepth;
+        varying float vT;
+        void main() {
+          vec4 wp = modelMatrix * vec4(position, 1.0);
+          vec3 nrm = normalize(wp.xyz);
+          vec3 vd = normalize(cameraPosition - wp.xyz);
+          vDepth = dot(nrm, vd);
+          vT = aT;
+          gl_Position = projectionMatrix * viewMatrix * wp;
+          gl_PointSize = uSize;
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform vec3 uColorA;
+        uniform vec3 uColorMid;
+        uniform vec3 uColorB;
+        varying float vDepth;
+        varying float vT;
+        void main() {
+          if (vDepth < 0.0) discard;
+          vec2 uv = gl_PointCoord - vec2(0.5);
+          float d = length(uv);
+          if (d > 0.5) discard;
+          float core = smoothstep(0.2, 0.0, d);
+          float halo = smoothstep(0.5, 0.15, d);
+          float a = (core * 0.9 + halo * 0.35) * smoothstep(0.0, 0.3, vDepth);
+          // A → mid-white → B along the route, symmetric peak at t=0.5.
+          vec3 col;
+          if (vT < 0.5) {
+            col = mix(uColorA, uColorMid, smoothstep(0.0, 0.5, vT));
+          } else {
+            col = mix(uColorMid, uColorB, smoothstep(0.5, 1.0, vT));
+          }
+          gl_FragColor = vec4(col, a);
+        }
+      `,
+    });
+    const particles = new THREE.Points(particleGeom, particleMat);
+    globeGroup.add(particles);
+    // Hologram-dot aesthetic — hide traveling signal particles.
+    particles.visible = false;
+
     // 6) Labels — HTML overlays projected each frame; hidden when behind.
+    // Only cities with a `langs` string get a visible label. This keeps the
+    // composition minimal (3–5 markers on screen at any time) and lets us
+    // render a two-line name + languages layout for those we DO show.
     labelsLayer.innerHTML = "";
-    const labelEls = cityAnchors.map(({ name }) => {
+    const labelEls = cityAnchors.map(({ name, langs }) => {
+      if (!langs) return null;
       const el = document.createElement("div");
       el.className = "globe-label";
-      el.textContent = name;
+      const nameEl = document.createElement("span");
+      nameEl.className = "globe-label__name";
+      nameEl.textContent = name;
+      const langsEl = document.createElement("span");
+      langsEl.className = "globe-label__langs";
+      langsEl.textContent = langs;
+      el.appendChild(nameEl);
+      el.appendChild(langsEl);
       el.style.opacity = "0";
       labelsLayer.appendChild(el);
       return el;
@@ -577,33 +883,70 @@ export default function GlobeCanvas() {
         // ~35 seconds per full revolution (2π / 0.00018 ≈ 35s) — sped up
         // ~2.25× from the previous 0.00008 idle rate.
         globeGroup.rotation.y += 0.00018 * dt;
-      }
-      // Progressive-draw animation per route — cycle 5s, ~1.75s to draw.
-      //  0.00-0.35  : draw from A to B (uDrawProgress 0 -> 1)
-      //  0.35-0.65  : hold fully drawn at opacity 1
-      //  0.65-0.85  : fade out uOpacity 1 -> 0
-      //  0.85-1.00  : off, waiting for next cycle
-      const CYCLE = 5.0;
-      const nowS = now * 0.001;
-      for (const r of routes) {
-        const t = ((nowS + r.phaseOffset) % CYCLE) / CYCLE;
-        let draw = 0;
-        let opa = 0;
-        if (t < 0.35) {
-          draw = t / 0.35;
-          opa = 1.0;
-        } else if (t < 0.65) {
-          draw = 1.0;
-          opa = 1.0;
-        } else if (t < 0.85) {
-          draw = 1.0;
-          opa = 1.0 - (t - 0.65) / 0.2;
+
+        // Drive the marker pulse shader — asynchronous per-node phase in
+        // the vertex shader modulates each node's size/alpha over time.
+        markerMat.uniforms.uTime.value = now;
+
+        // Drive the star twinkle if the cosmic starfield is present.
+        if (scene.userData.stars) {
+          scene.userData.stars.mat.uniforms.uTime.value = now;
         }
-        r.coreMat.uniforms.uDrawProgress.value = draw;
-        r.coreMat.uniforms.uOpacity.value = opa;
-        r.glowMat.uniforms.uDrawProgress.value = draw;
-        r.glowMat.uniforms.uOpacity.value = opa;
+
+        // Decay any active arrival ripples on the node markers. Linear
+        // decay ~2ms⁻¹ so a full pulse fades over ~500ms.
+        let pulsesDirty = false;
+        for (let i = 0; i < markerPulses.length; i++) {
+          if (markerPulses[i] > 0) {
+            markerPulses[i] = Math.max(0, markerPulses[i] - 0.002 * dt);
+            pulsesDirty = true;
+          }
+        }
+
+        // Advance signal particles along their assigned route curves.
+        // Slow enough to read as premium information flow.
+        const posAttr = particleGeom.attributes.position;
+        const tAttr = particleGeom.attributes.aT;
+        const arr = posAttr.array;
+        const tArr = tAttr.array;
+        for (let i = 0; i < particleStates.length; i++) {
+          const p = particleStates[i];
+          p.t += 0.00007 * dt;
+          if (p.t > 1) {
+            // Signal reached the destination hub → ripple that hub.
+            const [, destCity] = ROUTES[p.wave];
+            const nodeIdx = cityToNodeIndex.get(destCity);
+            if (nodeIdx !== undefined) {
+              markerPulses[nodeIdx] = 1.0;
+              pulsesDirty = true;
+            }
+            p.t -= 1;
+          }
+          p.prevT = p.t;
+          commWaves[p.wave].curve.getPoint(p.t, tmpVec);
+          arr[i * 3 + 0] = tmpVec.x;
+          arr[i * 3 + 1] = tmpVec.y;
+          arr[i * 3 + 2] = tmpVec.z;
+          tArr[i] = p.t;
+        }
+        posAttr.needsUpdate = true;
+        tAttr.needsUpdate = true;
+        if (pulsesDirty) markerGeom.attributes.aPulse.needsUpdate = true;
       }
+
+      // Scroll-driven planetary-dome fade. At the top of the page, the
+      // lower hemisphere blends fully to black so the sphere reads as a
+      // dome emerging from darkness. As the user scrolls past ~15-45vh
+      // the fade releases so the full sphere becomes visible in time for
+      // the Hero timeline to translate it to the right.
+      const vhForFade = window.innerHeight;
+      const fadeStart = vhForFade * 0.15;
+      const fadeEnd = vhForFade * 0.45;
+      const fadeT = Math.max(
+        0,
+        Math.min(1, (window.scrollY - fadeStart) / (fadeEnd - fadeStart))
+      );
+      earthMat.uniforms.uLowerFade.value = 1 - fadeT;
 
       renderer.render(scene, camera);
 
@@ -612,12 +955,14 @@ export default function GlobeCanvas() {
       const halfW = r.width / 2;
       const halfH = r.height / 2;
       cityAnchors.forEach((anchor, idx) => {
+        const el = labelEls[idx];
+        // Skip cities without a rendered label (no `langs` metadata).
+        if (!el) return;
         // World position of the anchor (globe group rotation baked in).
         tmpVec.copy(anchor.local).applyMatrix4(globeGroup.matrixWorld);
         const worldNormal = tmpVec.clone().normalize();
         const viewDir = camera.position.clone().sub(tmpVec).normalize();
         const depth = worldNormal.dot(viewDir);
-        const el = labelEls[idx];
         // Hide only when the anchor has clearly swung past the horizon so
         // front-facing labels stay fully readable. Fade smoothly on the sides.
         if (depth < 0.22) {
@@ -659,12 +1004,17 @@ export default function GlobeCanvas() {
       pointsMat.dispose();
       markerGeom.dispose();
       markerMat.dispose();
-      for (const r of routes) {
-        r.coreGeo.dispose();
-        r.coreMat.dispose();
-        r.glowGeo.dispose();
-        r.glowMat.dispose();
+      commWaves.forEach((w) => {
+        w.geom.dispose();
+        w.mat.dispose();
+      });
+      particleGeom.dispose();
+      particleMat.dispose();
+      if (scene.userData.stars) {
+        scene.userData.stars.geom.dispose();
+        scene.userData.stars.mat.dispose();
       }
+      nightTexture.dispose();
       renderer.dispose();
       if (renderer.domElement.parentNode) {
         renderer.domElement.parentNode.removeChild(renderer.domElement);

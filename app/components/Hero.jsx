@@ -4,10 +4,11 @@ import { Fragment, useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import GlobeCanvas from "./GlobeCanvas";
 import "./Hero.css";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 // TODO: Replace WHATSAPP_NUMBER with the real business number.
 const WHATSAPP_HREF =
@@ -17,33 +18,261 @@ const WHATSAPP_HREF =
 export default function Hero() {
   const root = useRef(null);
 
-  // Fade + slide the hero copy out as the sunrise starts rising over the hero.
-  // Starts at ~5% viewport scroll, fully faded by ~45% — well before the
-  // sunrise gradient fully covers the hero.
+  // Scroll-driven cinematic hero transformation. Base CSS defines the
+  // INITIAL composition (planet dome centered in upper area, copy centered
+  // in lower area). GSAP interpolates from that CSS default toward an
+  // explicit FINAL composition (planet larger + right-cropped, copy
+  // left-aligned + vertically centered).
+  //
+  //   INITIAL  →  transition  →  FINAL
+  //   centered dome              right-cropped large sphere
+  //   centered copy              left-aligned copy
+  //
+  // A user with reduced-motion or JS disabled sees the INITIAL composition
+  // (a self-contained centered dome hero) and never triggers the timeline —
+  // that's a valid resting state.
+  //
+  // The lower-hemisphere dark fade is entirely SHADER-driven inside
+  // GlobeCanvas (uLowerFade uniform, keyed off scrollY) — no CSS clip-path,
+  // no rectangular container.
   useEffect(() => {
-    const copy = root.current?.querySelector(".hero__copy");
-    if (!copy) return;
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const h = window.innerHeight;
-      const y = window.scrollY;
-      const p = Math.min(1, Math.max(0, (y - h * 0.25) / (h * 0.6)));
-      copy.style.opacity = String(1 - p);
-      copy.style.transform = `translateY(${p * -30}px)`;
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
+  const rootEl = root.current;
+  if (!rootEl) return;
+
+  if (
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    return;
+  }
+
+  const inner = rootEl.querySelector(".hero__inner");
+  const copy = rootEl.querySelector(".hero__copy");
+  const planet = rootEl.querySelector(".hero__planet");
+  // IMPORTANT: the visible sunrise lives OUTSIDE the hero section (in
+  // page.js, between .hero-scroll-stage and <Services />). It must be
+  // selected from the document — not from rootEl — otherwise GSAP silently
+  // animates the wrong element and the real sunrise renders at CSS
+  // default opacity (which is why it appeared "too early" before).
+  const sunrise = document.querySelector(".hero-sunrise");
+
+
+  const flexChildren = copy
+    ? copy.querySelectorAll(".hero__cta, .hero__badges")
+    : [];
+
+  if (!inner || !copy || !planet) return;
+  
+
+  const ctx = gsap.context(() => {
+    // PEAK zoom — globe fills the viewport (still centered) mid-transition
+    const peakPlanet = () => ({
+      x: 0,
+      y: window.innerHeight * 0.05,
+      scale: 1.6,
+    });
+
+    // FINAL globe position — right-cropped, still large
+    const finalPlanet = () => ({
+      x: window.innerWidth * 0.28,
+      y: -window.innerHeight * 0.28,
+      scale: 1.1,
+    });
+
+    // FINAL text position
+    const finalInner = () => ({
+      x: -window.innerWidth * 0.2,
+      y: window.innerHeight * 0.02,
+    });
+
+    // Sunrise reveals via NATURAL SCROLL (vercel behavior) — the div sits
+    // at doc position 230→340vh (via margin-top: -110vh) and enters the
+    // viewport from the bottom as user scrolls past 130vh. The sticky hero
+    // stays pinned, so the sunrise reads as sliding UP over the hero.
+    // NO GSAP transforms on sunrise. NO opacity animation. Pure CSS + scroll.
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: rootEl,
+        start: "top top",
+        end: "+=180%",
+        // Moderate scrub — enough inertia to feel cinematic without
+        // making the globe feel like it's lagging behind the scroll.
+        scrub: 1.0,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      },
+      defaults: {
+        // Force GPU-composited transforms for every tween on this
+        // timeline. Prevents per-frame layout thrash during the big
+        // scale + translate animations on the globe.
+        force3D: true,
+      },
+    });
+
+    // ----------------------------------------
+    // STAGE 1 — DISABLED
+    // Previously faded the centered copy out during the globe zoom, which
+    // left the user staring at a text-less hero for the whole 0.36→0.60
+    // progress window. Copy now stays visible throughout the intro (it
+    // gets repositioned to the left in Stage 3, then Stage 4 keeps it at
+    // opacity 1 which is a no-op since we never fade it out).
+
+    // ----------------------------------------
+    // STAGE 2a
+    // Globe zooms in dramatically (stays centered) — flying toward Earth.
+    // Uses fromTo so the initial y offset (+12vh push-down from the CSS
+    // position) is applied immediately on mount, before ScrollTrigger
+    // fires — otherwise the first frame renders at the raw CSS position
+    // and jumps to the offset once the ScrollTrigger initialises.
+    // ----------------------------------------
+    tl.fromTo(
+      planet,
+      {
+        y: () => window.innerHeight * 0.12,
+      },
+      {
+        x: () => peakPlanet().x,
+        y: () => peakPlanet().y,
+        scale: () => peakPlanet().scale,
+        // Gentler curve than power2.inOut — the shallower acceleration
+        // reduces the visible "catch up" step when the browser has to
+        // repaint a large scale change on a scrubbed timeline.
+        ease: "sine.inOut",
+        duration: 0.34,
+        immediateRender: true,
+      },
+      0.14
+    );
+
+    // ----------------------------------------
+    // STAGE 2b
+    // Globe pulls back and settles at the right edge.
+    // Starts exactly where STAGE 2a ends (0.48) — no overlap window so
+    // GSAP doesn't have two competing tweens on the same target, which
+    // was the source of the mid-transition jerk.
+    // ----------------------------------------
+    tl.to(
+      planet,
+      {
+        x: () => finalPlanet().x,
+        y: () => finalPlanet().y,
+        scale: () => finalPlanet().scale,
+        ease: "sine.inOut",
+        duration: 0.32,
+      },
+      0.48
+    );
+
+    // ----------------------------------------
+    // STAGE 3 — SMOOTH center→left transition of the copy container.
+    // The categorical snaps (textAlign, justifyContent, marginLeft) happen
+    // together at the start of the slide, then the container smoothly
+    // translates to its final left-side position. Doing all snaps at the
+    // same moment reads as a single alignment decision, not a series of
+    // hard cuts scattered across the scroll range.
+    // ----------------------------------------
+    const lede = copy.querySelector(".hero__lede");
+
+    // All alignment snaps fire in one moment (0.50), then the container
+    // interpolates smoothly to its final position over the next 20% of
+    // the timeline.
+    tl.set(
+      copy,
+      {
+        textAlign: "left",
+        y: 24,
+      },
+      0.50
+    );
+
+    tl.set(
+      flexChildren,
+      {
+        justifyContent: "flex-start",
+      },
+      0.50
+    );
+
+    if (lede) {
+      tl.set(
+        lede,
+        {
+          marginLeft: 0,
+          marginRight: 0,
+        },
+        0.50
+      );
+    }
+
+    // Container smoothly translates to left/final position.
+    tl.to(
+      inner,
+      {
+        x: () => finalInner().x,
+        y: () => finalInner().y,
+        ease: "power3.inOut",
+        duration: 0.20,
+      },
+      0.50
+    );
+
+    // ----------------------------------------
+    // STAGE 4
+    // Copy slides up from y: 24 (set in Stage 3) back to y: 0. Starts at
+    // the SAME moment as Stage 3's container translation so the whole
+    // "text moves to its new home" motion is one coordinated sweep
+    // instead of container-slide-then-text-rise.
+    // ----------------------------------------
+    tl.to(
+      copy,
+      {
+        opacity: 1,
+        y: 0,
+        ease: "power3.out",
+        duration: 0.32,
+      },
+      0.52
+    );
+
+    // ----------------------------------------
+    // STAGE 5
+    // CTAs + badges reveal after copy settles — longer duration + slower
+    // stagger so each element eases in instead of popping.
+    // ----------------------------------------
+    tl.to(
+      flexChildren,
+      {
+        opacity: 1,
+        ease: "power2.out",
+        duration: 0.18,
+        stagger: 0.08,
+      },
+      0.72
+    );
+
+    // Sunrise-time copy fade DISABLED — the user wants the hero copy to
+    // remain visible throughout, including once the sunrise starts rising.
+    // The sunrise gradient's top 60% is transparent so the copy stays
+    // legible over it. Keeping this variable so the ScrollTrigger below
+    // continues to work as a no-op trigger (dropping it entirely would
+    // require removing the surrounding block).
+    gsap.to(inner, {
+      // opacity: 0,   // ← intentionally disabled per user feedback
+      ease: "power2.in",
+      scrollTrigger: {
+        trigger: rootEl,
+        start: "top+=140% top",
+        end: "top+=180% top",
+        scrub: 1.2,
+        invalidateOnRefresh: true,
+      },
+    });
+
+  }, rootEl);
+
+  return () => ctx.revert();
+}, []);
 
   useGSAP(
     () => {
@@ -88,12 +317,11 @@ export default function Hero() {
           "-=0.2"
         )
         .from(
-          [".hero__lede", ".hero__cta", ".hero__badges"],
+          ".hero__lede",
           {
             opacity: 0,
             y: 22,
             duration: 0.9,
-            stagger: 0.18,
             ease: "power2.out",
           },
           "-=0.2"
@@ -106,6 +334,7 @@ export default function Hero() {
     <section className="hero" ref={root}>
       {/* Revolving globe — real continent shapes on a rotating 3D projection */}
       <div className="hero__planet" aria-hidden="true">
+      
         <div className="hero__atmo hero__atmo--rim" />
         <div className="hero__atmo hero__atmo--flare" />
         <div className="hero__globe">
@@ -126,10 +355,10 @@ export default function Hero() {
           >
             <span aria-hidden="true">
               <span className="hero__title-line">
-                <SplitText text="Speak to the world" />
+                <SplitText text="Speak to the world in every" />
               </span>
               <span className="hero__title-line hero__title-accent">
-                <SplitText text="in every language" />
+                <SplitText text="language" />
               </span>
             </span>
           </h1>

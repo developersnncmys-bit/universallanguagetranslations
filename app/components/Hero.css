@@ -1,5 +1,15 @@
+.hero-scroll-stage {
+  position: relative;
+  /* Extended to 340vh so the sticky pin holds for 240vh of scroll. The
+     main intro tl still runs 0→160vh (unchanged pacing), and 160→240vh
+     is dedicated to the SLOW sunrise reveal (see Hero.jsx separate
+     ScrollTrigger) — matches vercel's gradual sunrise-covers-hero feel
+     rather than compressing the reveal into ~13vh of scroll. */
+  height: 340vh;
+}
+
 .hero {
-  position: sticky;
+  position:sticky;
   top: 0;
   z-index: 1;
   color: #fff;
@@ -10,30 +20,37 @@
   overflow: hidden;
   isolation: isolate;
   height: 100vh;
+  /* INITIAL composition: planet dome at the top, hero content in the LOWER
+     half. `align-items: flex-end` sits the content block along the bottom
+     with breathing room from the viewport edge, so nothing overlaps the
+     visible upper hemisphere of the planet.
+     Scroll-driven GSAP transforms then translate the content leftward and
+     upward for the FINAL right-side-globe / left-side-copy composition. */
   display: flex;
-  align-items: center;
-  padding-top: clamp(88px, 11vh, 128px);
-  padding-bottom: clamp(24px, 5vh, 64px);
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: clamp(140px, 18vh, 220px);
+  padding-bottom: clamp(48px, 8vh, 96px);
 }
 
-/* Foreground layout */
+
 .hero__inner {
   position: relative;
   z-index: 10;
-  display: grid;
-  grid-template-columns: minmax(0, 620px) 1fr;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 40px;
   width: 100%;
-  max-width: none;
-  margin: 0;
-  padding-left: clamp(64px, 12vw, 220px);
-  padding-right: clamp(48px, 7vw, 120px);
+  max-width: 900px;
+  margin: 0 auto;
+  padding-left: clamp(24px, 5vw, 64px);
+  padding-right: clamp(24px, 5vw, 64px);
+  will-change: transform;
 }
 
 .hero__copy {
-  max-width: 620px;
-  /* GSAP sets initial hidden state, but if JS never runs we don't want a blank hero */
+  max-width: 780px;
+  text-align: center;
   will-change: transform, opacity;
 }
 
@@ -53,15 +70,15 @@
 
 .hero__title {
   color: #fff;
-  font-family: var(--font-audiowide), "Audiowide", var(--font-display);
-  font-size: clamp(34px, 4.2vw, 60px);
-  line-height: 1.12;
-  letter-spacing: -0.01em;
+  font-family: var(--font-hero), var(--font-display);
+  font-size: clamp(32px, 6vw, 62px);
+  line-height: 1.08;
+  letter-spacing: 0.01em;
   margin-top: 22px;
-  font-weight: 400;
+  font-weight: 800;
   text-transform: uppercase;
   padding-bottom: 0.2em;
-  -webkit-text-stroke: 1.3px currentColor;
+  -webkit-text-stroke: 0;
 }
 
 .hero__title-line,
@@ -94,27 +111,32 @@
 
 
 .hero__lede {
-  margin-top: 22px;
-  font-size: clamp(13px, 1vw, 15px);
+  margin: 22px auto 0;
+  font-size: clamp(13px, 1.05vw, 14px);
   line-height: 1.6;
-  color: rgba(233, 240, 255, 0.78);
-  max-width: 520px;
+  color: rgba(240, 245, 255, 0.95);
+  font-weight: 600;
+  max-width: 560px;
 }
 
 .hero__cta {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 14px;
   margin-top: 34px;
+  opacity: 0;
 }
 
 .hero__badges {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 20px 28px;
   margin-top: 42px;
   padding: 0;
   list-style: none;
+  opacity: 0;
 }
 
 .hero__badges li {
@@ -143,21 +165,24 @@
    Position lives entirely in `top`, `right`, and `width` — no transform. */
 .hero__planet {
   position: absolute;
-  /* Width capped by BOTH 45vw AND 85vh so the container can never exceed the
-     hero's visible height — guarantees the complete sphere fits vertically
-     with breathing room top and bottom regardless of window shape.
-     translateY(-50%) centers the container vertically inside the hero. */
-  /* Vertical anchor is the MIDPOINT of the available space (navbar_bottom to
-     viewport_bottom): (80 + 100vh) / 2 = 40 + 50vh. Combined with the width
-     cap at 85vh, this guarantees the complete sphere is visible at any
-     viewport height with symmetric breathing room top and bottom.
-     Horizontal offset interpolates so the sphere center lands ~x=1395 at
-     1650-wide viewport and ~x=1525 at 1920-wide viewport. */
-  top: calc(40px + 50vh);
-  right: clamp(-180px, calc(46vw - 830px), 100px);
-  transform: translateY(-50%);
-  width: min(680px, 45vw, 85vh);
-  aspect-ratio: 1;
+  will-change: transform;
+  transform-origin: center center;
+  /* INITIAL composition — centered planetary dome positioned in the upper
+     hero area, comfortably below the fixed navbar. The lower hemisphere is
+     faded to black at the SHADER level (GlobeCanvas `uLowerFade` uniform,
+     driven by scrollY), so the sphere reads as a dome emerging from
+     darkness — no rectangular container, no clipping edge.
+     `top: 10vh` (~108px on 1080vh) so the entire visible dome starts
+     BELOW the fixed navbar with a small amount of clean black spacing
+     between them. Nothing about the sphere itself changed — this is a
+     pure vertical position adjustment.
+     Scroll-driven GSAP transforms then translate + scale this sphere to
+     the FINAL right-cropped larger position. */
+  top: 38vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(75vw, 900px);
+  aspect-ratio: 1.4;
   z-index: 1;
   pointer-events: none;
 }
@@ -175,20 +200,41 @@
   position: absolute;
   left: 0;
   top: 0;
-  background: rgba(6, 8, 18, 0.9);
-  color: rgba(240, 246, 255, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 3px;
-  padding: 3px 7px;
+  /* No black rectangular box — just clean floating typography integrated
+     with the globe. Two-line layout: uppercase country name over a smaller
+     languages line. Subtle text-shadow keeps labels legible over any
+     background hemisphere without a UI chrome around them. */
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
     sans-serif;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
   white-space: nowrap;
   pointer-events: none;
   will-change: transform, opacity;
   transition: opacity 160ms ease-out;
+}
+
+.globe-label__name {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(221, 247, 208, 0.92);
+  text-shadow: 0 0 6px rgba(3, 26, 30, 0.9), 0 0 2px rgba(3, 26, 30, 1);
+}
+
+.globe-label__langs {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: rgba(183, 232, 75, 0.75);
+  text-shadow: 0 0 4px rgba(3, 26, 30, 0.85);
 }
 
 .hero__globe {

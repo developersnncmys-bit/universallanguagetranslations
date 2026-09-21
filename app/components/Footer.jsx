@@ -135,7 +135,7 @@ function DottedWordmark({ text }) {
         p.y += p.vy;
       }
 
-      ctx.fillStyle = "#0a1638";
+      ctx.fillStyle = "#03121F";
       const r = DOT_SIZE * dpr;
       ctx.beginPath();
       for (let i = 0; i < particles.length; i++) {

@@ -283,8 +283,18 @@ main > *:not(.hero):not(.why) {
    the left and right and dips in the middle (inward / concave arc), the
    way a planet horizon looks from close up. A bottom linear gradient fills
    in the remaining base and hands off to white for the next section. */
+/* EXACT match of the vercel-deployed .hero-sunrise (commit 6fef844).
+   Height 110vh, no transforms, no z-index, no will-change. Linear
+   gradient is transparent 0→60% (top 66vh has NO color so it dissolves
+   into the sticky hero above), then blue → white in the bottom 40vh.
+   Two corner radials at (-5%, 108%) and (105%, 108%) form the concave
+   horizon arc using saturated hexes (#2563eb, #1e40af, #60a5fa, #bfdbfe)
+   — NOT muted rgba. margin-top: -110vh overlaps sunrise into the last
+   110vh of scroll-stage so it naturally scrolls up over the pinned hero
+   as user scrolls (no GSAP animation needed on the sunrise itself). */
 .hero-sunrise {
   height: 110vh;
+  margin-top: -110vh;
   pointer-events: none;
   background:
     linear-gradient(
@@ -317,68 +327,6 @@ main > *:not(.hero):not(.why) {
       transparent 84%
     );
 }
-
-/* Dark backdrop that sits sticky at top:0 for the duration of the
-   Process-sunrise scroll. The process-sunrise (which has a transparent
-   top) then scrolls up over this stage, giving the same "rising over
-   dark space" sliding effect the hero-sunrise gets from the sticky hero. */
-.process-stage {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  height: 55vh;
-  margin-bottom: -55vh;
-  background:
-    radial-gradient(60% 80% at 10% 20%, rgba(30, 79, 214, 0.18) 0%, transparent 60%),
-    radial-gradient(50% 70% at 90% 10%, rgba(17, 108, 128, 0.18) 0%, transparent 60%),
-    radial-gradient(70% 60% at 50% 0%, rgba(43, 107, 255, 0.12) 0%, transparent 55%),
-    #000000;
-  pointer-events: none;
-}
-
-/* Sunrise wash before the How It Works (Process) section. Top is
-   transparent so the sticky dark .process-stage behind shows through
-   as user scrolls; concave blue arc rises from the bottom corners;
-   ends in white to hand off into the white Process section below. */
-.process-sunrise {
-  position: relative;
-  z-index: 2;
-  height: 80vh;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      180deg,
-      transparent 0%,
-      transparent 42%,
-      rgba(37, 99, 235, 0.32) 60%,
-      rgba(96, 165, 250, 0.62) 76%,
-      rgba(147, 197, 253, 0.78) 86%,
-      rgba(219, 234, 254, 0.9) 93%,
-      #eff6ff 97%,
-      #ffffff 100%
-    ),
-    radial-gradient(
-      ellipse 70% 90% at -5% 118%,
-      #ffffff 0%,
-      #bfdbfe 10%,
-      #60a5fa 24%,
-      #2563eb 40%,
-      #1e40af 54%,
-      rgba(23, 51, 140, 0.55) 62%,
-      transparent 74%
-    ),
-    radial-gradient(
-      ellipse 70% 90% at 105% 118%,
-      #ffffff 0%,
-      #bfdbfe 10%,
-      #60a5fa 24%,
-      #2563eb 40%,
-      #1e40af 54%,
-      rgba(23, 51, 140, 0.55) 62%,
-      transparent 74%
-    );
-}
-
 /* Section theme variants */
 .section-dark {
   background:
