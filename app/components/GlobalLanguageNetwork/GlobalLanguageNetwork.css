@@ -223,11 +223,12 @@
   transform-box: fill-box;
 }
 
-/* Soft glow layer — spec fill rgba(33,169,232,0.18) — sits beneath the
+/* Soft glow layer — spec fill rgba(33,169,232,0.16) — sits beneath the
    bright core dot. Deliberately subtle so the hub reads as a connection
-   point rather than a glowing button. */
+   point rather than a glowing button. The glow fades naturally into the
+   surrounding map dots via low alpha (no hard edge). */
 .ult-global-language-network__hub-glow {
-  fill: rgba(33, 169, 232, 0.18);
+  fill: rgba(33, 169, 232, 0.16);
   opacity: 0;
   transform-origin: center;
   transform-box: fill-box;
@@ -247,38 +248,37 @@
 
 .ult-global-language-network__hub.is-active .ult-global-language-network__hub-dot {
   fill: #1687D9;
-  animation: ult-gln-hub-pulse 3.2s ease-in-out infinite;
+  animation: ult-gln-hub-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .ult-global-language-network__hub.is-active .ult-global-language-network__hub-glow {
   opacity: 1;
-  animation: ult-gln-hub-glow 3.2s ease-in-out infinite;
+  animation: ult-gln-hub-glow 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/* Outer ring is intentionally inert — the spec asks for a subtle
+   scale-only pulse on the hub itself, not an expanding ring. Keeping
+   the element in the DOM for structural stability but rendering it
+   invisible and un-animated. */
 .ult-global-language-network__hub.is-active .ult-global-language-network__hub-ring {
-  stroke: rgba(33, 169, 232, 0.25);
-  animation: ult-gln-ring 3.4s ease-out infinite;
+  stroke: none;
+  animation: none;
 }
 
-/* Central dot pulse — scale 0.95→1→0.95, over ~3.2s. Very restrained
-   heartbeat so the hub feels alive without demanding attention. */
+/* Central dot pulse — scale 1 → 1.15 → 1 with power1.inOut equivalent
+   (cubic-bezier 0.4, 0, 0.6, 1), 1.8s cycle. Subtle heartbeat, no
+   opacity flicker so the hub center stays a solid stable point. */
 @keyframes ult-gln-hub-pulse {
-  0%, 100% { transform: scale(0.95); opacity: 0.85; }
-  50%      { transform: scale(1);    opacity: 1; }
+  0%, 100% { transform: scale(1);    }
+  50%      { transform: scale(1.15); }
 }
 
-/* Glow disc — breathes gently with the core. Peak opacity multiplies
-   against the base 0.18 fill so the halo stays whisper-soft. */
+/* Glow disc — matches the dot's timing so the halo breathes with the
+   core. Peak opacity multiplies against the base 0.16 fill so the halo
+   stays whisper-soft and fades into the surrounding map dots. */
 @keyframes ult-gln-hub-glow {
-  0%, 100% { transform: scale(0.9); opacity: 0.6; }
-  50%      { transform: scale(1.1); opacity: 1; }
-}
-
-/* Expanding outer ring — grows from r=6 to r=13 (12→26px diameter, in
-   the spec's 22–28px max range) and fades to transparent. */
-@keyframes ult-gln-ring {
-  0%   { r: 6;  opacity: 0.25; }
-  100% { r: 13; opacity: 0; }
+  0%, 100% { transform: scale(0.95); opacity: 0.7; }
+  50%      { transform: scale(1.1);  opacity: 1;   }
 }
 
 /* Data-flow particles — small #21A9E8 beads travelling along routes.

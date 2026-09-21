@@ -505,13 +505,18 @@ export default function GlobalLanguageNetwork() {
                       ref={(el) => (hubRefs.current[hub.id] = el)}
                       transform={`translate(${p.x} ${p.y})`}
                     >
+                      {/* Hub sizing note: the map SVG uses a small viewBox
+                          (roughly ~150 units wide) rendered at ~900+ CSS px,
+                          so each SVG unit maps to ~6–8 CSS px. Keep radii
+                          fractional to stay in the 7–9px hub / ≤36px glow
+                          spec range. */}
                       <circle
                         className="ult-global-language-network__hub-glow"
-                        r="7"
+                        r="1.8"
                         ref={(el) => (hubGlowRefs.current[hub.id] = el)}
                       />
-                      <circle className="ult-global-language-network__hub-ring" r="6" />
-                      <circle className="ult-global-language-network__hub-dot" r="4" />
+                      <circle className="ult-global-language-network__hub-ring" r="0" />
+                      <circle className="ult-global-language-network__hub-dot" r="0.55" />
                     </g>
                   );
                 })}
