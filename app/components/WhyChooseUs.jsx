@@ -159,7 +159,8 @@ export default function WhyChooseUs() {
               WHY US
             </span>
             <h2 className="why__title">
-              Translation that scales as fast as you do.
+              <span className="why__title-accent">Translation that scales</span>{" "}
+              <span className="why__title-bold">as fast as you do.</span>
             </h2>
             <p className="why__intro-desc">
               Six reasons global teams keep choosing us — quality, speed, and

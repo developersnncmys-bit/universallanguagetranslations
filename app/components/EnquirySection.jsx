@@ -43,7 +43,10 @@ export default function EnquirySection() {
       <div className="container enq__inner">
         <div className="enq__intro reveal">
           <h2 className="enq__title">
-            Tell us about your project. We'll reply within one business day.
+            <span className="enq__title-accent">Tell us about your project.</span>{" "}
+            <span className="enq__title-bold">
+              We&apos;ll reply within one business day.
+            </span>
           </h2>
           <p className="enq__lede">
             Whether it's a single document or a global launch, we'll scope it

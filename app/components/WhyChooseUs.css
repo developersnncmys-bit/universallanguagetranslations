@@ -66,6 +66,16 @@
   margin: 0 0 24px;
 }
 
+/* Two-tone dark-section heading: accent half picks up the brand cyan so
+   the palette carries through; bold half stays white for anchor weight. */
+.why__title-accent {
+  color: var(--brand-cyan);
+}
+
+.why__title-bold {
+  color: #ffffff;
+}
+
 .why__intro-desc {
   color: rgba(207, 224, 255, 0.7);
   font-size: 15px;

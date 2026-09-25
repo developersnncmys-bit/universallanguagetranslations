@@ -39,7 +39,10 @@
 }
 
 .services__intro-pin .services__intro-title-thin {
-  color: rgba(255, 255, 255, 0.45);
+  /* Dark section: soft half of the two-tone headline picks up the brand
+     cyan so the palette carries through; the bold half stays pure white
+     for max contrast on the black background. */
+  color: var(--brand-cyan);
   transition: color 0.6s ease;
 }
 
@@ -98,7 +101,10 @@
 }
 
 .services__intro-pin--released .services__intro-title-thin {
-  color: #8B929A;
+  /* Light section (after pin release): soft half picks up the deeper
+     brand teal so the palette shows on white; the bold half stays black
+     for contrast. */
+  color: var(--blue-500);
 }
 
 .services__intro-pin--released .services__intro-right p {
@@ -193,10 +199,13 @@
   font-weight: 800;
 }
 
-/* First half of the headline reads as medium grey so the bold black
-   "Across 100+ languages." line becomes the visual anchor. */
+/* Two-tone base state: the "thin" half picks up the brand primary teal
+   so the palette shows on white; the "bold" half stays pure black so it
+   remains the visual anchor. Dark-section (`.services__intro-pin`) and
+   released overrides above swap the thin half to cyan / white for the
+   corresponding backgrounds. */
 .services__intro-title-thin {
-  color: #8B929A;
+  color: var(--blue-500);
 }
 
 .services__intro-title-bold {

@@ -4,6 +4,19 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import "./Header.css";
 
+// 24/7 availability badge — pulsing green "live" dot + "24/7 AVAILABLE".
+// Reads as a direct business promise to clients: we're staffed around
+// the clock, every day. The dot reinforces "right this moment."
+function LiveClock() {
+  return (
+    <div className="live-clock" aria-label="We are available 24 hours a day, 7 days a week">
+      <span className="live-clock__dot" aria-hidden="true" />
+      <span className="live-clock__label">24/7</span>
+      <span className="live-clock__promise">Available</span>
+    </div>
+  );
+}
+
 const NAV = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
@@ -149,6 +162,7 @@ export default function Header() {
         </nav>
 
         <div className="site-header__actions">
+          <LiveClock />
           <Link
             href="#enquiry"
             className="btn btn-solid-light"

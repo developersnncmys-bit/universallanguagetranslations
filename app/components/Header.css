@@ -109,12 +109,89 @@
   color: #fff;
 }
 
-/* Right actions: search + CTA */
+/* Right actions: live clock + CTA */
 .site-header__actions {
   display: flex;
   align-items: center;
   gap: 14px;
   justify-self: end;
+}
+
+/* ─── 24/7 AVAILABILITY BADGE ────────────────────────────────────────
+   Pulsing green "live" dot + "24/7 · ONLINE NOW" status. No local time
+   because that only reflects the visitor's own clock and doesn't prove
+   the business is staffed; the phrase does that job directly.
+   Auto-adapts between the dark and light header themes. */
+.live-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(139, 180, 255, 0.18);
+  font-family: var(--font-jakarta), var(--font-display), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(233, 240, 255, 0.92);
+  transition: background 0.3s var(--ease), border-color 0.3s var(--ease),
+    color 0.3s var(--ease);
+}
+
+.live-clock__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.22);
+  animation: live-clock-pulse 2s ease-in-out infinite;
+  flex: none;
+}
+
+/* "24/7" reads as the availability marker — green so it visually pairs
+   with the live-dot. */
+.live-clock__label {
+  color: #22c55e;
+  letter-spacing: 0.16em;
+}
+
+/* "AVAILABLE" — carries the business promise. Slightly softer than the
+   green "24/7" so the eye lands on the number first, then reads the
+   promise. Uppercase for the same weight as "24/7". */
+.live-clock__promise {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@keyframes live-clock-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.28); }
+  50%      { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);   }
+}
+
+/* Light-theme (scrolled past hero) — dark text on translucent-navy pill. */
+.site-header.is-light .live-clock {
+  background: rgba(10, 22, 56, 0.05);
+  border-color: rgba(10, 22, 56, 0.14);
+  color: rgba(10, 22, 56, 0.78);
+}
+
+.site-header.is-light .live-clock__label {
+  color: #16a34a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-clock__dot {
+    animation: none;
+  }
+}
+
+/* Hide the badge on the mobile-menu breakpoint so it doesn't collide with
+   the hamburger toggle. The 24/7 signal still lives in the Services stat. */
+@media (max-width: 780px) {
+  .live-clock {
+    display: none;
+  }
 }
 
 /* Nav item with dropdown */

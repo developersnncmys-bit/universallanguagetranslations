@@ -54,7 +54,10 @@
 
 .subsvc__mega-title-muted {
   display: block;
-  color: #ffffff;
+  /* Two-tone dark-section heading: this half picks up the brand cyan
+     so the palette carries through; the "bright" half above stays white
+     for anchor weight. */
+  color: var(--brand-cyan);
   margin-top: 6px;
 }
 

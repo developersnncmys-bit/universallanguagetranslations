@@ -1,24 +1,38 @@
 :root {
-  /* Blue palette inspired by unitedcarriers.com */
-  --navy-950: #050d24;
-  --navy-900: #0a1638;
-  --navy-800: #0f2555;
-  --navy-700: #14306e;
-  --blue-700: #1e3a8a;
-  --blue-600: #1e4fd6;
-  --blue-500: #2b6bff;
-  --blue-400: #4f8bff;
-  --blue-300: #8ab4ff;
-  --sky-200: #cfe0ff;
-  --sky-100: #eaf1ff;
+  /* CLIENT BRAND PALETTE — mapped from the reference photo shared over
+     WhatsApp: deep teal sky, warm amber horizon glow, lime-green grass.
+     Existing `--blue-*` / `--navy-*` / `--teal-*` variable NAMES are
+     preserved so nothing in component CSS has to be renamed — only the
+     VALUES swap. Names read "blue" for legacy reasons; the actual hues
+     are now the brand teal/cyan family. */
+  --navy-950: #02252b;   /* deepest tone */
+  --navy-900: #032F38;   /* deep atmosphere — was #0a1638 */
+  --navy-800: #043E49;   /* mid atmosphere */
+  --navy-700: #075E68;   /* upper atmosphere */
+  --blue-700: #075E68;   /* deep brand accent */
+  --blue-600: #0B8792;   /* primary brand — was #1e4fd6 */
+  --blue-500: #0B8792;   /* primary brand — was #2b6bff */
+  --blue-400: #35D9D0;   /* bright cyan highlight */
+  --blue-300: #7fe4dc;   /* lighter cyan */
+  --sky-200: #b8ede8;
+  --sky-100: #dcf4f1;
 
-  /* Teal accent */
-  --teal-700: #0a4b58;
-  --teal-600: #116c80;
-  --teal-500: #1a8ba3;
-  --teal-400: #3fb0c8;
-  --teal-300: #7bcadb;
-  --teal-100: #d8f0f5;
+  /* Teal accent — realigned to the same family so `--teal-*` and
+     `--blue-*` reference the same brand hues. */
+  --teal-700: #043E49;
+  --teal-600: #075E68;
+  --teal-500: #0B8792;
+  --teal-400: #35D9D0;
+  --teal-300: #7fe4dc;
+  --teal-100: #dcf4f1;
+
+  /* New spec accents — lime green (grass) and warm amber (horizon glow)
+     straight from the reference photo. Use for success dots, hover
+     highlights, or warm micro-accents when needed. */
+  --brand-cyan: #35D9D0;
+  --brand-lime: #B7E84B;
+  --brand-lime-soft: #D4EF8A;
+  --brand-amber: #E9A45B;
 
   --ink-900: #0b1526;
   --ink-700: #2b3852;
@@ -35,10 +49,10 @@
   --whatsapp: #25d366;
   --whatsapp-dark: #1ebd5b;
 
-  --shadow-sm: 0 1px 2px rgba(10, 22, 56, 0.06);
-  --shadow-md: 0 8px 24px rgba(10, 22, 56, 0.08);
-  --shadow-lg: 0 24px 60px rgba(10, 22, 56, 0.12);
-  --shadow-blue: 0 20px 40px rgba(30, 79, 214, 0.25);
+  --shadow-sm: 0 1px 2px rgba(3, 47, 56, 0.06);
+  --shadow-md: 0 8px 24px rgba(3, 47, 56, 0.08);
+  --shadow-lg: 0 24px 60px rgba(3, 47, 56, 0.12);
+  --shadow-blue: 0 20px 40px rgba(11, 135, 146, 0.28);
 
   --radius-sm: 8px;
   --radius-md: 14px;

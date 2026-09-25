@@ -131,8 +131,9 @@ export default function Process() {
       <div className="container">
         <div className="section-head reveal">
           <span className="process__eyebrow">How it works</span>
-          <h2 className="section-title">
-            A simple, transparent path from brief to delivery
+          <h2 className="section-title process__title">
+            <span className="process__title-accent">A simple, transparent path from</span>{" "}
+            <span className="process__title-bold">brief to delivery</span>
           </h2>
           <p className="section-lede">
             Four calm steps — no back-and-forth, no surprises. Most projects

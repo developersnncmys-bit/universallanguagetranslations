@@ -4,6 +4,18 @@
   color: var(--ink-900);
 }
 
+/* Two-tone light-section heading: accent half picks up the brand teal so
+   the palette carries through; bold half stays near-black (navy-900) for
+   anchor weight. Mirrors the pattern used in the Services intro and the
+   dark-section headings in WhyChooseUs / TranslationSubservices / Enquiry. */
+.process__title-accent {
+  color: var(--blue-500);
+}
+
+.process__title-bold {
+  color: var(--navy-900);
+}
+
 .process__bg {
   position: absolute;
   inset: -20% -10% -20% -10%;
