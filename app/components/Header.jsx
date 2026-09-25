@@ -12,7 +12,7 @@ function LiveClock() {
     <div className="live-clock" aria-label="We are available 24 hours a day, 7 days a week">
       <span className="live-clock__dot" aria-hidden="true" />
       <span className="live-clock__label">24/7</span>
-      <span className="live-clock__promise">Available</span>
+      <span className="live-clock__promise">Availability</span>
     </div>
   );
 }
