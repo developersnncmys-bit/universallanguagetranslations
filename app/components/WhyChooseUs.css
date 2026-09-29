@@ -1,7 +1,7 @@
 .why {
   position: relative;
-  background: #000000;
-  color: #ffffff;
+  background: #ffffff;
+  color: var(--navy-900);
   padding: clamp(96px, 12vh, 160px) 0 clamp(120px, 14vh, 200px);
   overflow: visible;
 }
@@ -59,25 +59,25 @@
   font-family: var(--font-display);
   font-size: clamp(32px, 3.6vw, 56px);
   font-weight: 800;
-  color: #ffffff;
+  color: var(--navy-900);
   line-height: 1.02;
   letter-spacing: -0.025em;
   text-transform: uppercase;
   margin: 0 0 24px;
 }
 
-/* Two-tone dark-section heading: accent half picks up the brand cyan so
-   the palette carries through; bold half stays white for anchor weight. */
+/* Two-tone heading: accent half stays teal for palette continuity; bold
+   half is deep navy for anchor weight on white. */
 .why__title-accent {
-  color: var(--brand-cyan);
+  color: var(--blue-500);
 }
 
 .why__title-bold {
-  color: #ffffff;
+  color: var(--navy-900);
 }
 
 .why__intro-desc {
-  color: rgba(207, 224, 255, 0.7);
+  color: rgba(4, 56, 66, 0.7);
   font-size: 15px;
   line-height: 1.65;
   max-width: 42ch;
@@ -95,7 +95,7 @@
 
 .why-feat {
   padding: clamp(40px, 5vh, 64px) 0;
-  border-bottom: 1px solid rgba(43, 107, 255, 0.14);
+  border-bottom: 1px solid rgba(4, 56, 66, 0.12);
   /* GSAP overrides these on scroll-into-view */
   opacity: 1;
 }
@@ -132,7 +132,7 @@
   display: inline-block;
   width: clamp(32px, 4vw, 56px);
   height: 1px;
-  background: rgba(43, 107, 255, 0.4);
+  background: rgba(4, 56, 66, 0.28);
 }
 
 .why-feat__icon {
@@ -159,7 +159,7 @@
   font-family: var(--font-display);
   font-size: clamp(18px, 1.9vw, 28px);
   font-weight: 800;
-  color: #ffffff;
+  color: var(--navy-900);
   text-transform: uppercase;
   line-height: 1.1;
   letter-spacing: -0.015em;
@@ -170,7 +170,7 @@
 .why-feat__desc {
   font-size: 14px;
   line-height: 1.6;
-  color: rgba(207, 224, 255, 0.68);
+  color: rgba(4, 56, 66, 0.7);
   max-width: 50ch;
   margin: 0;
 }

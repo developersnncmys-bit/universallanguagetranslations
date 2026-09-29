@@ -110,11 +110,17 @@ export default function TranslationSubservices() {
           const distance = () =>
             Math.max(0, track.scrollWidth - scroller.offsetWidth);
 
+          // Hold phase — extra scroll distance during which the section
+          // stays pinned but the cards don't move. Substantial hold so the
+          // user has time to read the headline and register the section
+          // before the horizontal reveal starts.
+          const HOLD_PX = 900;
+
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: scroller,
               start: "top top+=80",
-              end: () => `+=${distance()}`,
+              end: () => `+=${distance() + HOLD_PX}`,
               pin: true,
               pinSpacing: true,
               // Lower refreshPriority than Services (10) and GLN (5) so this
@@ -126,10 +132,12 @@ export default function TranslationSubservices() {
               anticipatePin: 1,
             },
           });
-          // Cards slide horizontally as scroll progresses — no artificial
-          // hold phase. Every pixel of scroll moves the track, so there is
-          // never an empty "stuck" window where the pin holds but nothing
-          // visually changes.
+          // Phase 1 — HOLD. Section is pinned and the headline reads as a
+          // stationary anchor. Timeline runs an empty tween so scroll is
+          // "consumed" without moving the track.
+          tl.to({}, { duration: HOLD_PX });
+          // Phase 2 — SLIDE. Every remaining pixel of scroll translates the
+          // card track horizontally at a 1:1 rate.
           tl.to(track, {
             x: () => -distance(),
             duration: () => distance(),

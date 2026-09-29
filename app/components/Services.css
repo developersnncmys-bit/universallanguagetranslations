@@ -591,7 +591,7 @@
   position: relative;
   z-index: 4;
   width: 100%;
-  background: #000000;
+  background: var(--hero-bg);
   color: #ffffff;
   border-radius: 40px 40px 0 0;
   margin-top: clamp(-140px, -14vw, -80px);
@@ -603,6 +603,18 @@
    to flip to light values, otherwise the section renders invisible text
    on near-black. Scoped to `.offerings-panel` so the same classes keep
    their original colors when used elsewhere. */
+/* Eyebrow — the base `#1B7A8E` blue matches the mid-teal band in
+   --hero-bg exactly, so it disappears into the panel. Warm amber
+   picks up the horizon puddle color and contrasts crisply. */
+.offerings-panel .svc-grid-eyebrow {
+  color: #ffffff;
+}
+
+.offerings-panel .svc-grid-eyebrow::before {
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22);
+}
+
 .offerings-panel .svc-grid-title {
   color: #ffffff;
 }
@@ -620,14 +632,21 @@
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
+/* Restore top padding on the first row inside the offerings panel — the
+   generic .svc-split__row:first-child rule strips it (padding-top: 0),
+   which crops the top of the active-state highlight card. */
+.offerings-panel .svc-split__row:first-child {
+  padding-top: clamp(40px, 7vh, 80px);
+}
+
 .offerings-panel .svc-split__row.is-active {
   background: linear-gradient(
     90deg,
-    rgba(43, 107, 255, 0.14) 0%,
-    rgba(43, 107, 255, 0.05) 55%,
+    rgba(4, 56, 66, 0.55) 0%,
+    rgba(4, 56, 66, 0.2) 55%,
     transparent 100%
   );
-  box-shadow: inset 3px 0 0 var(--blue-500);
+  box-shadow: inset 3px 0 0 var(--navy-900);
 }
 
 .offerings-panel .svc-split__link {
@@ -635,20 +654,28 @@
 }
 
 .offerings-panel .svc-split__num {
-  color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
   letter-spacing: 0.02em;
 }
 
 .offerings-panel .svc-split__row.is-active .svc-split__num {
-  color: var(--blue-500);
+  color: #ffffff;
 }
 
 .offerings-panel .svc-split__title {
   color: #ffffff;
 }
 
+.offerings-panel .svc-split__row.is-active .svc-split__title {
+  color: #ffffff;
+}
+
 .offerings-panel .svc-split__desc {
   color: rgba(255, 255, 255, 0.65);
+}
+
+.offerings-panel .svc-split__row.is-active .svc-split__desc {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 /* Left column — numbered list, each row tall enough that the sticky

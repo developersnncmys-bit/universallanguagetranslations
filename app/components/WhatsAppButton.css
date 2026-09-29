@@ -11,8 +11,8 @@
   justify-content: center;
   text-decoration: none;
   color: #fff;
-  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
-  box-shadow: 0 10px 24px rgba(37, 211, 102, 0.35), 0 4px 10px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.25);
   transition: transform 220ms ease, box-shadow 220ms ease;
   animation: wa-float 3.2s ease-in-out infinite;
 }
@@ -20,7 +20,7 @@
 .wa-fab:hover,
 .wa-fab:focus-visible {
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 14px 30px rgba(37, 211, 102, 0.45), 0 6px 14px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5), 0 6px 14px rgba(0, 0, 0, 0.3);
   outline: none;
 }
 
@@ -41,7 +41,7 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: rgba(37, 211, 102, 0.55);
+  background: rgba(0, 0, 0, 0.45);
   z-index: 1;
   animation: wa-pulse 2.2s ease-out infinite;
   pointer-events: none;

@@ -7,7 +7,7 @@
   padding: 0;
   position: relative;
   z-index: 2;
-  background: #000000;
+  background: var(--hero-bg);
 }
 
 .subsvc__container {
@@ -82,6 +82,19 @@
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  /* Override the .btn-outline--on-dark 1.5px white border — the outer
+     .subsvc__sticky-cta wrapper already provides the dark-pill visual
+     bound, so the inner border reads as a distracting inner ring
+     against it. */
+  border: none;
+}
+
+.subsvc__cta:hover {
+  /* Prevent .btn-outline--on-dark:hover from restoring a solid white
+     border on hover — keep the button clean; only a subtle background
+     tint hints at hoverability. */
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 /* Horizontal-scroll rail. Includes a header row (title + meta) that stays
@@ -92,7 +105,7 @@
   position: relative;
   overflow: hidden;
   padding: 0 0 120px;
-  background: #000000;
+  background: var(--hero-bg);
   color: #eaf1ff;
   /* Fill the viewport so during the pin the section always covers the
      full screen. Otherwise the natural (header + cards + bottom padding)
@@ -120,18 +133,12 @@
   padding-right: clamp(48px, 7vw, 120px);
 }
 
-.subsvc__hscroll-header::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
-  height: 100%;
-  background: #000000;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  z-index: -1;
-}
+/* Header's ::before overlay REMOVED — it was painting its own copy of
+   the hero gradient sized only to the header's height, producing a
+   different vertical stretch than the parent .subsvc__hscroll gradient
+   below it. Result: two visually distinct gradient bands that read as
+   two separate containers. The parent's single continuous gradient now
+   flows through both the heading and the cards uninterrupted. */
 
 .subsvc__hscroll-track {
   align-items: flex-start;

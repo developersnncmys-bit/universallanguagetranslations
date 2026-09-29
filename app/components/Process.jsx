@@ -127,7 +127,6 @@ export default function Process() {
 
   return (
     <section className="process section" id="process" ref={rootRef}>
-      <div className="process__bg parallax-y-slow" aria-hidden="true" />
       <div className="container">
         <div className="section-head reveal">
           <span className="process__eyebrow">How it works</span>

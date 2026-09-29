@@ -385,18 +385,34 @@ export default function GlobeCanvas() {
     const earthGeom = new THREE.SphereGeometry(1, 128, 128);
     const earthMat = new THREE.ShaderMaterial({
       uniforms: {
-        // Very dark navy core so the dot cloud + rim colors dominate.
-        uCore: { value: new THREE.Color("#032F38") },
-        // Upper atmosphere â€” sky blue from the reference photo.
-        uAtmoTop: { value: new THREE.Color("#0B8792") },
-        // Lower atmosphere â€” grass green from the reference photo.
-        uAtmoBot: { value: new THREE.Color("#B7E84B") },
-        // Warm horizon reflection â€” orange sunset arc from the reference.
-        uWarm: { value: new THREE.Color("#E9A45B") },
-        uTopMul: { value: 1.15 },
-        uBotMul: { value: 0.70 },
-        uWarmMul: { value: 0.28 },
-        uLowerFade: { value: 1.0 },
+        // Deep-navy / midnight-blue sphere. The shader multiplies uCore
+        // by pow(ndv, 1.2) on the face-lit body, so uCore must be
+        // pre-brightened enough to render as clearly-visible navy after
+        // that view-angle dimming (otherwise the sphere reads black).
+        // Blue-teal globe palette — shifted from navy-blue toward the
+        // teal side. Colors pulled from the same family as the hero
+        // gradient's mid-band teals so the sphere integrates naturally
+        // with the surrounding backdrop.
+        //   uCore     = #1E88A0  face-lit blue-teal body
+        //   uAtmoTop  = #38B4C8  soft blue-teal atmospheric rim
+        //   uAtmoBot  = #0F5A6C  deep blue-teal edge / shadow
+        //   uWarm     = kept but multiplier locked to 0 (no warm tone)
+        uCore: { value: new THREE.Color("#1E88A0") },
+        uAtmoTop: { value: new THREE.Color("#38B4C8") },
+        uAtmoBot: { value: new THREE.Color("#0F5A6C") },
+        uWarm: { value: new THREE.Color("#167A96") },
+        // Rim multipliers reduced — replaces the strong outline-like
+        // atmosphere with a soft diffused glow that fades naturally
+        // into the teal hero background.
+        uTopMul: { value: 0.85 },
+        uBotMul: { value: 0.55 },
+        uWarmMul: { value: 0.0 },
+        // Disabled — the lower-hemisphere→black fade was creating a
+        // half-black globe on the light teal hero background. Keeping
+        // the uniform in the shader (still referenced) but its runtime
+        // update below is commented out so the sphere always renders
+        // fully. Rotation/particles/all other animation preserved.
+        uLowerFade: { value: 0.0 },
       },
       vertexShader: /* glsl */ `
         varying vec3 vNormalW;
@@ -426,10 +442,10 @@ export default function GlobeCanvas() {
           float ndv = max(dot(vNormalW, vViewDir), 0.0);
           vec3 base = uCore * pow(ndv, 1.2);
 
-          // Sharp Fresnel â€” concentrates the atmospheric glow at the
-          // silhouette so the sphere reads with a bright cyan outline.
+          // Softer Fresnel exponent — spreads the atmospheric glow so
+          // it reads as a diffused halo rather than a sharp outline.
           float fres = 1.0 - ndv;
-          fres = pow(fres, 2.6);
+          fres = pow(fres, 2.0);
 
           float ny = vWorldPos.y;
           float upperMask = smoothstep(-0.4, 0.85, ny);
@@ -438,6 +454,19 @@ export default function GlobeCanvas() {
           vec3 col = base;
           col += uAtmoTop * fres * upperMask * uTopMul;
           col += uAtmoBot * fres * lowerMask * uBotMul;
+
+          // Body illumination across BOTH hemispheres so the globe
+          // reads as an evenly lit navy sphere with a soft depth cue.
+          // Upper term is a touch stronger than the lower term so the
+          // top-outer stays slightly lighter than the base — preserves
+          // the spherical depth without leaving the lower half dark.
+          // Multipliers raised from 0.09 / 0.07 → 0.16 / 0.12 so the
+          // full sphere face carries visible ambient blue instead of
+          // sitting at raw uCore alone.
+          float upperBody = smoothstep(-0.3, 0.9, ny) * pow(ndv, 0.6);
+          col += uAtmoTop * upperBody * 0.16;
+          float lowerBody = smoothstep(0.3, -0.9, ny) * pow(ndv, 0.6);
+          col += uAtmoBot * lowerBody * 0.12;
 
           float warmMask = fres * smoothstep(0.15, -0.55, ny);
           col += uWarm * warmMask * uWarmMul;
@@ -467,11 +496,14 @@ export default function GlobeCanvas() {
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       uniforms: {
-        // Dimmed cyan continent dots â€” quieter, more atmospheric feel.
-        uColor: { value: new THREE.Color("#35D9D0") },
-        uColorBright: { value: new THREE.Color("#7fe4dc") },
-        // Warm color unused in this palette (kept for shader compat).
-        uWarm: { value: new THREE.Color("#35D9D0") },
+        // Blue-teal / cyan-teal particles matching the new blue-teal
+        // sphere. Sizes untouched — small, sharp, individually visible.
+        //   uColor       = #35C9DE  primary blue-teal (majority)
+        //   uColorBright = #6EEBF5  brighter cyan-teal highlight
+        //   uWarm        = #6EEBF5  tier 3 unified with highlight
+        uColor: { value: new THREE.Color("#35C9DE") },
+        uColorBright: { value: new THREE.Color("#6EEBF5") },
+        uWarm: { value: new THREE.Color("#6EEBF5") },
         uSize: { value: 1.9 * dpr },
       },
       vertexShader: /* glsl */ `
@@ -532,8 +564,9 @@ export default function GlobeCanvas() {
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       uniforms: {
-        // Bright cyan communication hubs â€” prominent glowing nodes.
-        uColor: { value: new THREE.Color("#7fe4dc") },
+        // Communication hubs — brighter cyan-teal from the new blue-teal
+        // palette. Larger point size (9 * dpr) preserved.
+        uColor: { value: new THREE.Color("#6EEBF5") },
         uSize: { value: 9.0 * dpr },
         uTime: { value: 0 },
       },
@@ -737,8 +770,8 @@ export default function GlobeCanvas() {
         depthWrite: false,
         blending: THREE.AdditiveBlending,
         uniforms: {
-          uColorA: { value: new THREE.Color("#35D9D0") }, // primary route
-          uColorB: { value: new THREE.Color("#7fe4dc") }, // brighter end
+          uColorA: { value: new THREE.Color("#35C9DE") }, // primary route (blue-teal)
+          uColorB: { value: new THREE.Color("#6EEBF5") }, // brighter end (cyan-teal)
           uOpacity: { value: 0.60 },
         },
         vertexShader: waveVertex,
@@ -789,9 +822,9 @@ export default function GlobeCanvas() {
       uniforms: {
         // Two-stage signal color: leaves origin as cyan, peaks white at
         // mid-flight, arrives as bright cyan.
-        uColorA: { value: new THREE.Color("#0B8792") },
+        uColorA: { value: new THREE.Color("#35C9DE") },
         uColorMid: { value: new THREE.Color("#FFFFFF") },
-        uColorB: { value: new THREE.Color("#7fe4dc") },
+        uColorB: { value: new THREE.Color("#6EEBF5") },
         uSize: { value: 6.5 * dpr },
       },
       vertexShader: /* glsl */ `
@@ -946,7 +979,11 @@ export default function GlobeCanvas() {
         0,
         Math.min(1, (window.scrollY - fadeStart) / (fadeEnd - fadeStart))
       );
-      earthMat.uniforms.uLowerFade.value = 1 - fadeT;
+      // Lower-hemisphere fade disabled — was mixing the bottom half of
+      // the sphere to pure black at the top of the page which made the
+      // globe read as half-black on the light teal hero. Keep uniform
+      // at 0.0 so the sphere always renders in full.
+      // earthMat.uniforms.uLowerFade.value = 1 - fadeT;
 
       renderer.render(scene, camera);
 

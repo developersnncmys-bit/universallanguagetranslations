@@ -1,33 +1,27 @@
 .process {
   position: relative;
-  background: #ffffff;
-  color: var(--ink-900);
+  background: var(--hero-bg);
+  color: #ffffff;
 }
 
-/* Two-tone light-section heading: accent half picks up the brand teal so
-   the palette carries through; bold half stays near-black (navy-900) for
-   anchor weight. Mirrors the pattern used in the Services intro and the
-   dark-section headings in WhyChooseUs / TranslationSubservices / Enquiry. */
+/* Two-tone heading on the dark hero palette: accent half is brand-cyan
+   for lift; bold half stays white for anchor weight. */
 .process__title-accent {
-  color: var(--blue-500);
+  color: var(--brand-cyan);
 }
 
 .process__title-bold {
-  color: var(--navy-900);
-}
-
-.process__bg {
-  position: absolute;
-  inset: -20% -10% -20% -10%;
-  z-index: 0;
-  background:
-    radial-gradient(700px 400px at 50% 0%, rgba(17, 108, 128, 0.22), transparent 60%);
-  pointer-events: none;
+  color: #ffffff;
 }
 
 .process > .container {
   position: relative;
   z-index: 1;
+}
+
+/* Tighter head→cards gap than the global .section-head default (56px). */
+.process .section-head {
+  margin-bottom: 24px;
 }
 
 /* Eyebrow — plain uppercase micro-label, no pill background */
@@ -38,7 +32,7 @@
   font-weight: 700;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--teal-600);
+  color: var(--brand-cyan);
   margin-bottom: 18px;
 }
 

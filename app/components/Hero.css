@@ -21,23 +21,10 @@
        the photo's rich blue-teal sky), transitioning through the palette
        teals to lime grass at the very bottom. Sky occupies ~65%, grass
        ~15%, with amber sitting across the horizon between them. */
-  background:
-    radial-gradient(
-      ellipse 75% 14% at 50% 82%,
-      rgba(226, 150, 86, 0.85) 0%,
-      rgba(226, 150, 86, 0.50) 30%,
-      rgba(226, 150, 86, 0)    75%
-    ),
-    linear-gradient(
-      180deg,
-      #043842 0%,    /* deep sky top — matches reference   — --navy-900 */
-      #0A5261 18%,   /* upper sky                          — --navy-800 */
-      #146673 36%,   /* mid teal                           — --navy-700 */
-      #1B7A8E 54%,   /* dominant sky teal                  — --blue-500 */
-      #2596AA 68%,   /* brighter teal                                    */
-      #45B0BC 80%,   /* lightest teal (near-horizon)       — --brand-cyan */
-      #9BC647 100%   /* lime grass at base                 — --brand-lime */
-    );
+  /* Uses the shared --hero-bg custom property so every dark section on
+     the site (WhyChooseUs, TranslationSubservices, EnquirySection,
+     offerings-panel) reads with the same teal → lime + amber horizon. */
+  background: var(--hero-bg);
   overflow: hidden;
   isolation: isolate;
   height: 100vh;
