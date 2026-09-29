@@ -1,38 +1,38 @@
 :root {
-  /* CLIENT BRAND PALETTE — mapped from the reference photo shared over
-     WhatsApp: deep teal sky, warm amber horizon glow, lime-green grass.
+  /* CLIENT BRAND PALETTE — sampled directly from the reference photo
+     shared over WhatsApp (deep teal sky, warm amber horizon glow, lime
+     grass). Values re-tuned to be truer to the photo than the earlier
+     estimates: teals lean slightly bluer, cyan is less pure-mint, grass
+     is a more natural mid-green rather than lime-yellow.
      Existing `--blue-*` / `--navy-*` / `--teal-*` variable NAMES are
-     preserved so nothing in component CSS has to be renamed — only the
-     VALUES swap. Names read "blue" for legacy reasons; the actual hues
-     are now the brand teal/cyan family. */
-  --navy-950: #02252b;   /* deepest tone */
-  --navy-900: #032F38;   /* deep atmosphere — was #0a1638 */
-  --navy-800: #043E49;   /* mid atmosphere */
-  --navy-700: #075E68;   /* upper atmosphere */
-  --blue-700: #075E68;   /* deep brand accent */
-  --blue-600: #0B8792;   /* primary brand — was #1e4fd6 */
-  --blue-500: #0B8792;   /* primary brand — was #2b6bff */
-  --blue-400: #35D9D0;   /* bright cyan highlight */
-  --blue-300: #7fe4dc;   /* lighter cyan */
-  --sky-200: #b8ede8;
-  --sky-100: #dcf4f1;
+     preserved so no component CSS needs renaming — only values swap. */
+  --navy-950: #02252b;   /* deepest tone (below the visible sky) */
+  --navy-900: #043842;   /* sky top — deep atmosphere */
+  --navy-800: #0A5261;   /* upper sky */
+  --navy-700: #146673;   /* mid dark teal */
+  --blue-700: #146673;   /* deep brand accent */
+  --blue-600: #1B7A8E;   /* PRIMARY BRAND — dominant sky teal */
+  --blue-500: #1B7A8E;   /* PRIMARY BRAND */
+  --blue-400: #45B0BC;   /* lighter teal (near-horizon sky) */
+  --blue-300: #7BC5D0;   /* soft light cyan */
+  --sky-200: #b8dce4;
+  --sky-100: #dcedf1;
 
   /* Teal accent — realigned to the same family so `--teal-*` and
      `--blue-*` reference the same brand hues. */
-  --teal-700: #043E49;
-  --teal-600: #075E68;
-  --teal-500: #0B8792;
-  --teal-400: #35D9D0;
-  --teal-300: #7fe4dc;
-  --teal-100: #dcf4f1;
+  --teal-700: #0A5261;
+  --teal-600: #146673;
+  --teal-500: #1B7A8E;
+  --teal-400: #45B0BC;
+  --teal-300: #7BC5D0;
+  --teal-100: #dcedf1;
 
-  /* New spec accents — lime green (grass) and warm amber (horizon glow)
-     straight from the reference photo. Use for success dots, hover
-     highlights, or warm micro-accents when needed. */
-  --brand-cyan: #35D9D0;
-  --brand-lime: #B7E84B;
-  --brand-lime-soft: #D4EF8A;
-  --brand-amber: #E9A45B;
+  /* Spec accents sampled from the photo — lime grass (mid-green, not
+     yellow-lime) and warm amber (horizon glow). */
+  --brand-cyan: #45B0BC;
+  --brand-lime: #9BC647;
+  --brand-lime-soft: #C0DC7A;
+  --brand-amber: #E29656;
 
   --ink-900: #0b1526;
   --ink-700: #2b3852;
@@ -256,17 +256,19 @@ p {
   color: #fff;
 }
 
+/* White pill with WhatsApp-green text and icon — reads clearly over the
+   teal hero and keeps the brand color as an accent instead of a fill. */
 .btn-whatsapp {
-  background: rgba(37, 211, 102, 0.12);
-  color: #4ade80;
-  border: 1px solid rgba(74, 222, 128, 0.35);
-  box-shadow: none;
+  background: #ffffff;
+  color: var(--whatsapp);
+  border: 1px solid #ffffff;
+  box-shadow: 0 10px 24px rgba(4, 56, 66, 0.18);
 }
 
 .btn-whatsapp:hover {
-  background: rgba(37, 211, 102, 0.2);
-  border-color: rgba(74, 222, 128, 0.55);
-  color: #6ee7a0;
+  background: #f2f4f8;
+  border-color: #f2f4f8;
+  color: var(--whatsapp-dark);
 }
 
 .btn-ghost {

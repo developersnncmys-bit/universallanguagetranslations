@@ -13,10 +13,31 @@
   top: 0;
   z-index: 1;
   color: #fff;
+  /* Layered hero — mirrors the reference photo's sunset composition:
+       LAYER 1 (AMBER HORIZON BAND) — wider centered ellipse at 82% down
+       so it reads as a full horizon glow (like a sunset spread), with
+       soft edges that fade before reaching the viewport sides.
+       LAYER 2 (BASE GRADIENT) — deep saturated teal at the top (matches
+       the photo's rich blue-teal sky), transitioning through the palette
+       teals to lime grass at the very bottom. Sky occupies ~65%, grass
+       ~15%, with amber sitting across the horizon between them. */
   background:
-    /* radial-gradient(1000px 700px at 0% 0%, rgba(40, 110, 255, 0.42) 0%, rgba(30, 80, 220, 0.16) 32%, transparent 62%), */
-    radial-gradient(700px 400px at 90% 95%, #05070f 0%, transparent 60%),
-    linear-gradient(180deg, #000000 0%, #010204 55%, #02030a 100%);
+    radial-gradient(
+      ellipse 75% 14% at 50% 82%,
+      rgba(226, 150, 86, 0.85) 0%,
+      rgba(226, 150, 86, 0.50) 30%,
+      rgba(226, 150, 86, 0)    75%
+    ),
+    linear-gradient(
+      180deg,
+      #043842 0%,    /* deep sky top — matches reference   — --navy-900 */
+      #0A5261 18%,   /* upper sky                          — --navy-800 */
+      #146673 36%,   /* mid teal                           — --navy-700 */
+      #1B7A8E 54%,   /* dominant sky teal                  — --blue-500 */
+      #2596AA 68%,   /* brighter teal                                    */
+      #45B0BC 80%,   /* lightest teal (near-horizon)       — --brand-cyan */
+      #9BC647 100%   /* lime grass at base                 — --brand-lime */
+    );
   overflow: hidden;
   isolation: isolate;
   height: 100vh;
@@ -143,9 +164,13 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: rgba(207, 224, 255, 0.85);
+  /* Solid white, bolder weight, and a soft dark shadow so the trust
+     badges stay legible where they cross the amber and grass bands of
+     the layered hero background. */
+  color: #ffffff;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(4, 56, 66, 0.45);
 }
 
 .hero__badges svg {

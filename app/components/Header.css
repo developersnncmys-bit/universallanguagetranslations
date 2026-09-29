@@ -4,10 +4,15 @@
   left: 0;
   right: 0;
   z-index: 60;
-  background:
-    /* radial-gradient(700px 260px at 0% 0%, rgba(40, 110, 255, 0.45) 0%, rgba(30, 80, 220, 0.15) 40%, transparent 75%), */
-    linear-gradient(180deg, #000000 0%, #02030a 100%);
-  border-bottom: 1px solid rgba(139, 180, 255, 0.08);
+  /* WHITE by default (over hero) — was a dark gradient before. The
+     translucent-white + backdrop blur reads clearly over the teal hero
+     and continues to work over the white sections below. The `.is-light`
+     class the scroll-listener toggles is now visually a no-op because
+     the base styles already match it. */
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid rgba(4, 56, 66, 0.08);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
   transition: background 0.3s var(--ease), border-color 0.3s var(--ease),
     color 0.3s var(--ease), backdrop-filter 0.3s var(--ease);
 }
@@ -76,7 +81,8 @@
   font-weight: 800;
   font-size: 14px;
   letter-spacing: 0.08em;
-  color: #fff;
+  /* Dark by default — sits on the white translucent header. */
+  color: var(--navy-900);
   line-height: 1;
   white-space: nowrap;
 }
@@ -100,13 +106,14 @@
   padding: 10px 18px;
   font-size: 15px;
   font-weight: 700;
-  color: rgba(233, 240, 255, 0.85);
+  /* Dark by default — sits on the white translucent header. */
+  color: rgba(4, 56, 66, 0.75);
   border-radius: 8px;
   transition: color 0.2s var(--ease), background 0.2s var(--ease);
 }
 
 .primary-nav ul a:hover {
-  color: #fff;
+  color: var(--navy-900);
 }
 
 /* Right actions: live clock + CTA */
@@ -128,13 +135,15 @@
   gap: 8px;
   padding: 8px 14px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(139, 180, 255, 0.18);
+  /* Header is white by default now, so the pill uses the light theme:
+     subtle navy tint + dark ink text so "Availability" reads clearly. */
+  background: rgba(10, 22, 56, 0.05);
+  border: 1px solid rgba(10, 22, 56, 0.14);
   font-family: var(--font-jakarta), var(--font-display), sans-serif;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: rgba(233, 240, 255, 0.92);
+  color: rgba(10, 22, 56, 0.78);
   transition: background 0.3s var(--ease), border-color 0.3s var(--ease),
     color 0.3s var(--ease);
 }
@@ -150,9 +159,10 @@
 }
 
 /* "24/7" reads as the availability marker — green so it visually pairs
-   with the live-dot. */
+   with the live-dot. Slightly darker green now so it holds contrast on
+   the white header background. */
 .live-clock__label {
-  color: #22c55e;
+  color: #16a34a;
   letter-spacing: 0.16em;
 }
 
@@ -341,48 +351,49 @@
   height: 18px;
 }
 
-/* Filled white pill CTA */
+/* Solid dark pill CTA — sits on the white translucent header, so it
+   needs to be filled dark to provide contrast. */
 .btn-solid-light {
-  background: #fff;
-  color: #0a1638;
+  background: var(--navy-900);
+  color: #fff;
   border-radius: 999px;
   padding: 11px 22px;
   font-size: 14px;
   font-weight: 600;
-  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(4, 56, 66, 0.14);
 }
 
 .btn-solid-light:hover {
-  background: #f2f4f8;
-  color: #0a1638;
+  background: #0A5261;
+  color: #fff;
 }
 
-/* Mobile toggle */
+/* Mobile toggle — dark on white header. */
 .nav-toggle {
   display: none;
   width: 42px;
   height: 42px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(4, 56, 66, 0.2);
   padding: 0 10px;
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
   gap: 5px;
-  background: rgba(10, 22, 56, 0.4);
+  background: rgba(4, 56, 66, 0.04);
   z-index: 61;
   transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 
 .nav-toggle:hover {
-  background: rgba(10, 22, 56, 0.6);
-  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(4, 56, 66, 0.08);
+  border-color: rgba(4, 56, 66, 0.35);
 }
 
 .nav-toggle span {
   display: block;
   height: 2px;
-  background: #fff;
+  background: var(--navy-900);
   border-radius: 2px;
   transition: transform 0.25s var(--ease), opacity 0.2s var(--ease);
   transform-origin: center;

@@ -185,17 +185,17 @@ export default function Services() {
           scrub: 1.4,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          // Black → white flip triggers early — as soon as the headline
-          // starts revealing (Phase 1 runs 0.00 → 0.22, so threshold
-          // 0.05 fires just after the first words appear). The 0.6s CSS
-          // fade to white then plays alongside the headline scrub.
-          onUpdate: (self) => {
-            if (self.progress >= 0.05) {
-              pinEl.classList.add("services__intro-pin--released");
-            } else {
-              pinEl.classList.remove("services__intro-pin--released");
-            }
-          },
+          // DISABLED — the black→white flip is temporarily commented out
+          // per user request. The pin element renders permanently in the
+          // "released" (light) palette via a static className below, so
+          // there is no runtime state toggling and no transition to see.
+          // onUpdate: (self) => {
+          //   if (self.progress >= 0.05) {
+          //     pinEl.classList.add("services__intro-pin--released");
+          //   } else {
+          //     pinEl.classList.remove("services__intro-pin--released");
+          //   }
+          // },
         },
       });
 
@@ -299,7 +299,10 @@ export default function Services() {
       {/* Pinned intro wrapper — the whole block (headline + description +
           stats) sticks to the viewport while a scrubbed GSAP timeline
           reveals words and stat cards in sequence. */}
-      <div className="services__intro-pin" ref={introPinRef}>
+      {/* `services__intro-pin--released` is applied statically here so the
+          section stays in its light/white palette. The scroll-driven
+          black→white transition is disabled — see commented onUpdate above. */}
+      <div className="services__intro-pin services__intro-pin--released" ref={introPinRef}>
         <div className="container">
           {/* Intro row — headline + description + CTA. Each word carries a
               `.scrub-word` class so a scroll-scrubbed GSAP tween can brighten
