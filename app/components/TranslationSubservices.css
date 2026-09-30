@@ -266,9 +266,9 @@
 }
 
 .spec-card__desc {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.55;
-  color: rgba(207, 224, 255, 0.6);
+  color: rgba(255, 255, 255, 0.88);
   max-width: 210px;
 }
 
