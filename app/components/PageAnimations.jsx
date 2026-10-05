@@ -173,7 +173,7 @@ export default function PageAnimations() {
         arr.forEach((span) => {
           if (!span.style.color) {
             span.style.color = REVEAL_BLUE;
-            span.style.transition = "color 0.7s ease-out";
+            span.style.transition = "color 0.32s ease-out";
           }
         });
         return arr;
@@ -202,7 +202,7 @@ export default function PageAnimations() {
             const span = document.createElement("span");
             span.className = "reveal-word";
             span.style.color = REVEAL_BLUE;
-            span.style.transition = "color 0.7s ease-out";
+            span.style.transition = "color 0.32s ease-out";
             span.textContent = part;
             frag.appendChild(span);
             words.push(span);
@@ -218,11 +218,14 @@ export default function PageAnimations() {
       .filter(({ words }) => words.length > 0);
 
     // Reveal a single element's words with a staggered inline-color clear.
+    // Stagger is 15ms per word so a 30-word paragraph fully kicks off in
+    // ~450ms instead of 1.2s. Combined with the 320ms CSS transition, the
+    // whole paragraph finishes fading to its final color in under 800ms.
     const revealElement = (words, baseDelay = 0) => {
       words.forEach((w, i) => {
         setTimeout(() => {
           w.style.removeProperty("color");
-        }, baseDelay + i * 40);
+        }, baseDelay + i * 15);
       });
     };
 
@@ -245,14 +248,15 @@ export default function PageAnimations() {
     window.addEventListener("scroll", checkAndReveal, { passive: true });
     window.addEventListener("resize", checkAndReveal);
 
-    // Safety net: after 3 seconds, force-reveal anything still blue.
+    // Safety net: after 1.2 seconds, force-reveal anything still blue so
+    // offscreen content doesn't sit stuck when the user doesn't scroll.
     const safetyTimeout = setTimeout(() => {
       elementWords.forEach(({ el, words }) => {
         if (revealed.has(el)) return;
         revealed.add(el);
         revealElement(words);
       });
-    }, 3000);
+    }, 1200);
 
     return () => {
       ctx.revert();
