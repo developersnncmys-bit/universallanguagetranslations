@@ -97,6 +97,18 @@
   white-space: nowrap;
 }
 
+/* Headline wrap control: "every" sits on line 1 on desktop and jumps to
+   the accent line on mobile. Both spans exist in the DOM; CSS toggles
+   which one is visible per breakpoint. The aria-label on `.hero__title`
+   keeps the full phrase intact for screen readers either way. */
+.hero__every-desktop {
+  display: inline;
+}
+
+.hero__every-mobile {
+  display: none;
+}
+
 .hero__title-accent .hero__word,
 .hero__title-accent .hero__letter {
   color: inherit;
@@ -271,23 +283,57 @@
 }
 
 @media (max-width: 960px) {
+  /* GSAP hero timeline is disabled on mobile (see Hero.jsx guard), so
+     the 240vh of extra scroll above the sticky hero becomes dead space
+     where the user scrolls but nothing changes ("scroll stuck in hero"
+     feel). Drop the stage height so the hero behaves as a normal section
+     — one viewport tall, releases on first scroll. */
+  .hero-scroll-stage {
+    height: auto;
+  }
   .hero {
+    position: relative;
+    top: auto;
     min-height: unset;
     height: auto;
+    /* Trimmed vs. the desktop `clamp(140px, 18vh, 220px)` — leaves a
+       comfortable gap under the nav without the big empty band. */
+    padding-top: 56px;
+    padding-bottom: 0;
   }
   .hero__inner {
     grid-template-columns: 1fr;
     gap: 32px;
-    padding-top: 72px;
-    padding-bottom: 60vw;
+    padding-top: 32px;
+    padding-bottom: 54vw;
     padding-left: 20px;
     padding-right: 20px;
   }
+
+  /* CTAs + badges are opacity:0 by default and get revealed by the
+     scrubbed GSAP timeline — which is disabled on mobile. Force them
+     visible here or the hero reads as "title + description + empty". */
+  .hero__cta,
+  .hero__badges {
+    opacity: 1;
+  }
+
+  /* Headline wrap: hide "every" on line 1, show it at the start of the
+     accent line so the mobile headline reads "SPEAK TO THE WORLD IN /
+     EVERY LANGUAGE" instead of "...IN EVERY / LANGUAGE". */
+  .hero__every-desktop {
+    display: none;
+  }
+  .hero__every-mobile {
+    display: inline;
+  }
   .hero__planet {
     /* On tablet/phone the copy is single-column, so drop the globe below and
-       behind the CTAs. Reset the desktop right/aspect-ratio positioning. */
+       behind the CTAs. More negative `bottom` pushes the sphere further
+       below the hero so its visible cap sits beneath the badges instead
+       of pressing up against them. */
     top: auto;
-    bottom: -18vw;
+    bottom: -42vw;
     left: 50%;
     transform: translateX(-50%);
     width: min(680px, 130vw);
@@ -299,11 +345,11 @@
 
 @media (max-width: 560px) {
   .hero__inner {
-    padding-bottom: 70vw;
+    padding-bottom: 60vw;
   }
   .hero__planet {
     width: min(540px, 140vw);
     height: min(540px, 140vw);
-    bottom: -20vw;
+    bottom: -44vw;
   }
 }

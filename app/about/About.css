@@ -1,0 +1,2725 @@
+/* =========================================================
+   UNIVERSAL LANGUAGE TRANSLATIONS
+   ABOUT PAGE
+========================================================= */
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.about-page {
+  width: 100%;
+  background: #ffffff;
+  color: var(--ink-900);
+  font-family: var(--font-jakarta), sans-serif;
+  /* NO `overflow: hidden` on root — breaks ScrollTrigger pin on descendants. */
+}
+
+.about-page *,
+.about-page *::before,
+.about-page *::after {
+  box-sizing: border-box;
+}
+
+.about-container {
+  width: min(1500px, calc(100% - 80px));
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.about-hero {
+  position: relative;
+
+  width: 100%;
+  height: calc(100vh - 82px);
+  min-height: 760px;
+
+  display: flex;
+  align-items: center;
+
+  overflow: hidden;
+
+  /* Aligned with the brand palette: deep teal → mid teal → brand cyan →
+     brand lime gradient, same hues used in the homepage hero. */
+  background:
+    radial-gradient(
+      circle at 70% 48%,
+      rgba(69, 176, 188, 0.28),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 30% 90%,
+      rgba(155, 198, 71, 0.25),
+      transparent 38%
+    ),
+    linear-gradient(
+      180deg,
+      var(--navy-900) 0%,
+      var(--navy-800) 25%,
+      var(--navy-700) 45%,
+      var(--blue-500) 62%,
+      var(--brand-cyan) 80%,
+      var(--brand-lime) 100%
+    );
+
+  color: #ffffff;
+
+  isolation: isolate;
+}
+
+
+.about-hero-bg-glow {
+  position: absolute;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+
+  filter: blur(70px);
+
+  z-index: -1;
+}
+
+
+.about-hero-bg-glow-one {
+  width: 500px;
+  height: 500px;
+
+  right: 10%;
+  bottom: -180px;
+
+  background: rgba(153, 220, 89, 0.28);
+}
+
+
+.about-hero-bg-glow-two {
+  width: 400px;
+  height: 400px;
+
+  left: 35%;
+  top: 20%;
+
+  background: rgba(37, 181, 207, 0.18);
+}
+
+
+/* =========================================================
+   HERO GRID
+========================================================= */
+
+.about-hero-grid {
+  position: relative;
+
+  width: min(1500px, calc(100% - 80px));
+
+  height: 100%;
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 0.9fr)
+    minmax(500px, 1.1fr);
+
+  align-items: center;
+
+  gap: 40px;
+}
+
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.about-hero-content {
+  position: relative;
+
+  z-index: 5;
+
+  max-width: 700px;
+
+  padding-top: 30px;
+}
+
+
+.about-eyebrow {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  margin-bottom: 30px;
+
+  color: var(--brand-cyan);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.17em;
+
+  line-height: 1;
+
+  text-transform: uppercase;
+}
+
+
+.about-eyebrow::before {
+  content: "";
+
+  width: 36px;
+
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.8);
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   HERO HEADLINE
+========================================================= */
+
+.about-hero-title {
+  margin: 0 0 28px;
+
+  max-width: 700px;
+
+  /* Match homepage hero exactly — same font family, size clamp, line-height,
+     letter-spacing, weight and casing so the two heroes feel like the same
+     site. */
+  font-family: var(--font-hero), var(--font-display);
+
+  font-size: clamp(32px, 6vw, 62px);
+
+  font-weight: 800;
+
+  line-height: 1.08;
+
+  letter-spacing: 0.01em;
+
+  text-transform: uppercase;
+
+  color: #ffffff;
+}
+
+
+.about-hero-title .hero-line {
+  display: block;
+
+  white-space: nowrap;
+}
+
+/* Phone portrait — "CONNECTING PEOPLE" overflows 320–480px viewports
+   at the base 32px floor with nowrap. Allow wrap below 480px so the
+   headline reflows cleanly inside the viewport. */
+@media (max-width: 480px) {
+  .about-hero-title .hero-line {
+    white-space: normal;
+  }
+  .about-hero-title {
+    font-size: clamp(28px, 8vw, 36px);
+    letter-spacing: 0;
+  }
+}
+
+
+.about-hero-title .blue {
+  /* Inherit the title's white color — the headline reads as one solid
+     white block across both lines. */
+  color: inherit;
+}
+
+
+/* =========================================================
+   HERO DESCRIPTION
+========================================================= */
+
+.about-hero-description {
+  max-width: 610px;
+
+  margin: 0 0 34px;
+
+  color: rgba(255, 255, 255, 0.88);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 17px;
+
+  font-weight: 500;
+
+  line-height: 1.65;
+
+  letter-spacing: -0.01em;
+}
+
+
+/* =========================================================
+   HERO CTA
+========================================================= */
+
+.about-hero-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+
+.about-primary-btn {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  /* Match the homepage `.btn` sizing exactly — padding, radius,
+     font-size, font-weight, letter-spacing. */
+  padding: 14px 22px;
+
+  border: 1px solid #ffffff;
+
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  color: var(--navy-900);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  letter-spacing: -0.01em;
+
+  text-decoration: none;
+
+  box-shadow: 0 10px 24px rgba(4, 56, 66, 0.18);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.about-primary-btn span {
+  font-size: 16px;
+
+  line-height: 1;
+}
+
+
+.about-primary-btn:hover {
+  transform: translateY(-1px);
+
+  background: #f2f4f8;
+
+  color: var(--navy-900);
+}
+
+
+.about-secondary-btn {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  /* Matches homepage `.btn.btn-outline--on-dark` sizing. */
+  padding: 14px 22px;
+
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+
+  border-radius: 999px;
+
+  background: transparent;
+
+  color: #ffffff;
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  letter-spacing: -0.01em;
+
+  text-decoration: none;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.about-secondary-btn:hover {
+  transform: translateY(-1px);
+
+  background: rgba(255, 255, 255, 0.08);
+
+  border-color: #ffffff;
+
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   HERO GLOBE
+========================================================= */
+
+.about-hero-visual {
+  position: relative;
+
+  height: 100%;
+
+  min-height: 700px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  z-index: 2;
+}
+
+
+.about-globe-wrap {
+  position: relative;
+
+  width: min(680px, 48vw);
+  aspect-ratio: 1;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  will-change: transform;
+}
+
+
+.about-globe-glow {
+  position: absolute;
+
+  width: 75%;
+  height: 75%;
+
+  border-radius: 50%;
+
+  background: rgba(29, 194, 224, 0.18);
+
+  filter: blur(60px);
+
+  pointer-events: none;
+}
+
+
+.about-globe-canvas {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  z-index: 2;
+}
+
+
+/* Make canvas/WebGL globe fill wrapper */
+
+.about-globe-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+
+  display: block;
+}
+
+
+/* =========================================================
+   GLOBE LABELS
+========================================================= */
+
+.about-globe-label {
+  position: absolute;
+
+  z-index: 5;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 12px 17px;
+
+  border: 1px solid rgba(106, 217, 237, 0.3);
+
+  background: rgba(5, 72, 84, 0.7);
+
+  color: rgba(255, 255, 255, 0.88);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.07em;
+
+  white-space: nowrap;
+
+  backdrop-filter: blur(8px);
+}
+
+
+.about-globe-label span {
+  color: #8cecff;
+
+  font-size: 9px;
+
+  font-weight: 800;
+}
+
+
+.about-globe-label-one {
+  top: 24%;
+
+  right: -2%;
+}
+
+
+.about-globe-label-two {
+  left: -3%;
+
+  bottom: 24%;
+}
+
+
+/* =========================================================
+   WHO WE ARE / OUR STORY
+========================================================= */
+
+.about-story {
+  position: relative;
+
+  width: 100%;
+
+  /* `min-height` (not fixed `height`) + NO `overflow: hidden` so GSAP
+     ScrollTrigger can correctly pin this section. Overflow:hidden and
+     fixed heights both interfere with pin-spacer measurements. */
+  min-height: 100vh;
+
+  background: #ffffff;
+
+  color: var(--ink-900);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  z-index: 2;
+}
+
+
+/* =========================================================
+   STORY MAIN LAYOUT
+========================================================= */
+
+.about-story-reference-layout {
+  width: min(1500px, calc(100% - 76px));
+
+  height: 100%;
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
+  column-gap: clamp(70px, 9vw, 150px);
+
+  /* Padding-top boosted to clear the fixed navbar when this section is
+     pinned at viewport top (previously 64px, which left WHO WE ARE
+     clipped behind the ~100px navbar). */
+  padding: clamp(140px, 18vh, 200px) 0 clamp(48px, 6vh, 72px);
+}
+
+
+/* =========================================================
+   STORY LEFT
+========================================================= */
+
+.about-story-left {
+  position: relative;
+
+  height: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  /* Stack image + headline naturally with a consistent gap instead of
+     pushing the headline to the bottom (which was causing the headline
+     to clip at the pinned section's bottom edge). */
+  justify-content: flex-start;
+
+  gap: clamp(32px, 5vh, 56px);
+}
+
+
+/* =========================================================
+   STORY IMAGE
+========================================================= */
+
+.about-story-image-wrap {
+  position: relative;
+
+  /* Larger image — fills the left column at full width (up to 620px cap)
+     with a taller aspect ratio so the gradient/photo reads as the
+     dominant visual anchor of the story section. */
+  width: 100%;
+
+  max-width: 620px;
+
+  height: clamp(320px, 42vh, 440px);
+
+  overflow: hidden;
+
+  /* Brand-colored gradient fallback — renders if /images/about-story.jpg
+     is missing so the frame still looks intentional. */
+  background:
+    linear-gradient(
+      135deg,
+      var(--navy-900),
+      var(--blue-500) 55%,
+      var(--brand-cyan)
+    );
+
+  border-radius: 10px;
+
+  will-change: transform, opacity;
+}
+
+
+.about-story-image {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center;
+
+  will-change: transform;
+}
+
+
+.about-story-image-wrap::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.02),
+      rgba(0, 40, 48, 0.12)
+    );
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   STORY HEADLINE
+========================================================= */
+
+.about-story-headline-wrap {
+  width: 100%;
+
+  padding-bottom: 2px;
+}
+
+
+.about-story-headline {
+  margin: 0;
+
+  max-width: 560px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  /* Hero display font (Big Shoulders) — same treatment as `.mission-title`
+     and `.about-heading-row h2`. Mixed case kept (no uppercase) so the
+     "Language should connect, Not separate." headline reads warmer. */
+  font-family: var(--font-hero), var(--font-display);
+
+  /* Trimmed from clamp(40px, 4.6vw, 64px) → clamp(28px, 3.2vw, 44px) so
+     the headline sits in balance with the smaller description and the
+     larger image beside it. */
+  font-size: clamp(28px, 3.2vw, 44px);
+
+  line-height: 1.02;
+
+  font-weight: 800;
+
+  letter-spacing: -0.03em;
+}
+
+
+.story-headline-muted {
+  display: block;
+
+  color: var(--ink-900);
+}
+
+
+.story-headline-black {
+  display: block;
+
+  color: var(--ink-900);
+}
+
+
+.story-headline-teal {
+  display: block;
+
+  color: var(--blue-500);
+}
+
+
+/* =========================================================
+   STORY RIGHT
+========================================================= */
+
+.about-story-right {
+  height: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  padding-top: 0;
+}
+
+
+.about-story-right-top {
+  max-width: 670px;
+}
+
+
+/* =========================================================
+   STORY EYEBROW
+========================================================= */
+
+.about-story-eyebrow {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  margin-top: -3px;
+
+  margin-bottom: 48px;
+
+  color: var(--ink-900);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.18em;
+
+  line-height: 1;
+
+  text-transform: uppercase;
+}
+
+
+.about-story-eyebrow span {
+  width: 35px;
+
+  height: 1px;
+
+  flex-shrink: 0;
+
+  background: var(--blue-500);
+}
+
+
+/* =========================================================
+   STORY DESCRIPTION
+========================================================= */
+
+.about-story-copy {
+  max-width: 660px;
+}
+
+
+.about-story-copy p {
+  margin: 0 0 22px;
+
+  color: var(--ink-700);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  /* Slightly bumped so the body reads comfortably alongside the headline
+     without competing for weight. */
+  font-size: clamp(15px, 1.15vw, 18px);
+
+  font-weight: 500;
+
+  line-height: 1.6;
+
+  letter-spacing: -0.015em;
+
+  will-change: transform, opacity;
+}
+
+
+.about-story-copy p:last-child {
+  margin-bottom: 0;
+}
+
+
+/* =========================================================
+   STORY CTA
+========================================================= */
+
+.about-story-cta {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin-top: 48px;
+
+  padding: 15px 27px;
+
+  border: 1px solid var(--line-strong);
+
+  border-radius: 999px;
+
+  background: transparent;
+
+  color: var(--ink-900);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+
+  text-decoration: none;
+
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s ease;
+
+  will-change: transform, opacity;
+}
+
+
+.about-story-cta:hover {
+  transform: translateY(-2px);
+
+  background: var(--ink-900);
+
+  border-color: var(--ink-900);
+
+  color: #ffffff;
+}
+
+
+.about-story-cta-arrow {
+  font-size: 17px;
+
+  line-height: 1;
+}
+
+
+/* =========================================================
+   STORY BOTTOM
+========================================================= */
+
+.about-story-bottom {
+  width: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 13px;
+
+  padding-bottom: 2px;
+
+  will-change: transform, opacity;
+}
+
+
+.about-story-bottom-text {
+  color: var(--ink-900);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  line-height: 1.3;
+}
+
+
+.about-story-bottom-line {
+  display: block;
+
+  width: 100%;
+
+  height: 1px;
+
+  background: var(--line-strong);
+}
+
+
+/* =========================================================
+   MISSION
+========================================================= */
+
+.about-mission {
+  position: relative;
+
+  /* min-height so the pin has room to engage; padding kept generous
+     so content clears the fixed navbar when the section is pinned. */
+  min-height: 100vh;
+
+  padding: clamp(120px, 16vh, 180px) 0 clamp(80px, 10vh, 120px);
+
+  display: flex;
+
+  align-items: center;
+
+  /* Hero palette gradient — same deep-teal → cyan → lime band + amber
+     horizon glow used on the homepage hero. */
+  background: var(--hero-bg);
+
+  color: #ffffff;
+}
+
+
+.about-section-label {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  color: var(--blue-500);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+}
+
+
+.about-mission .about-section-label {
+  color: var(--brand-cyan);
+}
+
+
+.mission-title {
+  max-width: 1100px;
+
+  margin: 32px 0 28px;
+
+  /* Hero display font (Big Shoulders) — matches the Services / About
+     hero headlines. Deliberately NOT uppercased: hero font + mixed case
+     reads as a softer, humanised version of the brand voice here. */
+  font-family: var(--font-hero), var(--font-display);
+
+  /* Trimmed from clamp(55px, 7vw, 110px) — same scale as other section
+     titles so the page feels proportionate. */
+  font-size: clamp(32px, 4.2vw, 60px);
+
+  line-height: 1.05;
+
+  font-weight: 800;
+
+  letter-spacing: -0.03em;
+
+  /* Explicit white so the title stays readable over the hero-palette
+     gradient background (cascading h2 rules would otherwise force navy). */
+  color: #ffffff;
+}
+
+
+.mission-title-line {
+  display: block;
+  color: #ffffff;
+}
+
+
+.mission-title-line:last-child {
+  color: var(--brand-cyan);
+}
+
+
+.mission-description {
+  max-width: 560px;
+
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.78);
+
+  font-size: 17px;
+
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   MISSION GRID — two-column layout: intro left / pillars right
+========================================================= */
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(48px, 7vw, 120px);
+  align-items: start;
+}
+
+.mission-intro {
+  display: flex;
+  flex-direction: column;
+}
+
+.mission-intro .mission-title {
+  margin: 24px 0 24px;
+}
+
+.mission-pillars {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(32px, 3vw, 48px) clamp(28px, 3vw, 40px);
+}
+
+.mission-pillar {
+  position: relative;
+
+  /* Glass-morphism card — translucent white tint, blur backdrop, soft
+     border + inner highlight for a frosted panel look over the hero
+     gradient. */
+  padding: 26px 24px 24px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 10px 30px rgba(4, 56, 66, 0.25);
+
+  transition: transform 0.3s ease, background 0.3s ease,
+    border-color 0.3s ease;
+
+  will-change: transform, opacity;
+}
+
+.mission-pillar:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.26);
+}
+
+.mission-pillar-num {
+  display: block;
+  color: var(--brand-cyan);
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  margin-bottom: 14px;
+}
+
+.mission-pillar-title {
+  margin: 0 0 10px;
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: clamp(20px, 1.8vw, 26px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.mission-pillar-copy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+@media (max-width: 900px) {
+  .mission-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .mission-pillars {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .mission-pillars {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+
+/* =========================================================
+   VALUES
+========================================================= */
+
+.about-values {
+  /* Pinned to viewport by GSAP — min-height 100vh with top padding to
+     clear the fixed navbar, flex layout to vertically center the grid
+     within the pinned viewport. */
+  min-height: 100vh;
+
+  padding: clamp(120px, 16vh, 180px) 0 clamp(60px, 8vh, 96px);
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  background: var(--bg-alt);
+}
+
+
+.about-heading-row {
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.55fr);
+
+  gap: clamp(40px, 6vw, 72px);
+
+  align-items: end;
+
+  margin-bottom: clamp(32px, 4vh, 56px);
+}
+
+
+.about-heading-row h2 {
+  margin: 24px 0 0;
+
+  /* Hero display font — same treatment as `.mission-title`. Mixed case
+     retained (no uppercase) for the softer, humanised feel. */
+  font-family: var(--font-hero), var(--font-display);
+
+  font-size: clamp(28px, 3.6vw, 48px);
+
+  line-height: 1.05;
+
+  font-weight: 800;
+
+  letter-spacing: -0.025em;
+}
+
+
+.about-heading-row h2 span {
+  color: var(--blue-500);
+}
+
+
+.about-heading-row > p {
+  margin: 0;
+
+  color: var(--ink-700);
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   VALUE GRID
+========================================================= */
+
+.about-values-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 1px;
+
+  border-top: 1px solid var(--line);
+
+  border-bottom: 1px solid var(--line);
+}
+
+
+.about-value-card {
+  position: relative;
+
+  /* Trimmed from 360 → clamp(240-280px) so the whole grid fits inside
+     the pinned viewport alongside the heading-row above. */
+  min-height: clamp(240px, 32vh, 300px);
+
+  padding: 28px 24px;
+
+  border-right: 1px solid var(--line);
+
+  background: var(--bg-alt);
+
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+
+.about-value-card:last-child {
+  border-right: 0;
+}
+
+
+.about-value-card:hover {
+  background: #ffffff;
+
+  transform: translateY(-5px);
+}
+
+
+.value-number {
+  color: var(--blue-500);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+}
+
+
+.value-line {
+  width: 35px;
+
+  height: 1px;
+
+  margin: 28px 0 22px;
+
+  background: var(--blue-500);
+}
+
+
+.about-value-card h3 {
+  margin: 0 0 18px;
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 25px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.04em;
+}
+
+
+.about-value-card p {
+  margin: 0;
+
+  color: var(--ink-500);
+
+  font-size: 15px;
+
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   SERVICES
+========================================================= */
+
+.about-services {
+  position: relative;
+
+  padding: clamp(80px, 10vw, 120px) 0;
+
+  /* Hero palette gradient — matches Mission section so the dark band
+     carries through continuously. */
+  background: var(--hero-bg);
+
+  color: #ffffff;
+
+  overflow: hidden;
+}
+
+
+/* === Dark-section color scheme for the Services section headings === */
+
+.about-services .about-section-label {
+  color: var(--brand-cyan);
+}
+
+.about-services .services-section-heading h2,
+.about-services .translation-services-heading h3 {
+  color: #ffffff;
+}
+
+.about-services .services-section-heading h2 span {
+  color: var(--brand-cyan);
+}
+
+.about-services .translation-services-heading h3 span {
+  color: #ffffff;
+}
+
+.about-services .services-section-heading p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.about-services .translation-services {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Grid background/borders use var(--line) by default (light grey, meant
+   for white sections). On this dark section it reads as a grey band
+   above the cards — swap for a translucent-light separator so only the
+   1px gaps between cards show through, not a visible frame. */
+.about-services .industry-grid {
+  background: rgba(255, 255, 255, 0.12);
+  border-top: none;
+  border-bottom: none;
+}
+
+
+.about-services::before,
+.about-services::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.about-services::before {
+  width: 520px;
+  height: 520px;
+
+  left: -8%;
+  top: -12%;
+
+  background: rgba(69, 176, 188, 0.18);
+}
+
+
+.about-services::after {
+  width: 400px;
+  height: 400px;
+
+  left: 35%;
+  top: 20%;
+
+  background: rgba(37, 181, 207, 0.18);
+}
+
+
+.services-section-heading {
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.55fr);
+
+  gap: clamp(40px, 6vw, 72px);
+
+  align-items: end;
+
+  margin-bottom: clamp(48px, 6vw, 72px);
+}
+
+
+.services-section-heading h2 {
+  margin: 24px 0 0;
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: clamp(28px, 3.6vw, 48px);
+
+  line-height: 1.05;
+
+  font-weight: 800;
+
+  letter-spacing: -0.025em;
+
+  color: #ffffff;
+}
+
+
+.services-section-heading h2 span {
+  color: var(--brand-cyan);
+}
+
+
+.services-section-heading p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.78);
+
+  font-size: 17px;
+
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   CORE SERVICES LIST
+========================================================= */
+
+.core-services-list {
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+
+.core-service-item {
+  display: grid;
+
+  grid-template-columns: 64px 1fr 36px;
+
+  align-items: center;
+
+  min-height: 68px;
+
+  padding: 0 20px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  transition:
+    padding 0.3s ease,
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+
+.core-service-item:hover {
+  padding-left: 32px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  color: #ffffff;
+}
+
+
+.service-number {
+  color: var(--brand-cyan);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+}
+
+
+.service-name {
+  font-size: clamp(15px, 1.3vw, 20px);
+
+  font-weight: 700;
+
+  letter-spacing: -0.02em;
+}
+
+
+.service-arrow {
+  justify-self: end;
+
+  font-size: 16px;
+
+  color: var(--brand-cyan);
+}
+
+
+/* =========================================================
+   TRANSLATION SERVICES
+========================================================= */
+
+.translation-services {
+  margin-top: clamp(60px, 8vw, 100px);
+
+  padding-top: clamp(48px, 6vw, 72px);
+
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+
+.translation-services-heading {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 80px;
+
+  margin-bottom: 60px;
+}
+
+
+.translation-services-heading h3 {
+  margin: 0;
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: clamp(26px, 3.2vw, 42px);
+
+  line-height: 1.05;
+
+  font-weight: 800;
+
+  letter-spacing: -0.025em;
+
+  color: #ffffff;
+}
+
+
+.translation-services-heading h3 span {
+  color: var(--brand-cyan);
+}
+
+
+/* =========================================================
+   INDUSTRY CARD GRID — 4×2 grid of icon cards matching the
+   homepage sub-services (spec-card) style.
+========================================================= */
+
+.industry-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 1px;
+
+  background: var(--line);
+
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+
+.industry-card {
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  padding: 32px 24px 28px;
+
+  background: #ffffff;
+
+  color: var(--ink-900);
+
+  text-decoration: none;
+
+  transition:
+    background 0.35s ease,
+    color 0.35s ease,
+    transform 0.35s ease;
+}
+
+
+.industry-card:hover {
+  background: var(--navy-900);
+
+  color: #ffffff;
+
+  transform: translateY(-2px);
+}
+
+
+.industry-card-num {
+  color: var(--blue-500);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.18em;
+
+  transition: color 0.3s ease;
+}
+
+
+.industry-card:hover .industry-card-num {
+  color: var(--brand-cyan);
+}
+
+
+.industry-card-icon {
+  width: 40px;
+  height: 40px;
+  display: block;
+  color: var(--blue-500);
+  margin-top: 4px;
+  transition: color 0.3s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+.industry-card-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+}
+
+
+/* Dotted glyph — matches the homepage spec-card icon style (stroked
+   outline rendered as a line of round dots). */
+.industry-card-icon svg *[stroke] {
+  stroke-dasharray: 0 3.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.4;
+}
+
+
+.industry-card:hover .industry-card-icon {
+  color: var(--brand-cyan);
+  transform: translateY(-2px);
+}
+
+
+.industry-card-title {
+  margin: 8px 0 4px;
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: clamp(16px, 1.3vw, 20px);
+
+  font-weight: 800;
+
+  line-height: 1.1;
+
+  letter-spacing: -0.025em;
+
+  text-transform: uppercase;
+
+  /* Default dark title; forced white on card hover below. The global
+     h1-h5 rule sets its own color, so we need an explicit value here
+     for the hover transition to take effect. */
+  color: var(--ink-900);
+
+  transition: color 0.3s ease;
+}
+
+
+.industry-card:hover .industry-card-title {
+  color: #ffffff;
+}
+
+
+.industry-card-detail {
+  margin: 0;
+
+  color: var(--ink-500);
+
+  font-size: 13px;
+
+  line-height: 1.55;
+
+  transition: color 0.3s ease;
+}
+
+
+.industry-card:hover .industry-card-detail {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+
+.industry-card-arrow {
+  position: absolute;
+
+  top: 20px;
+
+  right: 20px;
+
+  color: var(--blue-500);
+
+  font-size: 14px;
+
+  opacity: 0.5;
+
+  transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+
+.industry-card:hover .industry-card-arrow {
+  color: var(--brand-cyan);
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
+
+@media (max-width: 1100px) {
+  .industry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .industry-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================================
+   PROCESS
+========================================================= */
+
+.about-process {
+  padding: clamp(80px, 10vw, 120px) 0;
+
+  background: var(--bg-alt);
+
+  /* Fill the viewport while the section is pinned (desktop timeline in
+     AboutAnimations.jsx). Keeps the heading + timeline centered in the
+     stage instead of hugging the top edge during the scrub. */
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Mobile — the pin is disabled, so drop the viewport floor to let the
+   section size to its content. */
+@media (max-width: 900px) {
+  .about-process {
+    min-height: 0;
+    display: block;
+  }
+}
+
+
+.about-process-heading {
+  margin-bottom: clamp(48px, 6vw, 72px);
+}
+
+
+.about-process-heading h2 {
+  margin: 24px 0 0;
+
+  /* Hero display font — same treatment as `.mission-title` and
+     `.about-heading-row h2`. Mixed case retained. */
+  font-family: var(--font-hero), var(--font-display);
+
+  font-size: clamp(28px, 3.6vw, 48px);
+
+  line-height: 1.05;
+
+  font-weight: 800;
+
+  letter-spacing: -0.025em;
+}
+
+
+.about-process-heading h2 span {
+  color: var(--blue-500);
+}
+
+
+/* =========================================================
+   PROCESS TRACK
+========================================================= */
+
+.process-track {
+  position: relative;
+
+  width: 100%;
+
+  height: 1px;
+
+  margin-bottom: 65px;
+
+  background: var(--line);
+}
+
+
+.process-progress {
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 100%;
+
+  height: 2px;
+
+  background: var(--blue-500);
+
+  transform-origin: left center;
+}
+
+
+/* =========================================================
+   PROCESS GRID
+========================================================= */
+
+.about-process-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 40px;
+}
+
+
+.about-process-item {
+  position: relative;
+
+  padding-right: 20px;
+}
+
+
+.process-dot {
+  position: absolute;
+
+  top: -71px;
+
+  left: 0;
+
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: var(--blue-500);
+
+  box-shadow:
+    0 0 0 6px var(--bg-alt),
+    0 0 0 7px var(--blue-500);
+}
+
+
+.process-number {
+  color: var(--blue-500);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+}
+
+
+.about-process-item h3 {
+  margin: 28px 0 15px;
+
+  font-size: 26px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.04em;
+}
+
+
+.about-process-item p {
+  margin: 0;
+
+  color: var(--ink-500);
+
+  font-size: 15px;
+
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   FINAL CTA
+========================================================= */
+
+.about-cta {
+  position: relative;
+
+  padding: clamp(80px, 10vw, 120px) 0;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 70% 48%,
+      rgba(69, 176, 188, 0.28),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 30% 90%,
+      rgba(155, 198, 71, 0.25),
+      transparent 38%
+    ),
+    linear-gradient(
+      180deg,
+      var(--navy-900) 0%,
+      var(--navy-800) 25%,
+      var(--navy-700) 45%,
+      var(--blue-500) 62%,
+      var(--brand-cyan) 80%,
+      var(--brand-lime) 100%
+    );
+
+  color: #ffffff;
+
+  isolation: isolate;
+}
+
+
+.about-cta::before,
+.about-cta::after {
+  content: "";
+
+  position: absolute;
+
+  border-radius: 50%;
+
+  filter: blur(70px);
+
+  pointer-events: none;
+
+  z-index: -1;
+}
+
+
+.about-cta::before {
+  width: 500px;
+  height: 500px;
+
+  right: 10%;
+  bottom: -180px;
+
+  background: rgba(153, 220, 89, 0.28);
+}
+
+
+.about-cta::after {
+  width: 400px;
+  height: 400px;
+
+  left: 35%;
+  top: 20%;
+
+  background: rgba(37, 181, 207, 0.18);
+}
+
+
+.about-cta-inner {
+  max-width: 1000px;
+
+  margin: 0 auto;
+
+  padding: 20px 0;
+
+  text-align: center;
+}
+
+
+.about-cta .about-section-label {
+  display: inline-block;
+
+  color: var(--brand-cyan);
+}
+
+
+.about-cta-heading {
+  margin: 28px 0 24px;
+
+  font-family: var(--font-hero), var(--font-display);
+
+  font-size: clamp(32px, 6vw, 62px);
+
+  line-height: 1.08;
+
+  font-weight: 800;
+
+  letter-spacing: 0.01em;
+
+  text-transform: none;
+
+  text-align: center;
+
+  color: #ffffff;
+}
+
+
+.cta-heading-line {
+  display: block;
+
+  color: #ffffff;
+}
+
+
+.cta-heading-line-accent {
+  color: var(--brand-lime);
+}
+
+
+.cta-word {
+  display: inline-block;
+
+  opacity: 0;
+
+  transform: translateY(28px);
+
+  will-change: transform, opacity;
+}
+
+
+.about-cta p {
+  max-width: 600px;
+
+  margin: 0 auto 40px;
+
+  color: rgba(255, 255, 255, 0.8);
+
+  font-size: 18px;
+
+  line-height: 1.65;
+
+  text-align: center;
+}
+
+
+.about-cta .about-primary-btn {
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   GSAP INITIAL STATES
+========================================================= */
+
+.story-reveal,
+.about-story-image-wrap,
+.about-story-bottom,
+.about-story-cta {
+  will-change: transform, opacity;
+}
+
+
+.mission-title-line,
+.about-value-card,
+.core-service-item,
+.translation-service-item,
+.about-process-item,
+.about-cta-inner {
+  will-change: transform, opacity;
+}
+
+
+/* =========================================================
+   LARGE DESKTOP
+========================================================= */
+
+@media (min-width: 1400px) {
+
+  /* Hero title size intentionally NOT overridden — base clamp(32px, 6vw, 62px)
+     matches the homepage hero across all breakpoints. */
+
+  .about-globe-wrap {
+    width: 650px;
+  }
+
+  /* .about-story-headline size NOT overridden — base clamp(32px, 4vw, 56px) handles all breakpoints. */
+}
+
+
+/* =========================================================
+   1200 PX
+========================================================= */
+
+@media (max-width: 1200px) {
+
+  .about-container {
+    width: calc(100% - 60px);
+  }
+
+  .about-hero-grid {
+    width: calc(100% - 60px);
+
+    grid-template-columns:
+      minmax(0, 0.9fr)
+      minmax(430px, 1.1fr);
+
+    gap: 20px;
+  }
+
+  /* .about-hero-title font-size NOT overridden here — base clamp handles it. */
+
+  .about-globe-wrap {
+    width: min(580px, 48vw);
+  }
+
+  .about-story-reference-layout {
+    width: calc(100% - 60px);
+
+    column-gap: 70px;
+  }
+
+  .about-story-image-wrap {
+    width: min(100%, 390px);
+
+    height: 245px;
+  }
+
+  /* .about-story-headline size NOT overridden — base clamp handles it. */
+
+  .about-story-copy p {
+    font-size: 14px;
+
+    margin-bottom: 20px;
+  }
+
+  .about-story-cta {
+    margin-top: 35px;
+  }
+
+  .about-values-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about-value-card:nth-child(2) {
+    border-right: 0;
+  }
+
+  .about-value-card:nth-child(3),
+  .about-value-card:nth-child(4) {
+    border-top: 1px solid var(--line);
+  }
+
+  .about-process-grid {
+    grid-template-columns: repeat(2, 1fr);
+
+    row-gap: 80px;
+  }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .about-hero {
+    height: auto;
+
+    min-height: calc(100vh - 80px);
+  }
+
+  .about-hero-grid {
+    width: calc(100% - 50px);
+
+    min-height: calc(100vh - 80px);
+
+    grid-template-columns: 1fr;
+
+    padding: 80px 0;
+
+    gap: 20px;
+  }
+
+  .about-hero-content {
+    max-width: 760px;
+
+    padding-top: 0;
+  }
+
+  /* .about-hero-title font-size NOT overridden here — base clamp handles it. */
+
+  .about-hero-description {
+    font-size: 16px;
+  }
+
+  .about-hero-visual {
+    min-height: 480px;
+
+    height: 480px;
+  }
+
+  .about-globe-wrap {
+    width: min(500px, 75vw);
+  }
+
+  .about-globe-label-one {
+    right: 2%;
+  }
+
+  .about-globe-label-two {
+    left: 2%;
+  }
+
+
+  /* STORY */
+
+  .about-story {
+    height: auto;
+
+    min-height: auto;
+
+    overflow: visible;
+  }
+
+  .about-story-reference-layout {
+    width: calc(100% - 50px);
+
+    height: auto;
+
+    grid-template-columns: 1fr;
+
+    gap: 65px;
+
+    padding: 100px 0;
+  }
+
+  .about-story-left {
+    height: auto;
+
+    gap: 55px;
+  }
+
+  .about-story-image-wrap {
+    width: min(100%, 600px);
+
+    height: 360px;
+  }
+
+  /* .about-story-headline size NOT overridden — base clamp handles it. */
+
+  .about-story-right {
+    height: auto;
+
+    min-height: 600px;
+  }
+
+  .about-story-copy p {
+    font-size: 15px;
+  }
+
+
+  /* OTHER SECTIONS */
+
+  .about-heading-row,
+  .services-section-heading {
+    grid-template-columns: 1fr;
+
+    gap: 35px;
+  }
+
+  .translation-services-heading {
+    grid-template-columns: 1fr;
+
+    gap: 35px;
+  }
+
+  .translation-services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .about-container {
+    width: calc(100% - 32px);
+  }
+
+
+  /* HERO */
+
+  .about-hero {
+    min-height: calc(100vh - 72px);
+  }
+
+  .about-hero-grid {
+    width: calc(100% - 32px);
+
+    min-height: calc(100vh - 72px);
+
+    /* Give the eyebrow + headline breathing room under the fixed navbar
+       (82px tall) — the previous 65px top padding placed the eyebrow
+       almost flush against the nav. */
+    padding: 120px 0 50px;
+
+    gap: 10px;
+  }
+
+  .about-eyebrow {
+    /* Mobile — give generous space below so the big uppercase hero
+       headline below doesn't visually crowd the eyebrow. The earlier
+       25px was leaving the top of "CONNECTING" sitting right on the
+       eyebrow baseline on narrow phones. */
+    margin-bottom: 44px;
+
+    font-size: 9px;
+
+    letter-spacing: 0.13em;
+  }
+
+  .about-eyebrow::before {
+    width: 24px;
+  }
+
+  .about-hero-title {
+    margin: 0 0 25px;
+
+    /* font-size NOT overridden — base clamp(32px, 6vw, 62px) matches home. */
+  }
+
+  .about-hero-description {
+    max-width: 100%;
+
+    font-size: 15px;
+
+    line-height: 1.6;
+  }
+
+  .about-hero-actions {
+    flex-wrap: wrap;
+  }
+
+  .about-primary-btn,
+  .about-secondary-btn {
+    min-height: 52px;
+
+    padding: 0 21px;
+
+    font-size: 12px;
+  }
+
+  .about-hero-visual {
+    min-height: 340px;
+
+    height: 340px;
+
+    /* Push the globe down inside its row so it reads as sitting at the
+       bottom of the hero rather than hovering next to the CTAs. */
+    align-items: flex-end;
+
+    padding-bottom: 0;
+  }
+
+  .about-globe-wrap {
+    width: min(360px, 88vw);
+
+    margin-top: 110px;
+
+    /* Nudge the sphere just past the hero's bottom edge so its lower
+       cap tucks under the fold — reads as rising into frame instead of
+       floating in the middle. */
+    transform: translateY(56px);
+  }
+
+  .about-globe-label {
+    padding: 9px 11px;
+
+    font-size: 8px;
+
+    gap: 7px;
+  }
+
+  .about-globe-label-one {
+    top: 18%;
+
+    right: -2%;
+  }
+
+  .about-globe-label-two {
+    left: -2%;
+
+    bottom: 17%;
+  }
+
+
+  /* STORY */
+
+  .about-story-reference-layout {
+    width: calc(100% - 32px);
+
+    gap: 55px;
+
+    padding: 80px 0 90px;
+  }
+
+  .about-story-left {
+    gap: 40px;
+  }
+
+  .about-story-image-wrap {
+    width: 100%;
+
+    height: 230px;
+  }
+
+  .about-story-headline {
+    /* size uses base clamp — only line-height tweak on tiny screens */
+    line-height: 0.94;
+
+    letter-spacing: -0.055em;
+  }
+
+  .about-story-right {
+    min-height: auto;
+
+    gap: 70px;
+  }
+
+  .about-story-eyebrow {
+    margin-bottom: 32px;
+
+    font-size: 9px;
+
+    letter-spacing: 0.14em;
+  }
+
+  .about-story-eyebrow span {
+    width: 25px;
+  }
+
+  .about-story-copy p {
+    font-size: 14px;
+
+    line-height: 1.55;
+
+    margin-bottom: 20px;
+  }
+
+  .about-story-cta {
+    margin-top: 32px;
+
+    padding: 13px 21px;
+
+    font-size: 10px;
+  }
+
+  .about-story-bottom {
+    padding-top: 20px;
+  }
+
+  .about-story-bottom-text {
+    font-size: 11px;
+  }
+
+
+  /* MISSION */
+
+  .about-mission,
+  .about-values,
+  .about-services,
+  .about-process,
+  .about-cta {
+    padding: 100px 0;
+  }
+
+  .mission-title {
+    margin-top: 30px;
+
+    font-size: clamp(48px, 13vw, 70px);
+  }
+
+  .mission-description {
+    font-size: 16px;
+  }
+
+
+  /* VALUES */
+
+  .about-heading-row {
+    margin-bottom: 55px;
+  }
+
+  .about-heading-row h2 {
+    margin-top: 25px;
+
+    font-size: clamp(46px, 13vw, 70px);
+  }
+
+  .about-heading-row > p {
+    font-size: 15px;
+  }
+
+  .about-values-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    background: transparent;
+  }
+
+  /* Lift the cards into distinct rounded panels on mobile so the
+     section stops reading as a flat divided list. Each card gets its
+     own soft background, a brand-accent left bar, and a tap-affordance
+     shadow — much more alive than thin divider lines. */
+  .about-value-card {
+    min-height: 0;
+    padding: 24px 20px 24px 28px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--blue-500);
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--bg-alt);
+    box-shadow: 0 6px 18px -8px rgba(10, 22, 56, 0.08);
+  }
+
+  .about-value-card:nth-child(2),
+  .about-value-card:nth-child(3),
+  .about-value-card:nth-child(4) {
+    border-top: 1px solid var(--line);
+  }
+
+  .about-value-card:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .about-value-card .value-number {
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    color: var(--blue-500);
+  }
+
+  .about-value-card .value-line {
+    width: 28px;
+    margin: 14px 0 14px;
+  }
+
+  .about-value-card h3 {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .about-value-card p {
+    font-size: 14.5px;
+  }
+
+
+  /* SERVICES */
+
+  .services-section-heading {
+    margin-bottom: 55px;
+  }
+
+  .services-section-heading h2 {
+    margin-top: 25px;
+
+    font-size: clamp(48px, 13vw, 70px);
+  }
+
+  .services-section-heading p {
+    font-size: 15px;
+  }
+
+  .core-service-item {
+    grid-template-columns: 45px 1fr 30px;
+
+    min-height: 80px;
+  }
+
+  .service-name {
+    font-size: 18px;
+  }
+
+  .translation-services {
+    margin-top: 100px;
+
+    padding-top: 60px;
+  }
+
+  .translation-services-heading h3 {
+    font-size: clamp(42px, 11vw, 60px);
+  }
+
+  .translation-service-item {
+    grid-template-columns: 40px 1fr 25px;
+
+    min-height: 72px;
+
+    padding: 0 15px;
+  }
+
+  .translation-service-item p {
+    font-size: 13px;
+  }
+
+
+  /* PROCESS */
+
+  .about-process-heading {
+    margin-bottom: 60px;
+  }
+
+  .about-process-heading h2 {
+    margin-top: 25px;
+
+    font-size: clamp(48px, 13vw, 70px);
+  }
+
+  .process-track {
+    display: none;
+  }
+
+  /* Vertical timeline on mobile — a 2px rail runs down the left edge
+     connecting every step; each item is a card indented right of the
+     rail with a numbered dot straddling the rail. Gives the Process
+     section the structured, "walk-through" feel it loses when the
+     horizontal track disappears. */
+  .about-process-grid {
+    position: relative;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-left: 32px;
+  }
+
+  .about-process-grid::before {
+    content: "";
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: 11px;
+    width: 2px;
+    background: linear-gradient(
+      180deg,
+      var(--blue-500) 0%,
+      rgba(27, 122, 142, 0.25) 100%
+    );
+    border-radius: 2px;
+  }
+
+  .about-process-item {
+    position: relative;
+    padding: 22px 20px;
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 6px 18px -10px rgba(10, 22, 56, 0.08);
+  }
+
+  /* Numbered dot sits on top of the vertical rail at the top of each
+     card — overrides the base `.process-dot` desktop positioning. */
+  .process-dot {
+    display: block;
+    position: absolute;
+    top: 22px;
+    left: -27px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--blue-500);
+    box-shadow:
+      0 0 0 4px #ffffff,
+      0 0 0 5px var(--blue-500);
+  }
+
+  .about-process-item .process-number {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--blue-500);
+  }
+
+  .about-process-item h3 {
+    margin: 10px 0 10px;
+    font-size: 20px;
+  }
+
+  .about-process-item p {
+    font-size: 14.5px;
+  }
+
+
+  /* CTA */
+
+  .about-cta h2 {
+    margin-top: 30px;
+
+    font-size: clamp(48px, 13vw, 70px);
+  }
+
+  .about-cta p {
+    font-size: 16px;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+
+  /* .about-hero-title font-size NOT overridden — base clamp handles small screens. */
+
+  /* .about-story-headline size NOT overridden — base clamp handles it. */
+
+  .about-story-image-wrap {
+    height: 200px;
+  }
+
+  .about-globe-wrap {
+    width: 300px;
+  }
+
+  .about-globe-label {
+    display: none;
+  }
+}

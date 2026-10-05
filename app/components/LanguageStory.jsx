@@ -81,6 +81,10 @@ export default function LanguageStory() {
 
   useEffect(() => {
     if (!mounted || reducedMotion) return;
+    // Mobile guard: 500vh of pin scroll is unusable on phones.
+    // Skip the pinned stage animation below 900px — content renders
+    // flat with normal scroll on mobile.
+    if (typeof window !== "undefined" && window.innerWidth <= 900) return;
     const section = sectionRef.current;
     const pin = pinRef.current;
     if (!section || !pin) return;

@@ -38,12 +38,13 @@
 }
 
 .subsvc__mega-title {
-  font-family: var(--font-display);
+  /* Hero display font (Big Shoulders) — matches `.mission-title` and
+     the About section headings. Mixed case kept (no uppercase). */
+  font-family: var(--font-hero), var(--font-display);
   font-size: clamp(24px, 3.4vw, 48px);
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: -0.02em;
-  text-transform: uppercase;
   margin: 0;
 }
 
@@ -272,10 +273,26 @@
   max-width: 210px;
 }
 
-/* Mobile: native swipe scroll instead of pinned scroll */
+/* Mobile: cards stack vertically — the horizontal swipe pattern left
+   cards half-hidden off-screen with no obvious scroll affordance and
+   created tall empty gradient space below the track. A plain vertical
+   stack scrolls naturally and shows every card in full. */
 @media (max-width: 860px) {
   .subsvc {
-    padding: 96px 0 80px;
+    padding: 72px 0 56px;
+  }
+  .subsvc__hscroll {
+    /* Drop the pinned-stage minimums — on mobile the section sizes to
+       content, no 100vh floor. */
+    overflow: visible;
+    min-height: 0;
+    padding: 24px 0 40px;
+  }
+  .subsvc__hscroll-header {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
   }
   .subsvc__sticky-cta {
     position: static;
@@ -285,35 +302,54 @@
     display: flex;
     justify-content: center;
     margin-top: 32px;
-  }
-  .subsvc__hscroll-intro {
-    flex: 0 0 280px;
-    padding-right: 24px;
-    font-size: 13px;
+    background: transparent;
   }
   .subsvc__hero-desc {
     justify-self: start;
     max-width: none;
   }
-  .subsvc__hscroll {
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding: 32px 0 40px;
-    scrollbar-width: none;
-  }
-  .subsvc__hscroll::-webkit-scrollbar {
-    display: none;
-  }
+
+  /* Track becomes a plain vertical column. `width: max-content` from
+     the desktop rule is overridden to full-width so cards fill the
+     viewport instead of growing a horizontal row. */
   .subsvc__hscroll-track {
-    gap: 32px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 24px;
     padding: 0 var(--gutter);
   }
+
+  .subsvc__hscroll-intro {
+    flex: 0 0 auto;
+    width: 100%;
+    padding-right: 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(139, 180, 255, 0.1);
+    padding-bottom: 24px;
+    font-size: 14px;
+  }
+
   .spec-card {
-    flex: 0 0 260px;
-    scroll-snap-align: start;
-    padding-right: 20px;
+    flex: 0 0 auto;
+    width: 100%;
+    padding: 0 0 24px 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(139, 180, 255, 0.1);
+  }
+
+  .spec-card:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .spec-card__title {
+    font-size: clamp(20px, 6vw, 28px);
+  }
+
+  .spec-card__desc {
+    max-width: none;
+    font-size: 14px;
   }
 }
 
@@ -322,16 +358,10 @@
     grid-template-columns: 1fr auto 1fr;
     gap: 12px;
   }
-  .spec-card {
-    flex: 0 0 240px;
-  }
 }
 
 @media (max-width: 460px) {
-  .spec-card {
-    flex: 0 0 220px;
-  }
-  .spec-card__title {
-    font-size: 26px;
+  .subsvc__mega-title {
+    font-size: clamp(22px, 8vw, 30px);
   }
 }

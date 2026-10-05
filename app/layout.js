@@ -3,8 +3,10 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PageAnimations from "./components/PageAnimations";
+import SmoothScroll from "./components/SmoothScroll";
 import Preloader from "./components/Preloader";
 import WhatsAppButton from "./components/WhatsAppButton";
+import ScrollToTop from "./components/ScrollToTop";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -44,7 +46,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${jakarta.variable} ${audiowide.variable} ${bigShoulders.variable}`}>
       <body>
+        <ScrollToTop />
         <Preloader />
+        <SmoothScroll />
         <PageAnimations />
         <Header />
         <main>{children}</main>

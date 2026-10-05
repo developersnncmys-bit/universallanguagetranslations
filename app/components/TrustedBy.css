@@ -70,3 +70,32 @@
     animation: none;
   }
 }
+
+/* Mobile tuning — logo text was 22px which is heavy on phones; shrink
+   the names and tighten the gap so more fit per revolution + the band
+   feels proportional to the section's reduced padding. */
+@media (max-width: 768px) {
+  .trusted {
+    padding: 32px 0 24px;
+  }
+  .trusted__track {
+    gap: 48px;
+    animation-duration: 24s;
+  }
+  .trusted__track li {
+    font-size: 18px;
+  }
+  .trusted__label {
+    font-size: 11px;
+    margin-bottom: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .trusted__track {
+    gap: 32px;
+  }
+  .trusted__track li {
+    font-size: 16px;
+  }
+}

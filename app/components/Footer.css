@@ -15,9 +15,11 @@
 }
 
 .site-footer__brand-name {
-  font-family: var(--font-audiowide), "Audiowide", var(--font-display);
-  font-size: 14px;
-  letter-spacing: 0.12em;
+  font-family: var(--font-hero), var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: #0a1638;
   margin: 0;
   line-height: 1.2;
@@ -159,17 +161,54 @@
     grid-template-columns: 1fr 1fr;
     gap: 24px 20px;
   }
+
+  /* Bottom row — stack the copyright and Privacy/Terms links vertically
+     so neither gets squeezed into an unreadable single line. Generous
+     bottom padding clears the fixed WhatsApp button (bottom-right ~70px
+     circle) and the N dev-build indicator (bottom-left) so neither the
+     copyright nor the legal links sit directly under them. Use
+     padding-top / padding-bottom (not shorthand) so the parent
+     `.container` class's horizontal 24px gutter is preserved — the
+     shorthand earlier was zeroing left/right and flushing content to
+     the viewport edge. */
   .site-footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
     justify-content: flex-start;
+    gap: 14px;
+    padding-top: 20px;
+    padding-bottom: 130px;
+    text-align: left;
   }
+
+  .site-footer__legal {
+    gap: 18px;
+  }
+
+  /* Hide the dotted canvas wordmark on mobile — its scatter-on-hover
+     interaction is mouse-only (mousemove/mouseleave), it collides with the
+     fixed WhatsApp button and avatar at the viewport corners, and at this
+     width the "LANGUAGE / TRANSLATIONS" sub-label gets cramped. The brand
+     name at the top of the footer already covers the branding job. */
   .site-footer__wordmark-row {
-    padding: 0 12px;
-    gap: 12px;
+    display: none;
   }
-  .site-footer__wordmark {
-    height: clamp(60px, 15vw, 100px);
+}
+
+/* Phone portrait — collapse the footer nav to a single column so the
+   three link clusters don't compress into unreadable text at ≤480px. */
+@media (max-width: 480px) {
+  .site-footer__nav {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
-  .site-footer__wordmark-sub {
-    font-size: clamp(11px, 3.2vw, 18px);
+  .site-footer__inner {
+    padding-bottom: 24px;
+  }
+  .site-footer__brand-name {
+    font-size: 14px;
+  }
+  .site-footer__tagline {
+    font-size: 14px;
   }
 }

@@ -26,39 +26,17 @@
   isolation: isolate;
 }
 
-.enq__intro::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    repeating-radial-gradient(
-      circle at 50% 50%,
-      rgba(255, 255, 255, 0.055) 0 1px,
-      transparent 1px 90px
-    );
-  -webkit-mask: radial-gradient(
-    circle at 50% 50%,
-    #000 30%,
-    rgba(0, 0, 0, 0.6) 60%,
-    transparent 92%
-  );
-  mask: radial-gradient(
-    circle at 50% 50%,
-    #000 30%,
-    rgba(0, 0, 0, 0.6) 60%,
-    transparent 92%
-  );
-  pointer-events: none;
-}
+/* Concentric radar-ring backdrop removed — the heading now sits on a
+   clean background with no decorative rings behind it. */
 
 .enq__title {
   color: #ffffff;
-  font-family: var(--font-display);
-  font-size: clamp(24px, 2.6vw, 40px);
-  line-height: 1.15;
-  letter-spacing: -0.015em;
+  font-family: var(--font-hero), var(--font-display);
+  font-size: clamp(24px, 3.4vw, 40px);
   font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-transform: none;
   margin: 0;
 }
 
@@ -82,80 +60,138 @@
 }
 
 
-/* GLASSMORPHISM form card — translucent white sheet on top of the dark blue
-   enquiry background with a backdrop blur so whatever's behind (glow, text)
-   gets frosted. Border uses low-alpha white for the classic "glass edge" and
-   shadow stays subtle so the card feels like it floats above the surface. */
+/* GLASSMORPHISM form card — frosted panel sitting on the gradient enquiry
+   background. Layered gradient fill fakes a subtle top-light sheen, border
+   is a crisp white edge, and the shadow stack combines a deep floor drop
+   with a soft tinted glow + inner highlight to sell the "glass" look. */
 .enq-form {
-  background: rgba(255, 255, 255, 0.18);
-  -webkit-backdrop-filter: blur(22px) saturate(140%);
-  backdrop-filter: blur(22px) saturate(140%);
+  position: relative;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.08) 55%,
+      rgba(255, 255, 255, 0.14) 100%
+    );
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  backdrop-filter: blur(28px) saturate(160%);
   color: #ffffff;
-  border-radius: var(--radius-xl);
-  padding: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 24px;
+  padding: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
   box-shadow:
-    0 24px 60px rgba(5, 13, 36, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 32px 80px rgba(5, 13, 36, 0.45),
+    0 8px 24px rgba(37, 181, 207, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Soft colored highlight blob glowing from the top-left corner — gives the
+   glass card a hint of life without overpowering the content. */
+.enq-form::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -20%;
+  width: 60%;
+  height: 80%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(125, 220, 232, 0.35) 0%,
+    transparent 65%
+  );
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Second accent blob — warm lime glow bottom-right for palette balance. */
+.enq-form::after {
+  content: "";
+  position: absolute;
+  bottom: -30%;
+  right: -15%;
+  width: 55%;
+  height: 70%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(155, 198, 71, 0.22) 0%,
+    transparent 65%
+  );
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .enq-form__title {
-  font-size: 22px;
+  font-size: 24px;
+  font-weight: 700;
   color: #ffffff;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  letter-spacing: -0.015em;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
 }
 
 .enq-form__row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-bottom: 14px;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .enq-field {
   display: block;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .enq-field > span {
   display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(233, 240, 255, 0.85);
-  margin-bottom: 6px;
-  letter-spacing: -0.005em;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
-/* Inputs are their own inner glass panes — translucent white on the outer
-   glass card, with a light border. Text light so it stays legible. */
+/* Inputs are inner glass panes — slightly brighter translucent fill than the
+   outer card so they stand out, with a crisp white edge. */
 .enq-field input,
 .enq-field select,
 .enq-field textarea {
   width: 100%;
-  padding: 12px 14px;
+  padding: 14px 16px;
   font-size: 15px;
   font-family: inherit;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1.5px solid rgba(255, 255, 255, 0.32);
-  border-radius: 12px;
-  transition: border-color 0.2s var(--ease), background 0.2s var(--ease),
-    box-shadow 0.2s var(--ease);
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: border-color 0.25s var(--ease), background 0.25s var(--ease),
+    box-shadow 0.25s var(--ease), transform 0.25s var(--ease);
   outline: none;
 }
 
 .enq-field textarea {
   resize: vertical;
-  min-height: 110px;
+  min-height: 120px;
 }
 
 .enq-field input::placeholder,
 .enq-field textarea::placeholder {
-  color: rgba(207, 224, 255, 0.65);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .enq-field select {
-  color: rgba(233, 240, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
 }
 
 .enq-field select option {
@@ -163,26 +199,48 @@
   background: #ffffff;
 }
 
+.enq-field input:hover,
+.enq-field select:hover,
+.enq-field textarea:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
 .enq-field input:focus,
 .enq-field select:focus,
 .enq-field textarea:focus {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(139, 180, 255, 0.65);
-  box-shadow: 0 0 0 4px rgba(43, 107, 255, 0.22);
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(155, 198, 71, 0.75);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 0 4px rgba(155, 198, 71, 0.2);
 }
 
 .enq-form__submit {
   width: 100%;
-  padding: 15px 20px;
-  margin-top: 8px;
-  background: var(--blue-600);
+  padding: 16px 24px;
+  margin-top: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: var(--blue-700);
   color: #ffffff;
-  box-shadow: 0 20px 40px rgba(27, 122, 142, 0.4);
+  border: 1px solid var(--blue-700);
+  border-radius: 14px;
+  box-shadow:
+    0 16px 36px rgba(10, 82, 97, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease),
+    background 0.2s var(--ease);
 }
 
 .enq-form__submit:hover {
-  background: var(--blue-700);
-  box-shadow: 0 24px 48px rgba(20, 102, 115, 0.5);
+  transform: translateY(-2px);
+  background: #0A5261;
+  border-color: #0A5261;
+  box-shadow:
+    0 22px 48px rgba(10, 82, 97, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
 .enq-form__submit:disabled {

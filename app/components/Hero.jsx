@@ -46,6 +46,15 @@ export default function Hero() {
     return;
   }
 
+  // Mobile guard — the scrubbed timeline translates the globe to
+  // `window.innerWidth * 0.28` and slides the text container to
+  // `-window.innerWidth * 0.2`, which on narrow viewports pushes copy
+  // off-screen and parks the globe over the heading. On phones/tablets
+  // the hero renders its static centered composition via CSS only.
+  if (typeof window !== "undefined" && window.innerWidth <= 960) {
+    return;
+  }
+
   const inner = rootEl.querySelector(".hero__inner");
   const copy = rootEl.querySelector(".hero__copy");
   const planet = rootEl.querySelector(".hero__planet");
@@ -355,9 +364,19 @@ export default function Hero() {
           >
             <span aria-hidden="true">
               <span className="hero__title-line">
-                <SplitText text="Speak to the world in every" />
+                <SplitText text="Speak to the world in" />
+                {/* "every" sits on line 1 on desktop, hidden on mobile */}
+                <span className="hero__every-desktop">
+                  {" "}
+                  <SplitText text="every" />
+                </span>
               </span>
               <span className="hero__title-line hero__title-accent">
+                {/* "every" moves to the accent line on mobile only */}
+                <span className="hero__every-mobile">
+                  <SplitText text="every" />
+                  {" "}
+                </span>
                 <SplitText text="language" />
               </span>
             </span>

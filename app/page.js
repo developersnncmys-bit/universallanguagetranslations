@@ -9,10 +9,12 @@ import Process from "./components/Process";
 // import Testimonials from "./components/Testimonials";
 import FAQ from "./components/FAQ";
 import EnquirySection from "./components/EnquirySection";
+import HomeMobileAnimations from "./components/HomeMobileAnimations";
 
 export default function Home() {
   return (
     <>
+      <HomeMobileAnimations />
        <div className="hero-scroll-stage">
        <Hero />
       </div>

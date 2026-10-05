@@ -135,6 +135,12 @@ export default function Services() {
     ) {
       return;
     }
+    // Mobile guard: pin + scrubbed-timeline reveals break on narrow
+    // viewports (cramped layout, janky scroll). Skip the pin entirely
+    // below 900px — intro content renders naturally with no pin.
+    if (typeof window !== "undefined" && window.innerWidth <= 900) {
+      return;
+    }
     const pinEl = introPinRef.current;
     const introEl = introRef.current;
     const statsEl = statsRef.current;

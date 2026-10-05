@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -22,6 +23,8 @@ gsap.registerPlugin(ScrollTrigger);
  * Rendering is skipped when the user prefers reduced motion.
  */
 export default function PageAnimations() {
+  const pathname = usePathname();
+
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) {
@@ -118,11 +121,36 @@ export default function PageAnimations() {
       "p > span",
     ].join(", ");
     const heroTitle = document.querySelector(".hero__title");
+    const siteHeader = document.querySelector(".site-header");
+
+    // Fully UNWRAP any `.reveal-word` spans a previous run dropped into the
+    // header — replace them with plain text nodes so the nav links render
+    // natural, un-styled text regardless of PageAnimations state. (Removing
+    // just the inline color isn't enough — if the browser cached the earlier
+    // run's effect, the spans and their blue remain in the DOM.)
+    if (siteHeader) {
+      siteHeader.querySelectorAll(".reveal-word").forEach((span) => {
+        const parent = span.parentNode;
+        if (!parent) return;
+        parent.replaceChild(
+          document.createTextNode(span.textContent || ""),
+          span
+        );
+      });
+      // Normalize to merge adjacent text nodes left behind by the unwrap.
+      siteHeader.querySelectorAll("a, li").forEach((el) => el.normalize());
+    }
+
     const textElements = Array.from(
       document.querySelectorAll(selectors)
-    ).filter(
-      (el) => el !== heroTitle && !(heroTitle && heroTitle.contains(el))
-    );
+    ).filter((el) => {
+      if (el === heroTitle || (heroTitle && heroTitle.contains(el))) return false;
+      // Nav items live inside collapsed mobile dropdowns that never trigger
+      // the scroll-reveal, so the blue inline color sticks and the drawer
+      // looks blank. Easier to just skip anything in the header.
+      if (siteHeader && siteHeader.contains(el)) return false;
+      return true;
+    });
 
     const REVEAL_BLUE = "#286eff";
 
@@ -232,7 +260,7 @@ export default function PageAnimations() {
       window.removeEventListener("resize", checkAndReveal);
       clearTimeout(safetyTimeout);
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }

@@ -108,6 +108,28 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* ─── Lenis smooth-scroll support ─────────────────────────────────────
+   Lenis adds these classes to <html> while it's running. The native
+   `scroll-behavior: smooth` above would otherwise fight Lenis's own
+   eased position on anchor jumps, so we neutralise it only while
+   Lenis is active. `data-lenis-prevent` lets individual scrollable
+   children (e.g. a long form area) opt out of smoothing. */
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
 html,
 body {
   max-width: 100vw;

@@ -4,8 +4,23 @@
   color: #ffffff;
 }
 
+/* `.section-lede` defaults to `color: #566179` for white sections.
+   This section is on the dark hero gradient but doesn't carry the
+   `.section-dark` class, so lift the lede to a bright translucent-white
+   so the "Four calm steps…" subtitle reads clearly instead of blending
+   into the teal background. */
+.process .section-lede {
+  color: rgba(240, 245, 255, 0.9);
+}
+
 /* Two-tone heading on the dark hero palette: accent half is brand-cyan
    for lift; bold half stays white for anchor weight. */
+.process__title {
+  /* Hero display font (Big Shoulders) — matches `.mission-title` and
+     the About section headings. Mixed case kept (no uppercase). */
+  font-family: var(--font-hero), var(--font-display);
+}
+
 .process__title-accent {
   color: var(--brand-cyan);
 }

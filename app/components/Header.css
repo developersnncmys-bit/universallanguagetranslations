@@ -1,3 +1,4 @@
+
 .site-header {
   position: fixed;
   top: 0;
@@ -104,8 +105,12 @@
   position: relative;
   display: inline-block;
   padding: 10px 18px;
-  font-size: 15px;
+  /* Hero display font (Big Shoulders) — matches the big section
+     headings across the site. Mixed case kept. */
+  font-family: var(--font-hero), var(--font-display);
+  font-size: 17px;
   font-weight: 700;
+  letter-spacing: 0.01em;
   /* Dark by default — sits on the white translucent header. */
   color: rgba(4, 56, 66, 0.75);
   border-radius: 8px;
@@ -114,6 +119,28 @@
 
 .primary-nav ul a:hover {
   color: var(--navy-900);
+}
+
+/* Active top-level link — no pill background, just colored text + underline. */
+.primary-nav > ul > li > a.is-active {
+  color: #043842;
+  background: transparent;
+}
+
+.primary-nav > ul > li > a.is-active::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 4px;
+  height: 2px;
+  background: #7EAF20;
+  border-radius: 2px;
+}
+
+.site-header.is-light .primary-nav > ul > li > a.is-active {
+  color: #0a1638;
+  background: transparent;
 }
 
 /* Right actions: live clock + CTA */
@@ -286,17 +313,13 @@
   padding: 10px;
   margin: 0;
   list-style: none;
-  background:
-    radial-gradient(120% 100% at 0% 0%, rgba(56, 189, 248, 0.06) 0%, transparent 60%),
-    linear-gradient(180deg, #0b1024 0%, #05070f 100%);
-  border: 1px solid rgba(139, 180, 255, 0.18);
+  background: #050810;
+  border: 1px solid rgba(139, 180, 255, 0.22);
   border-radius: 18px;
   box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.6),
-    0 2px 6px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: saturate(160%) blur(14px);
-  -webkit-backdrop-filter: saturate(160%) blur(14px);
+    0 24px 60px rgba(0, 0, 0, 0.65),
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -354,13 +377,15 @@
   list-style: none;
 }
 
-.nav-dropdown a {
+.nav-dropdown a,
+.nav-dropdown li > a {
   display: block;
   position: relative;
   padding: 12px 16px;
-  font-size: 14.5px;
-  font-weight: 500;
-  color: rgba(233, 240, 255, 0.82);
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  opacity: 1;
   border-radius: 12px;
   white-space: nowrap;
   transition: background 0.18s var(--ease), color 0.18s var(--ease),
@@ -388,6 +413,17 @@
 }
 
 .nav-dropdown a:hover::before {
+  height: 18px;
+}
+
+/* Active dropdown item — persistent accent bar + highlighted text. */
+.nav-dropdown a.is-active {
+  background: rgba(56, 189, 248, 0.08);
+  color: #fff;
+  padding-left: 20px;
+}
+
+.nav-dropdown a.is-active::before {
   height: 18px;
 }
 
@@ -451,10 +487,108 @@
 }
 
 @media (max-width: 960px) {
+  /* MOBILE DRAWER — nuclear-option text visibility. PageAnimations drops
+     `.reveal-word` spans with inline `style="color: #blue"` + opacity 0
+     onto nav text; those don't fire the reveal animation inside the
+     collapsed drawer, so without this the drawer appears to have invisible
+     text. The universal selector + !important beats any inline style.
+     Also unsets webkit-text-stroke which hero animations sometimes leave
+     behind as an outline-only treatment. */
+  .site-header .primary-nav *,
+  .site-header .primary-nav *::before,
+  .site-header .primary-nav *::after {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    -webkit-text-stroke: 0 !important;
+    text-shadow: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: transparent !important;
+    outline: none !important;
+  }
+
+  /* Restore the nav-caret chevron tint (the universal override above
+     paints it pure white; the subtle translucent version reads better). */
+  .site-header .primary-nav .nav-caret {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  /* Depth-2 submenu (Translation industries) — indented slightly from the
+     left so it visually nests under the Translation row it belongs to.
+     Visibility is controlled by the shared `.is-sub-open` toggle below. */
+  .site-header .primary-nav .nav-dropdown--depth-2 {
+    padding-left: 16px !important;
+    border-left: 1px solid rgba(139, 180, 255, 0.14) !important;
+    margin-left: 8px !important;
+  }
+
+  /* Depth-2 anchors — slightly smaller + translucent so they read as
+     subordinate to the Translation row above them. */
+  .site-header .nav-dropdown--depth-2 a {
+    font-size: 14px !important;
+    color: rgba(255, 255, 255, 0.72) !important;
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.72) !important;
+    padding: 12px 14px !important;
+  }
+
+  /* Parent-of-submenu anchors (Translation at depth-1) — restore the flex
+     layout so the right-pointing chevron sits inline on the right of the
+     label instead of dropping to a new line. The earlier `display: block
+     !important` on `.nav-dropdown a` was overriding the flex layout. */
+  .site-header .nav-dropdown li.has-dropdown > a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+  }
+
+  .site-header .nav-dropdown li.has-dropdown > a .nav-caret {
+    margin-left: auto !important;
+    flex: 0 0 auto !important;
+  }
+
+  /* Caret tap-area on mobile — the <span class="nav-caret-tap"> wraps the
+     chevron inside the Link so a tap on it toggles the submenu without
+     navigating. Give it a 44x44 touch target and push it to the right
+     edge of the row via margin-left: auto. */
+  .site-header .primary-nav .nav-caret-tap {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-left: auto !important;
+    padding: 10px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    cursor: pointer !important;
+    flex: 0 0 auto !important;
+  }
+
+  /* Top-level has-dropdown row (Services) — row stays flex so label sits
+     left and caret-tap sits right. The Link itself navigates to /services
+     when the label is tapped; the caret-tap handles submenu toggling. */
+  .site-header .primary-nav > ul > li.has-dropdown > a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+  }
+
+  /* Chevron rotation for depth-2 parent (Translation) when its own
+     submenu is open — points down to signal "expanded". */
+  .site-header .nav-dropdown li.has-dropdown.is-sub-open > a .nav-caret {
+    transform: rotate(90deg) !important;
+  }
+
   .site-header__inner {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto;
     gap: 12px;
-    padding: 12px 20px 12px 20px;
+    padding: 14px 20px;
+  }
+
+  /* Nav slot sits in the second grid column via `justify-self: end`
+     below; `.primary-nav` itself becomes the fixed drawer. */
+  .primary-nav {
+    justify-self: auto;
   }
 
   .site-header__actions {
@@ -463,23 +597,30 @@
 
   .nav-toggle {
     display: flex;
+    justify-self: end;
   }
 
   .primary-nav {
     position: fixed;
-    inset: 64px 0 0 0;
+    inset: 70px 0 0 0;
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    background: linear-gradient(180deg, #000000 0%, #02030a 100%);
-    padding: 24px var(--gutter) 40px;
-    gap: 24px;
+    background: linear-gradient(180deg, #050810 0%, #02030a 100%);
+    padding: 20px 20px 48px;
+    gap: 20px;
     transform: translateY(-10px);
     opacity: 0;
     pointer-events: none;
     transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
     overflow-y: auto;
-    border-top: 1px solid rgba(139, 180, 255, 0.12);
+    /* iOS Safari needs this for momentum scroll inside a fixed container. */
+    -webkit-overflow-scrolling: touch;
+    /* Explicitly allow vertical pan — otherwise the body's `overflow: hidden`
+       scroll lock + Lenis stop can leave the drawer stuck. */
+    touch-action: pan-y;
+    overscroll-behavior: contain;
+    border-top: 1px solid rgba(139, 180, 255, 0.14);
   }
 
   .primary-nav.is-open {
@@ -490,46 +631,174 @@
 
   .primary-nav > ul {
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
 
-  .primary-nav ul a {
+  /* Match the EXACT selector of the base `.site-header.is-light .primary-nav > ul > li > a`
+     rule (specificity 0,3,4) so the mobile drawer wins when the header is
+     in its light theme (user scrolled past hero). Also cover plain
+     `.primary-nav ul a` for the no-light case + dropdown descendants. */
+  .site-header .primary-nav ul a,
+  .site-header .primary-nav > ul > li > a,
+  .site-header.is-light .primary-nav ul a,
+  .site-header.is-light .primary-nav > ul > li > a {
     display: block;
-    padding: 14px 12px;
+    padding: 16px 8px;
     font-size: 17px;
-    border-bottom: 1px solid rgba(139, 180, 255, 0.12);
+    font-weight: 600;
+    border-bottom: 1px solid rgba(139, 180, 255, 0.1);
     border-radius: 0;
-    color: rgba(233, 240, 255, 0.9);
+    color: #ffffff;
   }
 
-  /* Dropdown becomes a nested inline list in the drawer at any depth */
-  .nav-dropdown,
-  .nav-dropdown--depth-1,
-  .nav-dropdown--depth-2 {
-    position: static;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: none;
+  .site-header .primary-nav ul a:hover,
+  .site-header.is-light .primary-nav ul a:hover,
+  .site-header.is-light .primary-nav > ul > li > a:hover {
+    color: #ffffff;
+  }
+
+  /* Only top-level links with a caret use the flex layout — scoped to the
+     direct nav caret so it doesn't trigger on dropdown items whose text
+     has been split into `.reveal-word` spans by PageAnimations. */
+  .primary-nav > ul > li.has-dropdown > a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .primary-nav > ul > li.has-dropdown > a .nav-caret {
+    margin-left: auto;
+  }
+
+  /* Active top-level link in the drawer — subtle lime tint on the text,
+     drop the desktop underline bar entirely (it looks orphaned inside the
+     drawer). */
+  .primary-nav > ul > li > a.is-active {
+    color: #9BC647;
     background: transparent;
-    border: 0;
-    box-shadow: none;
-    padding: 0 0 8px 16px;
-    margin-left: 0;
-    min-width: 0;
-    top: auto;
-    left: auto;
   }
 
-  .nav-dropdown a {
-    padding: 10px 12px;
-    font-size: 15px;
-    color: rgba(207, 224, 255, 0.75);
+  .primary-nav > ul > li > a.is-active::after {
+    display: none;
+  }
+
+  .site-header.is-light .primary-nav > ul > li > a.is-active {
+    color: #9BC647;
+  }
+
+  /* Dropdown — reset ALL desktop positioning (fixed/absolute, transforms,
+     margin-left, min-width, left/top offsets) so items render in flow
+     INSIDE the drawer. The desktop styles position the dropdown as an
+     absolute flyout with `left: 50%; transform: translate(-50%, 8px)`
+     and depth-2 at `left: 100%; margin-left: 6px` — leaking any of
+     those into mobile would push items off-screen. Every potentially
+     offending property is explicitly neutralised with `!important`. */
+  .site-header .primary-nav .nav-dropdown,
+  .site-header .primary-nav .nav-dropdown--depth-1,
+  .site-header .primary-nav .nav-dropdown--depth-2 {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+    margin: 0 !important;
+    padding: 4px 0 8px 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    list-style: none !important;
+    display: none;
+  }
+
+  /* Dropdown <li> rows — ensure they're block-level and take full width
+     so items stack cleanly one per row with no inline/floating leftovers. */
+  .site-header .primary-nav .nav-dropdown li {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+    position: static !important;
+    float: none !important;
+  }
+
+  .primary-nav ul li.has-dropdown.is-sub-open > .nav-dropdown {
+    display: block;
+  }
+
+  /* Chevron rotation signals open/closed state. */
+  .primary-nav > ul > li.has-dropdown.is-sub-open > a .nav-caret {
+    transform: rotate(180deg);
+  }
+
+  .nav-dropdown li.has-dropdown.is-sub-open > a .nav-caret--right {
+    transform: rotate(90deg);
+  }
+
+  .nav-caret,
+  .nav-caret--right {
+    transition: transform 0.25s var(--ease);
+  }
+
+  /* Mobile dropdown anchors — explicit everything so no inherited rule
+     (white-space: nowrap, text-indent, etc.) from the desktop styles
+     above can hide or clip the labels. "Multilingual Data Creation" is
+     wider than a 393px viewport with nowrap, which was pushing most of
+     the text off-screen and leaving only "reation" at the clip edge. */
+  .site-header .nav-dropdown a,
+  .site-header .nav-dropdown li > a {
+    display: block !important;
+    padding: 14px 16px !important;
+    margin: 0 !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    white-space: normal !important;
+    text-indent: 0 !important;
+    text-align: left !important;
+    direction: ltr !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    border-bottom: 1px solid rgba(139, 180, 255, 0.08) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  /* Kill the desktop ::before accent-bar on mobile — it was a 3px
+     cyan→blue vertical slab on the left of each dropdown anchor, which
+     reads as noise in a stacked drawer where every item has a divider
+     already. */
+  .site-header .nav-dropdown a::before {
+    display: none !important;
+  }
+
+  .nav-dropdown a:hover,
+  .nav-dropdown li > a:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .nav-dropdown--depth-2 {
+    padding-left: 14px;
   }
 
   .nav-dropdown--depth-2 a {
     font-size: 14px;
-    color: rgba(207, 224, 255, 0.65);
+    color: rgba(255, 255, 255, 0.72);
   }
 
   .primary-nav ul li.has-dropdown:hover > a .nav-caret,
@@ -537,13 +806,34 @@
     transform: none;
   }
 
+  .nav-caret,
   .nav-caret--right {
     margin-left: 8px;
     padding-left: 0;
+    color: rgba(255, 255, 255, 0.6);
   }
 
   .brand__wordmark {
-    font-size: 9px;
-    letter-spacing: 0.05em;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* Narrower phones — shrink the wordmark + tighten padding so the toggle
+   never clashes with the brand text. */
+@media (max-width: 420px) {
+  .site-header__inner {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+
+  .brand__wordmark {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  .nav-toggle {
+    width: 40px;
+    height: 40px;
   }
 }

@@ -158,18 +158,31 @@
     grid-template-columns: 1fr;
     gap: 32px;
   }
+
+  /* Pin disabled on mobile (see Services.jsx guard) — without it the
+     100vh min-height + 200-280px top padding (meant to park the pinned
+     section below the fixed navbar) becomes a huge empty band above
+     the heading. Collapse to natural height + modest padding. */
+  .services__intro-pin {
+    min-height: 0;
+    padding: 48px 0 56px;
+  }
+
+  /* Scrub-word words start at opacity: 0.18 and are revealed by the
+     scrubbed GSAP timeline — which doesn't run on mobile. Force them
+     to full opacity so the heading isn't rendered as faded text. */
+  .scrub-word {
+    opacity: 1;
+  }
 }
 
 .services__intro-title {
-  /* Plus Jakarta Sans (loaded via next/font under --font-jakarta in
-     app/layout.js). Both lines render in solid black. Trimmed from
-     clamp(28px, 4.6vw, 56px) → clamp(22px, 3.6vw, 44px) — bigger than
-     the original 36px cap but not overwhelming. */
-  font-family: var(--font-jakarta), var(--font-display);
+  /* Hero display font (Big Shoulders) — matches `.mission-title` and
+     the About section headings. Mixed case kept (no uppercase). */
+  font-family: var(--font-hero), var(--font-display);
   font-size: clamp(22px, 3.6vw, 44px);
   line-height: 1.05;
   letter-spacing: -0.02em;
-  text-transform: uppercase;
   margin: 0;
   max-width: none;
   font-weight: 800;
@@ -392,14 +405,15 @@
 }
 
 .svc-grid-title {
-  font-family: var(--font-display);
+  /* Hero display font (Big Shoulders) — matches `.mission-title` and
+     the About section headings. Mixed case kept (no uppercase). */
+  font-family: var(--font-hero), var(--font-display);
   font-size: clamp(22px, 2.3vw, 32px);
   color: var(--navy-900);
   line-height: 1.15;
   letter-spacing: -0.02em;
   margin: 16px 0 14px;
   font-weight: 900;
-  text-transform: uppercase;
 }
 
 .svc-grid-lede {
