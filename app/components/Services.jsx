@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./Services.css";
@@ -391,11 +392,19 @@ export default function Services() {
                   }`}
                   aria-hidden={activeIdx !== i}
                 >
-                  <img
+                  {/* Next.js <Image> auto-serves WebP/AVIF + responsive
+                      sizes, slashes the original 2.5MB PNGs by 70-85%.
+                      First panel gets priority so it paints without a
+                      network wait; the rest lazy-load behind the scenes. */}
+                  <Image
                     src={s.img}
                     alt=""
                     className="svc-split__img"
-                    loading="lazy"
+                    fill
+                    sizes="(max-width: 900px) 100vw, 50vw"
+                    quality={78}
+                    priority={i === 0}
+                    loading={i === 0 ? undefined : "lazy"}
                   />
                 </div>
               ))}

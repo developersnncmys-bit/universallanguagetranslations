@@ -33,6 +33,19 @@ export default function SmoothScroll() {
       return;
     }
 
+    // Skip Lenis entirely on mobile / touch devices. Lenis adds no benefit
+    // on touch (`syncTouch: false` already defers to native scroll) but its
+    // RAF loop + per-scroll ScrollTrigger.update firing on every native scroll
+    // event introduces noticeable jank. On narrow viewports there are also
+    // no pinned/scrubbed timelines anyway (AboutAnimations / services pins
+    // are gated to desktop), so native scroll is both smoother and cheaper.
+    const isMobile = window.matchMedia("(max-width: 960px)").matches;
+    const isTouch =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (isMobile || isTouch) {
+      return;
+    }
+
     const lenis = new Lenis({
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

@@ -602,12 +602,22 @@
 
   .primary-nav {
     position: fixed;
-    inset: 70px 0 0 0;
+    top: 70px;
+    left: 0;
+    right: 0;
+    /* Use dynamic viewport height on supporting browsers (iOS Safari 15.4+,
+       Chrome Android 108+). This locks the drawer to the ACTUAL visible
+       viewport instead of the "large" viewport that assumes the browser
+       toolbar is hidden — otherwise the drawer bottom slides out of view
+       when the toolbar is visible on iPhone / Safari. Fallback to 100vh
+       for older browsers via the first declaration. */
+    height: calc(100vh - 70px);
+    height: calc(100dvh - 70px);
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
     background: linear-gradient(180deg, #050810 0%, #02030a 100%);
-    padding: 20px 20px 48px;
+    padding: 20px 20px calc(48px + env(safe-area-inset-bottom, 0px));
     gap: 20px;
     transform: translateY(-10px);
     opacity: 0;
@@ -621,6 +631,10 @@
     touch-action: pan-y;
     overscroll-behavior: contain;
     border-top: 1px solid rgba(139, 180, 255, 0.14);
+    /* Promote to its own layer so iOS Safari treats the fixed drawer as
+       a stacking context independent of any ancestor transforms. */
+    will-change: transform, opacity;
+    z-index: 59;
   }
 
   .primary-nav.is-open {
