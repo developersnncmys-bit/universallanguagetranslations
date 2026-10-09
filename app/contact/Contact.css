@@ -181,6 +181,106 @@
 }
 
 
+/* Floating status chips over the globe — same glass-pill treatment
+   as the home + services hero chips, 2px sharp corners, pulsing lime
+   dot. Positioned to frame the sphere diagonally (top-right ↘ bottom-left). */
+.contact-globe-chip {
+  position: absolute;
+  z-index: 6;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 16px;
+  border-radius: 2px;
+
+  background: rgba(4, 56, 66, 0.55);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 10px 32px rgba(4, 56, 66, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+
+  color: #ffffff;
+  font-family: var(--font-jakarta), sans-serif;
+  text-transform: uppercase;
+
+  pointer-events: none;
+}
+
+.contact-globe-chip--languages {
+  top: 14%;
+  right: -4%;
+}
+
+.contact-globe-chip--availability {
+  bottom: 18%;
+  left: -4%;
+}
+
+.contact-globe-chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-lime, #9BC647);
+  box-shadow: 0 0 0 3px rgba(155, 198, 71, 0.3);
+  animation: contact-globe-chip-pulse 1.9s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.contact-globe-chip-label {
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--brand-lime, #9BC647);
+}
+
+.contact-globe-chip-text {
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+@keyframes contact-globe-chip-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 3px rgba(155, 198, 71, 0.25);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 5px rgba(155, 198, 71, 0.4);
+  }
+}
+
+/* Mobile — the globe wrap sits lower; adjust chip positions so they
+   stay inside the viewport over the mobile-sized sphere. */
+@media (max-width: 900px) {
+  .contact-globe-chip {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .contact-globe-chip-label {
+    font-size: 11px;
+  }
+  .contact-globe-chip-text {
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+  }
+  .contact-globe-chip--languages {
+    top: 10%;
+    right: 2%;
+  }
+  .contact-globe-chip--availability {
+    bottom: 10%;
+    left: 2%;
+  }
+}
+
+
 .contact-eyebrow {
   display: flex;
   align-items: center;

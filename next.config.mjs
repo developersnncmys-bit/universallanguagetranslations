@@ -13,6 +13,11 @@ const nextConfig = {
     // regenerates them — the service imagery is static, no need to
     // re-encode on every request.
     minimumCacheTTL: 60 * 60 * 24 * 7,
+    // Next 15 requires every `quality=` value used in <Image> to be
+    // allowlisted here. The service PNGs render at `quality={78}` to
+    // keep edge detail in the photographic imagery; 75 stays as the
+    // default fallback for everything else.
+    qualities: [75, 78],
   },
 };
 

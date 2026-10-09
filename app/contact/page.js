@@ -82,6 +82,19 @@ export default function ContactPage() {
               <div className="contact-globe-canvas">
                 <GlobeCanvas />
               </div>
+
+              {/* Floating status chips framing the globe — same style
+                  as the home + services hero chips. */}
+              <div className="contact-globe-chip contact-globe-chip--languages">
+                <span className="contact-globe-chip-dot" aria-hidden="true" />
+                <span className="contact-globe-chip-label">100+</span>
+                <span className="contact-globe-chip-text">Languages</span>
+              </div>
+              <div className="contact-globe-chip contact-globe-chip--availability">
+                <span className="contact-globe-chip-dot" aria-hidden="true" />
+                <span className="contact-globe-chip-label">24/7</span>
+                <span className="contact-globe-chip-text">Availability</span>
+              </div>
             </div>
           </div>
 

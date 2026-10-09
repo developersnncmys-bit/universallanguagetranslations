@@ -1294,10 +1294,16 @@
   color: var(--ink-900);
   text-decoration: none;
 
+  /* `transform` is intentionally NOT in this transition list — the card
+     entrance animation in ServicesAnimations.jsx tweens `y` on these
+     cards, and a CSS `transition: transform 0.35s` was stretching every
+     GSAP frame by 0.35s. With a 0.06s stagger across 6 cards, that left
+     cards parked at different transition phases for ~360ms, which read
+     as "box alignment breaks" on the grid. The hover lift is only 2px —
+     snapping it looks identical. */
   transition:
     background 0.35s ease,
-    color 0.35s ease,
-    transform 0.35s ease;
+    color 0.35s ease;
 }
 
 .svc-service-card:hover,

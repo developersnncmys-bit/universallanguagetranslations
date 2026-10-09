@@ -316,12 +316,11 @@ export default function Hero() {
 
       const tl = gsap.timeline({ delay: 0.2 });
 
-      tl.from(".hero__copy .eyebrow", {
-        opacity: 0,
-        y: 20,
-        duration: 0.5,
-        ease: "power2.out",
-      })
+      // The `.hero__copy .eyebrow` tween was removed — that element is
+      // commented out in the JSX below, so animating it logged a "GSAP
+      // target not found" warning on every mount. Timeline now starts
+      // directly on the headline letter reveal.
+      tl
         // Letters reveal in from BLUE and settle to their final WHITE color,
         // staggered left-to-right so it reads as a wipe-in reveal.
         .fromTo(
@@ -343,8 +342,7 @@ export default function Hero() {
             duration: 1.1,
             stagger: 0.06,
             ease: "power3.out",
-          },
-          "-=0.2"
+          }
         )
         .from(
           ".hero__lede",
