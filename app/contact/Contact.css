@@ -151,9 +151,9 @@
 
 .contact-globe-wrap {
   position: relative;
-  /* Slightly smaller than About's `min(680px, 48vw)` — the Contact
-     hero's shorter height reads better with a ~12% smaller sphere. */
-  width: min(600px, 44vw);
+  /* Slightly smaller than About's `min(680px, 48vw)` — sized up from
+     the earlier `min(600px, 44vw)` pass per the latest tweak. */
+  width: min(640px, 46vw);
   aspect-ratio: 1;
 
   display: flex;
