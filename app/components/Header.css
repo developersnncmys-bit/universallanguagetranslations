@@ -362,12 +362,40 @@
   min-width: 280px;
 }
 
+/* Hover bridge — invisible pseudo-element that extends LEFT across the
+   margin-left + translateX gap between the depth-1 row and the depth-2
+   flyout. Without it the cursor crosses dead space when moving from
+   "Translation" to its sub-items, the `:hover` releases on the parent
+   <li>, and the whole flyout closes before the cursor arrives. The
+   bridge is only interactive while the flyout is actually visible
+   (pointer-events: none in the closed state) so it doesn't hijack hits
+   on neighbouring content. A small vertical overshoot (-6px top /
+   bottom) covers tiny diagonal mouse paths too. */
+.nav-dropdown--depth-2::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  right: 100%;
+  width: 24px;
+  pointer-events: none;
+  background: transparent;
+}
+
 .nav-dropdown li.has-dropdown:hover > .nav-dropdown--depth-2,
 .nav-dropdown li.has-dropdown:focus-within > .nav-dropdown--depth-2 {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: translateX(0);
+}
+
+/* Bridge becomes interactive only when the flyout is actually open —
+   closed-state leaves it `pointer-events: none` (above) so it can't
+   steal hits on anything else. */
+.nav-dropdown li.has-dropdown:hover > .nav-dropdown--depth-2::before,
+.nav-dropdown li.has-dropdown:focus-within > .nav-dropdown--depth-2::before {
+  pointer-events: auto;
 }
 
 /* Dropdown items need to be positioned so their submenus anchor correctly */

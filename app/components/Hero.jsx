@@ -260,6 +260,27 @@ export default function Hero() {
       0.72
     );
 
+    // ----------------------------------------
+    // STAGE 6
+    // Two status chips (100+ Languages, 24/7 Availability) fade in over
+    // the globe once the planet has settled at its right-cropped final
+    // position. Small stagger so they don't pop in simultaneously.
+    // ----------------------------------------
+    const chips = rootEl.querySelectorAll(".hero__chip");
+    if (chips.length) {
+      tl.to(
+        chips,
+        {
+          opacity: 1,
+          y: 0,
+          ease: "power2.out",
+          duration: 0.22,
+          stagger: 0.1,
+        },
+        0.84
+      );
+    }
+
     // Sunrise-time copy fade DISABLED — the user wants the hero copy to
     // remain visible throughout, including once the sunrise starts rising.
     // The sunrise gradient's top 60% is transparent so the copy stays
@@ -343,11 +364,21 @@ export default function Hero() {
     <section className="hero" ref={root}>
       {/* Revolving globe — real continent shapes on a rotating 3D projection */}
       <div className="hero__planet" aria-hidden="true">
-      
+
         <div className="hero__atmo hero__atmo--rim" />
         <div className="hero__atmo hero__atmo--flare" />
         <div className="hero__globe">
           <GlobeCanvas />
+        </div>
+
+        {/* Availability chip floats over the globe once the scrubbed
+            timeline parks it at its final right-cropped position.
+            GSAP fades it in during the pin release stage. The
+            "100+ Languages" chip was removed per client ask. */}
+        <div className="hero__chip hero__chip--availability">
+          <span className="hero__chip-dot" aria-hidden="true" />
+          <span className="hero__chip-label">24/7</span>
+          <span className="hero__chip-text">Availability</span>
         </div>
       </div>
 

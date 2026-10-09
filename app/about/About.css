@@ -1090,13 +1090,63 @@
        `min-height: 100vh` left tail-end whitespace in the previous
        section. Trimming here closes the gap without touching the story
        layout. */
-    padding: 25px 0 40px;
+    margin-top: -30px;
+    padding-top: 0;
+    padding-bottom: 32px;
   }
   .about-clients-inner {
-   gap: 28px;
-   padding-top: 0;
+   width: calc(100% - 32px);
+   margin: 0 auto;
+   /*gap: 28px; */
+   padding: 0;
    border-top: none;
+
+   display:flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 20px;
   }
+
+   .about-clients-label {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .about-clients-list {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-items: center;
+    align-items: center;
+    gap: 20px 16px;
+  }
+
+  .about-client {
+    width: 100%;
+    max-width: 120px;
+    height: 40px;
+    min-width: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .about-client-logo {
+    max-width: 100px;
+    max-height: 30px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  
+
   /* Let the Story section size to its content on narrow phones so there
      isn't a tall empty tail between the "From language to meaning…"
      bottom caption and the TRUSTED BY strip that follows. */

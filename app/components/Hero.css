@@ -97,16 +97,17 @@
   white-space: nowrap;
 }
 
-/* Headline wrap control: "every" sits on line 1 on desktop and jumps to
-   the accent line on mobile. Both spans exist in the DOM; CSS toggles
-   which one is visible per breakpoint. The aria-label on `.hero__title`
-   keeps the full phrase intact for screen readers either way. */
+/* Headline wrap control: "every" sits on line 2 (the accent line) at
+   every breakpoint — the headline reads "Speak to the world in / every
+   language". Both spans exist in the DOM; the mobile branch is the
+   active one across all widths. Class names kept so the mobile override
+   further down still resolves (now a no-op but harmless). */
 .hero__every-desktop {
-  display: inline;
+  display: none;
 }
 
 .hero__every-mobile {
-  display: none;
+  display: inline;
 }
 
 .hero__title-accent .hero__word,
@@ -275,6 +276,93 @@
   display: block;
 }
 
+/* Chips (100+ Languages, 24/7 Availability) — float over the globe
+   once GSAP parks the planet at its final right-cropped position.
+   Sharp 2px corners (per request) matching the services hero chip
+   style. Start invisible; Hero.jsx fades them in at the end of the
+   scrubbed timeline. */
+.hero__chip {
+  position: absolute;
+  z-index: 6;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 16px;
+  border-radius: 2px;
+
+  background: rgba(4, 56, 66, 0.55);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 10px 32px rgba(4, 56, 66, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+
+  color: #ffffff;
+  font-family: var(--font-jakarta), sans-serif;
+  text-transform: uppercase;
+
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+/* The planet is right-cropped (its right edge is off the viewport),
+   so chips must sit inside the planet's VISIBLE left portion to land
+   on the viewport. Both tightened onto the globe's visible face so
+   they clearly ride ON the sphere, framing it diagonally (top-right
+   ↘ bottom-left) rather than hugging its outer edges. */
+
+.hero__chip--languages {
+  top: 22%;
+  left: 48%;
+}
+
+.hero__chip--availability {
+  top: auto;
+  bottom: 24%;
+  left: 24%;
+}
+
+.hero__chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-lime, #9BC647);
+  box-shadow: 0 0 0 3px rgba(155, 198, 71, 0.3);
+  animation: hero-chip-pulse 1.9s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.hero__chip-label {
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--brand-lime, #9BC647);
+}
+
+.hero__chip-text {
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+@keyframes hero-chip-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 3px rgba(155, 198, 71, 0.25);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 5px rgba(155, 198, 71, 0.4);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .eyebrow__dot {
     animation: none;
@@ -325,6 +413,15 @@
   .hero__cta,
   .hero__badges {
     opacity: 1;
+  }
+
+  /* Mobile: the availability chip is normally revealed by the Stage 6
+     tween; without the pin timeline that never fires. Hide it on mobile
+     — the globe sits bottom-center with no "settled right" moment to
+     anchor the chip to, and the hero already carries the "24/7 turnaround"
+     badge in the ISO list below. */
+  .hero__chip {
+    display: none;
   }
 
   /* Headline wrap: hide "every" on line 1, show it at the start of the

@@ -246,6 +246,11 @@
   width: 100%;
   max-width: 460px;
   margin-left: auto;
+  /* The entire hero-visual area is aria-hidden / decorative. Letting
+     ANY child (globe canvas, chip pills, glow div) capture a touch
+     locks the page in the hero on mobile. Enforce vertical panning
+     across the whole visual block so swipe-scroll always wins. */
+  touch-action: pan-y;
 }
 
 /* Globe variant — used on /services landing. Sized to match About
@@ -282,12 +287,23 @@
   align-items: center;
   justify-content: center;
   z-index: 2;
+  /* The hero globe is purely decorative (its wrapper is aria-hidden).
+     Letting the WebGL canvas receive pointer/touch events was swallowing
+     swipe-scroll gestures on mobile — users got "stuck" in the hero
+     because the canvas captured the touch instead of the page scrolling.
+     Disabling pointer events here passes gestures through to the page.
+     `!important` because Three.js writes inline `style="touch-action"`
+     on the <canvas> element and would otherwise override us. */
+  pointer-events: none !important;
+  touch-action: pan-y !important;
 }
 
 .svc-hero-globe-canvas canvas {
   width: 100% !important;
   height: 100% !important;
   display: block;
+  pointer-events: none !important;
+  touch-action: pan-y !important;
 }
 
 .svc-hero-visual::before {
@@ -342,7 +358,13 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  border-radius: 999px;
+  /* Sharp 2px corners per request — swapped from the full-pill
+     `border-radius: 999px` to a crisp near-rectangular look. */
+  border-radius: 2px;
+  /* Chips are decorative badges — don't let them swallow swipe gestures
+     on mobile. */
+  pointer-events: none;
+  touch-action: pan-y;
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.28);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);

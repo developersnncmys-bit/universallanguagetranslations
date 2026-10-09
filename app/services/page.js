@@ -148,11 +148,11 @@ export default function ServicesPage() {
           <div className="svc-hero-visual svc-hero-visual--globe" aria-hidden="true">
             <div className="svc-hero-chip svc-hero-chip--one">
               <span className="dot" />
-              100+ Languages
+              7 Core services
             </div>
             <div className="svc-hero-chip svc-hero-chip--two">
               <span className="dot" />
-              24/7 Availability
+              AI-ready data
             </div>
             <div className="svc-hero-globe-wrap">
               <div className="svc-hero-globe-glow" />

@@ -28,12 +28,18 @@ const audiowide = Audiowide({
 // override values for font `Big Shoulders`" warning on every dev boot when
 // it tries to generate a matched fallback. We're OK with the browser's
 // default fallback here, so disable the auto-adjust to silence the warning.
+// `adjustFontFallback: false` tells the loader not to generate a size-adjusted
+// fallback @font-face (Big Shoulders isn't in Next's capsize-font-metrics table,
+// so the lookup would throw and log a warning). Explicit `fallback` provides a
+// deterministic system-font stack so there's no auto-generation attempt at all
+// — this is what finally silences the warning on this Turbopack build.
 const bigShoulders = Big_Shoulders({
   variable: "--font-hero",
   subsets: ["latin"],
   display: "swap",
   weight: ["700", "800", "900"],
   adjustFontFallback: false,
+  fallback: ["Impact", "Arial Black", "system-ui", "sans-serif"],
 });
 
 export const metadata = {

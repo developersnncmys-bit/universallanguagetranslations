@@ -89,10 +89,14 @@ export default function ServicesAnimations() {
 
     tweens.push(heroTl);
 
-    /* ─── HERO parallax — visual + title drift on scroll ─── */
+    /* ─── HERO parallax — visual + title drift on scroll.
+       Desktop only. On mobile the scrubbed parallax drives per-frame
+       work on every scroll event AND was contributing to the "stuck
+       in hero" complaint on touch devices. Skip the parallax on narrow
+       viewports — hero still has entrance animations above. ─── */
 
     const heroSection = el(".svc-hero");
-    if (heroSection) {
+    if (heroSection && !isMobile) {
       if (heroVisual) {
         tweens.push(
           gsap.to(heroVisual, {

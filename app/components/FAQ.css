@@ -94,32 +94,64 @@
   color: #0a1638;
 }
 
-/* Right-side toggle indicator — a small circle that fills when open. */
+/* Right-side toggle indicator — plus (collapsed) ↔ minus (expanded).
+   Built from the two existing <span>s so the JSX doesn't change:
+     - `.faq__icon` is a 16px container; its ::before is the horizontal bar.
+     - `.faq__icon-dot` is repurposed as the vertical bar.
+   On open, the vertical bar scales to 0 so only the horizontal remains → "−". */
 .faq__icon {
+  position: relative;
   justify-self: end;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(10, 22, 56, 0.5);
+  width: 16px;
+  height: 16px;
   display: grid;
   place-items: center;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.faq__icon-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+  border: 0;
+  border-radius: 0;
   background: transparent;
-  transition: background 0.2s ease;
+  color: rgba(10, 22, 56, 0.6);
+  transition: color 0.2s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Horizontal bar — always visible, forms the baseline of both states. */
+.faq__icon::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transform: translateY(-50%);
+}
+
+/* Vertical bar — intersects the horizontal bar to form a "+".
+   Collapses to 0 when the item opens, leaving only the "−". */
+.faq__icon-dot {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: currentColor;
+  border-radius: 2px;
+  transform: translateX(-50%) scaleY(1);
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Open state — vertical bar collapses, container rotates 180° for a
+   subtle "settle" motion, and the icon color darkens so the active row
+   reads a touch stronger than closed rows. */
 .faq__item.is-open .faq__icon {
-  border-color: #0a1638;
+  color: #0a1638;
+  transform: rotate(180deg);
 }
 
 .faq__item.is-open .faq__icon-dot {
-  background: #0a1638;
+  transform: translateX(-50%) scaleY(0);
 }
 
 /* Answer collapse — CSS grid trick: animate `grid-template-rows` from 0fr
