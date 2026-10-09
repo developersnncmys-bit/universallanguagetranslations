@@ -311,7 +311,7 @@ export default function Header() {
 
         <div className="site-header__actions">
           <Link
-            href="#enquiry"
+            href="/contact"
             className="btn btn-solid-light"
             onClick={closeMenu}
           >

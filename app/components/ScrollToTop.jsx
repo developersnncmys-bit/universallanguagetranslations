@@ -1,28 +1,46 @@
+
 "use client";
 
-import { useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { useLayoutEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 
-/**
- * Scrolls to the top of the page on every route change.
- *
- * Next.js App Router preserves scroll position between client-side
- * navigations by default. For a marketing site that behavior is
- * disorienting — users click "About Us" halfway down a long Services
- * page and land halfway down the About page. This component listens
- * for pathname changes and forces the viewport back to (0, 0).
- *
- * `behavior: "instant"` is deliberate: a smooth scroll on nav would
- * animate the user up before the new page fades in, which reads as a
- * stutter. Instant scroll + the page's own entrance animations gives
- * a clean "fresh page" feel.
- */
 export default function ScrollToTop() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, [pathname]);
+  useLayoutEffect(() => {
+    // Prevent the browser from restoring an old scroll position.
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    const scrollToTop = () => {
+      // Reset Lenis first, if it is enabled.
+      if (window.__lenis) {
+        window.__lenis.scrollTo(0, {
+          immediate: true,
+          force: true,
+        });
+      }
+
+      // Reset native scrolling without smooth animation.
+      document.documentElement.style.scrollBehavior = "auto";
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      window.scrollTo(0, 0);
+    };
+
+    // Reset immediately and again after the route starts rendering.
+    scrollToTop();
+
+    const frame = requestAnimationFrame(() => {
+      scrollToTop();
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [pathname, searchParams]);
 
   return null;
 }
