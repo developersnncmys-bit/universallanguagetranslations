@@ -29,7 +29,11 @@
   position: relative;
 
   width: 100%;
-  min-height: calc(100vh - 82px);
+  /* Fixed at 700px — the hero was previously pushed taller than this
+     floor by the 600px globe + 560px visual min-height + 190px padding
+     (adding up to ~790px). Those inner constraints are reduced below so
+     the floor actually kicks in. */
+  min-height: 700px;
 
   display: flex;
   /* Anchor content to the top of the hero instead of vertically centering
@@ -37,7 +41,7 @@
      down the screen. Padding-top handles navbar clearance. */
   align-items: flex-start;
 
-  padding: 110px 0 80px;
+  padding: 55px 0 60px;
 
   overflow: hidden;
 
@@ -133,7 +137,10 @@
 .contact-hero-visual {
   position: relative;
   height: 100%;
-  min-height: 560px;
+  /* Enlarged to match the About globe size — 680px floor so the globe
+     has room without being cramped. Hero itself will stretch past its
+     700px min-height on wider viewports where the globe is 680px. */
+  min-height: 680px;
 
   display: flex;
   align-items: center;
@@ -144,12 +151,19 @@
 
 .contact-globe-wrap {
   position: relative;
-  width: min(600px, 46vw);
+  /* Slightly smaller than About's `min(680px, 48vw)` — the Contact
+     hero's shorter height reads better with a ~12% smaller sphere. */
+  width: min(600px, 44vw);
   aspect-ratio: 1;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* Previously `translateY(32px)` to mirror About's nudge-down; lifted
+     back near the baseline so the globe sits a touch higher in the
+     Contact hero (which is shorter than About's). */
+  transform: translateY(0);
 
   will-change: transform;
 }

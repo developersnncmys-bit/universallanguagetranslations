@@ -36,8 +36,10 @@
   position: relative;
 
   width: 100%;
-  height: calc(100vh - 82px);
-  min-height: 760px;
+  /* Trimmed from the original 100vh / 760px — settled at ~84vh with a
+     720px floor after a round-trip through 88vh and 78vh. */
+  height: calc(84vh - 82px);
+  min-height: 720px;
 
   display: flex;
   align-items: center;
@@ -410,6 +412,10 @@
 
   align-items: center;
   justify-content: center;
+
+  /* Nudged down inside its hero cell so the globe sits a touch lower
+     than the headline instead of lining up with the eyebrow. */
+  transform: translateY(32px);
 
   will-change: transform;
 }
