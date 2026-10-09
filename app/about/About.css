@@ -917,6 +917,196 @@
 
 
 /* =========================================================
+   TRUSTED BY — client wordmark strip
+   Standalone section sitting between the Story and Mission
+   sections — rendered OUTSIDE the pinned story section so the
+   ScrollTrigger pin doesn't bleed it into the Mission's dark
+   background. Light background, muted text, generous padding.
+========================================================= */
+
+.about-clients {
+  position: relative;
+  width: 100%;
+  padding: 35px 0 65px;
+  background: #ffffff;
+  z-index: 2;
+}
+
+.about-clients-inner {
+  width: min(1500px, calc(100% - 76px));
+  margin: 0 auto;
+  padding-top: 0;
+  border-top: none;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 42px;
+}
+
+.about-clients-label {
+  margin:0;
+  color: var(--ink-500);
+
+  font-family: var(--font-jakarta), sans-serif;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.22em;
+
+  text-transform: uppercase;
+  text-align:center;
+}
+
+.about-clients-list {
+  list-style: none;
+
+  margin: 0;
+
+  padding: 5px 0 0;
+
+  display: flex;
+
+  /* Single-row layout: all 8 logos distributed evenly across the full
+     container width. No wrap. */
+  flex-wrap: nowrap;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  width: 100%;
+
+  gap: clamp(12px, 2vw, 32px);
+}
+
+.about-client {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  /* Each cell takes an equal share of the row (`flex: 1`), capped so
+     wide logos (Uber, Accenture) don't blow up on huge screens. All 8
+     logos share the row, every cell is the same width, every logo lands
+     on the same baseline. */
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 160px;
+  height: 60px;
+
+  /* GSAP reveal start state — reset to visible once the section's
+     entrance tween in AboutAnimations.jsx fires. */
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.about-client-name {
+  color: var(--ink-700);
+
+  font-family: var(--font-hero), var(--font-display);
+
+  font-size: clamp(16px, 1.4vw, 20px);
+
+  font-weight: 700;
+
+  letter-spacing: 0.02em;
+
+  text-transform: uppercase;
+
+  opacity: 0.72;
+
+  transition: opacity 0.25s ease, color 0.25s ease;
+
+  white-space: nowrap;
+}
+
+.about-client:hover .about-client-name {
+  opacity: 1;
+
+  color: var(--ink-900);
+}
+
+/* If a licensed logo image is dropped in (<img> swapped for the
+   <span>), size it uniformly and keep the muted-grayscale treatment
+   that unifies the strip. Removing `filter: grayscale(1)` on the
+   `<img>` would restore brand colors on hover. */
+.about-client-logo {
+  display: block;
+
+  /* Centered inside the `.about-client` cell. `max-width: 100%`
+     caps wide logos (Uber, Accenture) to the cell width; `max-height`
+     caps tall logos (Merck, Healofy). Both constraints + object-fit:
+     contain = every logo renders at its natural aspect ratio within a
+     uniform box. */
+  max-width: 100%;
+  max-height: 40px;
+
+  width: auto;
+  height: auto;
+
+  object-fit: contain;
+
+  /* Full color — grayscale filter removed per request. */
+  opacity: 1;
+
+  transition: transform 0.3s ease;
+}
+
+.about-client:hover .about-client-logo {
+  transform: scale(1.06);
+}
+
+/* Narrow screens — 8 logos packed in one row shrinks each to ~40px wide,
+   below readability. Allow wrap and let the cells size naturally.
+   Tightened row/column gaps so the 2×4 grid reads as a cluster, not a
+   spaced-out list. */
+@media (max-width: 900px) {
+  .about-clients-list {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 24px;
+  }
+  .about-client {
+    flex: 0 0 auto;
+    width: clamp(90px, 22vw, 120px);
+    height: 44px;
+  }
+  .about-client-logo {
+    max-height: 30px;
+  }
+}
+
+/* Phone portrait — the enclosing section's padding dominates the visual
+   spacing. Trim it so the logo grid sits closer to the divider above
+   without feeling floating. */
+@media (max-width: 600px) {
+  .about-clients {
+    /* Drop the top padding further — the gap above "TRUSTED BY TEAMS AT"
+       was reading as a large empty band because `.about-story`'s
+       `min-height: 100vh` left tail-end whitespace in the previous
+       section. Trimming here closes the gap without touching the story
+       layout. */
+    padding: 25px 0 40px;
+  }
+  .about-clients-inner {
+   gap: 28px;
+   padding-top: 0;
+   border-top: none;
+  }
+  /* Let the Story section size to its content on narrow phones so there
+     isn't a tall empty tail between the "From language to meaning…"
+     bottom caption and the TRUSTED BY strip that follows. */
+  .about-story {
+    min-height: 0;
+  }
+}
+
+
+/* =========================================================
    MISSION
 ========================================================= */
 

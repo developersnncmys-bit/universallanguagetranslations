@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import GlobeCanvas from "../components/GlobeCanvas";
 import EnquirySection from "../components/EnquirySection";
 import "./Contact.css";
 
@@ -75,64 +76,13 @@ export default function ContactPage() {
           </div>
 
 
-          <div className="contact-hero-aside">
-
-            <div className="contact-chat" aria-label="Example conversation with the ULT team">
-
-              <div className="contact-chat-header">
-                <div className="contact-chat-avatar" aria-hidden="true">
-                  ULT
-                </div>
-                <div className="contact-chat-identity">
-                  <div className="contact-chat-name">ULT team</div>
-                  <div className="contact-chat-status">
-                    <span className="contact-chat-dot" />
-                    Online · typically replies in minutes
-                  </div>
-                </div>
+          <div className="contact-hero-visual" aria-hidden="true">
+            <div className="contact-globe-wrap">
+              <div className="contact-globe-glow" />
+              <div className="contact-globe-canvas">
+                <GlobeCanvas />
               </div>
-
-              <div className="contact-chat-body">
-
-                <div className="contact-chat-msg contact-chat-msg--in">
-                  <p>
-                    Hi — need to translate 12 legal documents into Spanish.
-                    Can you quote?
-                  </p>
-                  <span className="contact-chat-time">10:02</span>
-                </div>
-
-                <div className="contact-chat-msg contact-chat-msg--out">
-                  <p>
-                    Yes — assigning a sworn legal translator now.
-                    Scoped quote in your inbox within the hour. ⚡
-                  </p>
-                  <span className="contact-chat-time">10:03</span>
-                </div>
-
-                <div className="contact-chat-msg contact-chat-msg--in">
-                  <p>Deadline is Friday — doable?</p>
-                  <span className="contact-chat-time">10:05</span>
-                </div>
-
-                <div className="contact-chat-msg contact-chat-msg--out">
-                  <p>
-                    Doable. Sworn stamp included — no extra charge for the turnaround.
-                    ✅
-                  </p>
-                  <span className="contact-chat-time">10:06</span>
-                </div>
-
-                <div className="contact-chat-typing" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
-                </div>
-
-              </div>
-
             </div>
-
           </div>
 
         </div>

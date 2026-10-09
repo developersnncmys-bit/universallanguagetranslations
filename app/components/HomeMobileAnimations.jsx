@@ -50,7 +50,12 @@ export default function HomeMobileAnimations() {
     };
 
     // Services (intro-pin content)
-    reveal(".services__intro-title");
+    // NOTE: `.services__intro-title` is intentionally NOT animated here.
+    // Setting `opacity: 0` on the h2 wrapper risks leaving the heading
+    // invisible if the ScrollTrigger misfires (which was happening on
+    // mobile — the title ends up stuck blank). The CSS override
+    // `.scrub-word { opacity: 1 }` already shows the words at full
+    // brightness on mobile, so no reveal animation is needed.
     reveal(".services__intro-right p", { stagger: 0.08 });
     reveal(".services__intro-cta");
     reveal(".intro-stat", { stagger: 0.1 });
@@ -72,11 +77,13 @@ export default function HomeMobileAnimations() {
     reveal(".subsvc__hscroll-intro");
     reveal(".spec-card", { stagger: 0.08, y: 32 });
 
-    // Why Choose Us
+    // Why Choose Us — `.why-feat` cards are intentionally NOT animated
+    // here. `WhyChooseUs.jsx` runs its own per-card `gsap.fromTo` on
+    // every breakpoint; a second tween from this file was fighting with
+    // it and causing cards to flicker / disappear as the user scrolled.
     reveal(".why__label");
     reveal(".why__title");
     reveal(".why__intro-desc");
-    reveal(".why-feat", { stagger: 0.1, y: 32 });
 
     // Process
     reveal(".process__eyebrow");
@@ -91,10 +98,14 @@ export default function HomeMobileAnimations() {
     reveal(".faq__desc");
     reveal(".faq__help", { y: 24 });
 
-    // Enquiry Section
+    // Enquiry Section — form (`.enq-form`) is intentionally NOT animated
+    // here. The intro + form live in a vertical stack on mobile, so by
+    // the time the user scrolls to the intro, the form is already in or
+    // very close to the viewport. A `from({ opacity: 0 })` on the form
+    // left it stuck blank when its ScrollTrigger fired too early. Let
+    // the form render in its natural CSS state.
     reveal(".enq__title");
     reveal(".enq__lede");
-    reveal(".enq-form", { y: 40 });
 
     const rafId = requestAnimationFrame(() => ScrollTrigger.refresh());
 

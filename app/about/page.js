@@ -5,6 +5,21 @@ import GlobeCanvas from "../components/GlobeCanvas";
 import AboutAnimations from "./AboutAnimations";
 import "./About.css";
 
+// Client wordmarks shown in the "Trusted by" strip. Each entry has a
+// text label (used by default, and as alt text) plus an optional logo
+// path. If you drop a licensed SVG/PNG at that path, the image shows;
+// otherwise the component falls back to the styled text wordmark.
+const clients = [
+  { name: "Amazon", logo: "/about-logos/amazon.png" },
+  { name: "Uber", logo: "/about-logos/Uber.png" },
+  { name: "Glenmark", logo: "/about-logos/Glemark.png" },
+  { name: "Ipca", logo: "/about-logos/Ipca.png" },
+  { name: "Healofy", logo: "/about-logos/Healofy.png" },
+  { name: "Merck", logo: "/about-logos/Merk.png" },
+  { name: "Accenture", logo: "/about-logos/Accenture.png" },
+  { name: "Cognizant", logo: "/about-logos/Cognizant.png" },
+];
+
 const values = [
   {
     number: "01",
@@ -252,6 +267,40 @@ export default function AboutPage() {
             </div>
 
           </div>
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          TRUSTED BY — client wordmark strip
+          Rendered as its own section (NOT inside .about-story)
+          so it isn't affected by the Story section's ScrollTrigger
+          pin. Text labels by default; drop a licensed SVG/PNG at
+          `public/logos/<slug>.svg` and swap the <span> for an
+          <img src={c.logo} alt={c.name} /> to use real logos.
+      ===================================================== */}
+
+      <section className="about-clients">
+
+        <div className="about-clients-inner">
+
+          <span className="about-clients-label">
+            TRUSTED BY TEAMS AT
+          </span>
+
+          <ul className="about-clients-list">
+            {clients.map((c) => (
+              <li className="about-client" key={c.name}>
+               <img
+                src={c.logo}
+                alt={`${c.name} logo`}
+                className="about-client-logo"
+              />
+              </li>
+               ))}
+          </ul>
 
         </div>
 

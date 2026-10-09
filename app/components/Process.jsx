@@ -53,8 +53,12 @@ export default function Process() {
     if (!root || !steps) return;
 
     const ctx = gsap.context(() => {
-      // 1) Number circles pop in with a rotate + scale bounce when the steps
-      //    row first enters the viewport.
+      // Faster entrances — earlier triggers (top 92%), shorter durations
+      // and no reverse-on-scroll-up so content doesn't blank out when the
+      // user scrolls back up past the section.
+
+      // 1) Number circles pop in with a rotate + scale bounce when the
+      //    steps row first enters the viewport.
       numRefs.current.forEach((el, i) => {
         if (!el) return;
         gsap.fromTo(
@@ -64,13 +68,13 @@ export default function Process() {
             scale: 1,
             rotate: 0,
             opacity: 1,
-            duration: 0.7,
-            delay: i * 0.12,
+            duration: 0.5,
+            delay: i * 0.08,
             ease: "back.out(1.8)",
             scrollTrigger: {
               trigger: steps,
-              start: "top 82%",
-              toggleActions: "play none none reverse",
+              start: "top 92%",
+              toggleActions: "play none none none",
             },
           }
         );
@@ -79,17 +83,17 @@ export default function Process() {
       // 2) Cards fade + slide up in stagger from below.
       gsap.fromTo(
         cardRefs.current.filter(Boolean),
-        { opacity: 0, y: 40 },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.7,
-          stagger: 0.12,
+          duration: 0.45,
+          stagger: 0.08,
           ease: "power2.out",
           scrollTrigger: {
             trigger: steps,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
+            start: "top 92%",
+            toggleActions: "play none none none",
           },
         }
       );

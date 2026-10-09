@@ -5,19 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "./Header.css";
 
-// 24/7 availability badge — pulsing green "live" dot + "24/7 AVAILABLE".
-// Reads as a direct business promise to clients: we're staffed around
-// the clock, every day. The dot reinforces "right this moment."
-function LiveClock() {
-  return (
-    <div className="live-clock" aria-label="We are available 24 hours a day, 7 days a week">
-      <span className="live-clock__dot" aria-hidden="true" />
-      <span className="live-clock__label">24/7</span>
-      <span className="live-clock__promise">Availability</span>
-    </div>
-  );
-}
-
 const NAV = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
@@ -28,19 +15,15 @@ const NAV = [
       {
         label: "Translation",
         href: "/services/translation",
-        // All industry sub-items point at the main /services/translation
-        // page (the per-industry detail pages aren't built yet; keep the
-        // dropdown items so the structure is visible, but route them all
-        // to the parent until the detail pages exist).
         children: [
-          { label: "Medical Translation Services", href: "/services/translation" },
-          { label: "E-commerce Translation Services", href: "/services/translation" },
-          { label: "E-learning Translation Services", href: "/services/translation" },
-          { label: "Financial Translation Services", href: "/services/translation" },
-          { label: "Business Translation Services", href: "/services/translation" },
-          { label: "Marketing Translation Services", href: "/services/translation" },
-          { label: "Legal Translation Services", href: "/services/translation" },
-          { label: "Technical Translation Services", href: "/services/translation" },
+          { label: "Medical Translation Services", href: "/services/translation/medical" },
+          { label: "E-commerce Translation Services", href: "/services/translation/e-commerce" },
+          { label: "E-learning Translation Services", href: "/services/translation/e-learning" },
+          { label: "Financial Translation Services", href: "/services/translation/financial" },
+          { label: "Business Translation Services", href: "/services/translation/business" },
+          { label: "Marketing Translation Services", href: "/services/translation/marketing" },
+          { label: "Legal Translation Services", href: "/services/translation/legal" },
+          { label: "Technical Translation Services", href: "/services/translation/technical" },
         ],
       },
       { label: "Transcription", href: "/services/transcription" },
@@ -106,19 +89,46 @@ function NavItem({ item, depth, onNavigate, pathname, isMobile }) {
   const hasChildren = Array.isArray(item.children) && item.children.length > 0;
   const active = isPathActive(pathname, item.href);
   const [isSubOpen, setIsSubOpen] = useState(false);
+  // `justClicked` — true for a brief moment right after any descendant link
+  // is tapped. The CSS `.is-just-clicked` class forces the dropdown hidden
+  // via `display: none !important`, overriding the lingering `:hover` /
+  // `:focus-within` state that would otherwise keep the panel visible
+  // until the mouse moves off the <li>. Cleared on `mouseleave`.
+  const [justClicked, setJustClicked] = useState(false);
   const linkClass = active ? "is-active" : undefined;
   const liClass = [
     hasChildren ? "has-dropdown" : "",
     active ? "is-active" : "",
     isSubOpen ? "is-sub-open" : "",
+    justClicked ? "is-just-clicked" : "",
   ].filter(Boolean).join(" ");
 
   // Label click — ALWAYS navigates to the item's page (even on mobile for
   // parent items that have a submenu). The caret toggle below handles
   // expanding the accordion separately, so users can either go to the
   // Services page or open its submenu without one blocking the other.
-  const handleClick = () => {
+  // Also blur the clicked element so the CSS `:focus-within` state on
+  // the parent <li> releases immediately — otherwise desktop dropdowns
+  // stay visually open after click until the user interacts elsewhere.
+  const handleClick = (e) => {
+    if (
+      typeof document !== "undefined" &&
+      document.activeElement instanceof HTMLElement
+    ) {
+      document.activeElement.blur();
+    }
+    // Flip into "just clicked" mode so the dropdown collapses even if the
+    // mouse is still hovering over the row.
+    if (hasChildren && !isMobile) {
+      setJustClicked(true);
+    }
     onNavigate();
+  };
+
+  // When the user eventually moves off the row, clear the override so
+  // normal hover/focus behavior takes over again on the next entry.
+  const handleMouseLeave = () => {
+    if (justClicked) setJustClicked(false);
   };
 
   // Caret click (mobile only, parent items with children) — toggles the
@@ -140,7 +150,11 @@ function NavItem({ item, depth, onNavigate, pathname, isMobile }) {
   const linkStyle = isMobile ? { color: "#ffffff" } : undefined;
 
   return (
-    <li className={liClass || undefined} data-mobile-nav={isMobile ? "" : undefined}>
+    <li
+      className={liClass || undefined}
+      data-mobile-nav={isMobile ? "" : undefined}
+      onMouseLeave={hasChildren && !isMobile ? handleMouseLeave : undefined}
+    >
       <Link
         href={item.href}
         onClick={handleClick}
@@ -296,7 +310,6 @@ export default function Header() {
         </nav>
 
         <div className="site-header__actions">
-          <LiveClock />
           <Link
             href="#enquiry"
             className="btn btn-solid-light"

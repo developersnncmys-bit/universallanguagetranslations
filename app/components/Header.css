@@ -343,6 +343,16 @@
   transform: translate(-50%, 4px);
 }
 
+/* After a dropdown link is clicked, the parent <li> gets `.is-just-clicked`
+   briefly. Force the panel hidden regardless of lingering :hover or
+   :focus-within state so the dropdown collapses immediately on click.
+   React clears this class on the next `mouseleave`. */
+.primary-nav ul > li.has-dropdown.is-just-clicked > .nav-dropdown {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* Depth 2 — flies out to the right of the parent item, aligned to its top */
 .nav-dropdown--depth-2 {
   top: 0;

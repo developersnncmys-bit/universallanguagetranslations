@@ -273,6 +273,18 @@
     grid-template-columns: 1fr;
     gap: 40px;
   }
+  /* Center the intro column (heading + description) on narrow screens
+     so it reads as a stacked lead-in to the form below. The desktop
+     left-aligned treatment pairs with the side-by-side layout; on
+     single-column stacking, centered reads more balanced. */
+  .enq__intro {
+    text-align: center;
+    margin-left: 0;
+  }
+  .enq__lede {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 @media (max-width: 560px) {

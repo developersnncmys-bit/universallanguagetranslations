@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect } from "react";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -21,9 +22,20 @@ gsap.registerPlugin(ScrollTrigger);
  * animations with a light scroll-scrub on the hero visual.
  */
 export default function ServicesAnimations() {
+  const pathname = usePathname();
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Kill any orphaned ScrollTriggers from a previous route — any
+    // trigger whose element is no longer in the document (sub-service
+    // DOM swapped out) is a leak that can still enforce stale pin
+    // spacers and freeze scroll on the new page. Scoped to orphans
+    // only so global triggers (PageAnimations `.reveal` etc.) survive.
+    ScrollTrigger.getAll().forEach((st) => {
+      const trig = st.trigger;
+      if (!trig || !document.contains(trig)) st.kill();
+    });
 
     // Mobile guard — pinned/scrubbed timelines (Overview, Why, Process)
     // are desktop-only. On narrow viewports those sections render
@@ -173,11 +185,13 @@ export default function ServicesAnimations() {
       // only the right-column "CAPABILITIES" eyebrow during approach.
       // Only the capability list items scrub in during the pin.
 
+      // Pin end tightened from 1200 → 800 so the capability-list reveal
+      // completes with less dead scroll.
       const overviewTl = gsap.timeline({
         scrollTrigger: {
           trigger: overviewSection,
           start: "top top",
-          end: "+=1200",
+          end: "+=800",
           pin: overviewSection,
           pinSpacing: true,
           scrub: 1,
@@ -190,7 +204,7 @@ export default function ServicesAnimations() {
         overviewTl.from(
           item,
           { y: 20, opacity: 0, duration: 0.14, ease: "power2.out" },
-          0.1 + i * 0.08
+          i * 0.06
         );
       });
 
@@ -334,15 +348,16 @@ export default function ServicesAnimations() {
 
     const whySection = el(".svc-why");
     if (whySection && !isMobile) {
-      const whyHeadBits = els(".svc-why-head > div > *");
-      const whyHeadPara = el(".svc-why-head > p");
+      // Head stays at natural CSS state so the section isn't blank when
+      // the pin fires. Only the 4 cards still scrub in. Pin end tightened
+      // from 1200 → 900 so the sequence completes with less dead scroll.
       const whyCards = els(".svc-why-card");
 
       const whyTl = gsap.timeline({
         scrollTrigger: {
           trigger: whySection,
           start: "top top",
-          end: "+=1200",
+          end: "+=900",
           pin: whySection,
           pinSpacing: true,
           scrub: 1,
@@ -351,30 +366,11 @@ export default function ServicesAnimations() {
         },
       });
 
-      if (whyHeadBits.length)
-        whyTl.from(
-          whyHeadBits,
-          {
-            y: 30,
-            opacity: 0,
-            stagger: 0.08,
-            duration: 0.16,
-            ease: "power3.out",
-          },
-          0
-        );
-      if (whyHeadPara)
-        whyTl.from(
-          whyHeadPara,
-          { y: 24, opacity: 0, duration: 0.15, ease: "power2.out" },
-          0.18
-        );
-
       whyCards.forEach((card, i) => {
         whyTl.from(
           card,
           { y: 48, opacity: 0, duration: 0.16, ease: "power2.out" },
-          0.35 + i * 0.14
+          i * 0.14
         );
       });
 
@@ -424,7 +420,7 @@ export default function ServicesAnimations() {
         scrollTrigger: {
           trigger: processSection,
           start: "top top",
-          end: "+=1200",
+          end: "+=900",
           pin: processSection,
           pinSpacing: true,
           scrub: 1,
@@ -433,11 +429,13 @@ export default function ServicesAnimations() {
         },
       });
 
+      // Tightened offsets — steps start at timeline 0 and overlap more
+      // so the full 4-step reveal fits inside the shorter 900px pin.
       processSteps.forEach((step, i) => {
         processTl.from(
           step,
           { y: 48, opacity: 0, duration: 0.16, ease: "power2.out" },
-          0.1 + i * 0.18
+          i * 0.14
         );
       });
 
@@ -445,7 +443,7 @@ export default function ServicesAnimations() {
         processTl.from(
           num,
           { scale: 0.4, duration: 0.12, ease: "back.out(2)" },
-          0.14 + i * 0.18
+          i * 0.14 + 0.04
         );
       });
 
@@ -503,21 +501,35 @@ export default function ServicesAnimations() {
     if (ctaSection && ctaInner) {
       const ctaKids = Array.from(ctaInner.children);
 
+      /* On mobile swap the scrubbed reveal for a one-shot entrance —
+         scrub tweens drive per-frame work on every scroll event and feel
+         laggy on touch devices. */
       const ctaTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ctaSection,
-          start: "top 85%",
-          end: "bottom 70%",
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
+        scrollTrigger: isMobile
+          ? {
+              trigger: ctaSection,
+              start: "top 85%",
+              once: true,
+            }
+          : {
+              trigger: ctaSection,
+              start: "top 85%",
+              end: "bottom 70%",
+              scrub: 1,
+              invalidateOnRefresh: true,
+            },
       });
 
       ctaKids.forEach((kid, i) => {
         ctaTl.from(
           kid,
-          { y: 48, opacity: 0, duration: 0.2, ease: "power2.out" },
-          0.1 + i * 0.18
+          {
+            y: 48,
+            opacity: 0,
+            duration: isMobile ? 0.5 : 0.2,
+            ease: "power2.out",
+          },
+          isMobile ? i * 0.08 : 0.1 + i * 0.18
         );
       });
 
@@ -536,8 +548,22 @@ export default function ServicesAnimations() {
         if (typeof t.revert === "function") t.revert();
         else if (typeof t.kill === "function") t.kill();
       });
+      // Clear any lingering pin-spacers in the DOM so the next page
+      // doesn't inherit an empty tall wrapper div that scroll gets
+      // "stuck" against. ScrollTrigger adds `.pin-spacer` wrappers
+      // around pinned elements and doesn't always unwrap on fast
+      // route change.
+      document
+        .querySelectorAll(".pin-spacer")
+        .forEach((spacer) => {
+          const child = spacer.firstElementChild;
+          if (child && spacer.parentNode) {
+            spacer.parentNode.insertBefore(child, spacer);
+            spacer.remove();
+          }
+        });
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }

@@ -35,19 +35,24 @@ export default function PageAnimations() {
     }
 
     const ctx = gsap.context(() => {
+      // `.reveal` entrance — tightened for snappier perceived loading.
+      // Trigger fires earlier (top 92% instead of 85%), duration cut
+      // 0.9s → 0.55s, and `toggleActions` dropped the final `reverse`
+      // so content doesn't fade out again when the user scrolls back up
+      // past the trigger (which read as "the page keeps going blank").
       gsap.utils.toArray(".reveal").forEach((el) => {
         gsap.fromTo(
           el,
-          { opacity: 0, y: 40 },
+          { opacity: 0, y: 30 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.9,
-            ease: "power2.out",
+            duration: 0.55,
+            ease: "power3.out",
             scrollTrigger: {
               trigger: el,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
+              start: "top 92%",
+              toggleActions: "play none none none",
             },
           }
         );
@@ -57,17 +62,17 @@ export default function PageAnimations() {
         const children = Array.from(el.children);
         gsap.fromTo(
           children,
-          { opacity: 0, y: 32 },
+          { opacity: 0, y: 24 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.7,
-            stagger: 0.08,
-            ease: "power2.out",
+            duration: 0.5,
+            stagger: 0.05,
+            ease: "power3.out",
             scrollTrigger: {
               trigger: el,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
+              start: "top 92%",
+              toggleActions: "play none none none",
             },
           }
         );

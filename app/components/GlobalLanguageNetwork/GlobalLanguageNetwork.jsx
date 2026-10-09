@@ -8,24 +8,28 @@ import "./GlobalLanguageNetwork.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Capability items shown on the left rail. Order matches the highlight sweep timing.
+// Left rail — conceptual capabilities (what the network enables), not a
+// catalogue of deliverables. Order matches the highlight sweep timing.
 const COVERAGE = [
-  "GLOBAL LANGUAGE SUPPORT",
+  "GLOBAL LANGUAGE REACH",
   "MULTILINGUAL CONTENT",
-  "CROSS-LANGUAGE COMMUNICATION",
+  "CROSS-CULTURAL CLARITY",
   "LOCALIZATION & ADAPTATION",
-  "LANGUAGE DATA SERVICES",
+  "CONTEXT-AWARE DELIVERY",
 ];
 
-// Service categories on the right rail — mirror the Services section list.
-const SERVICES = [
-  "TRANSLATION",
-  "TRANSCRIPTION",
-  "SUBTITLES",
-  "VOICEOVER",
-  "DATA ANNOTATION",
-  "DATA EVOLUTION",
-  "MULTILINGUAL DATA",
+// Right rail — the live markets the network covers. Ties the rail items to
+// the map's visible hub pins so the "global network" claim reads as a real
+// footprint rather than an abstract claim.
+const MARKETS = [
+  "NORTH AMERICA",
+  "SOUTH AMERICA",
+  "EUROPE",
+  "MIDDLE EAST",
+  "SOUTH ASIA",
+  "EAST ASIA",
+  "SOUTHEAST ASIA",
+  "AUSTRALIA",
 ];
 
 // Geographic hubs — logical regions rather than office pins. Each has a lat/lng
@@ -61,10 +65,14 @@ const MAP_HEIGHT = 400;
 // getSVG returns a bare `<svg>...</svg>` string; we grab the inner content
 // via a viewBox-preserving wrapper below.
 function buildMapAssets() {
-  const map = new DottedMap({ height: 60, grid: "diagonal" });
+  // Higher dot density (height 60 → 68) so continents read as filled shapes
+  // rather than sparse constellations. Base color is set via CSS below —
+  // we pass a neutral placeholder here so the inline SVG dots inherit the
+  // cascaded fill (dark teal blue) at runtime.
+  const map = new DottedMap({ height: 68, grid: "diagonal" });
   const svg = map.getSVG({
-    radius: 0.26,
-    color: "rgba(139, 180, 255, 0.09)",
+    radius: 0.28,
+    color: "currentColor",
     shape: "circle",
     backgroundColor: "transparent",
   });
@@ -233,9 +241,12 @@ export default function GlobalLanguageNetwork() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: rootRef.current,
-          start: "top 75%",
+          // Trigger earlier (top 88% instead of 75%) so the network starts
+          // activating as soon as it enters view, and drop the reverse so
+          // scrolling back up doesn't wipe the completed state.
+          start: "top 88%",
           end: "bottom 25%",
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
           refreshPriority: 5,
         },
         onComplete: startParticleLoop,
@@ -439,19 +450,6 @@ export default function GlobalLanguageNetwork() {
           <div className="ult-global-language-network__brand">
             UNIVERSAL LANGUAGE · GLOBAL NETWORK
           </div>
-          <div className="ult-global-language-network__status">
-            <span>
-              HUBS{" "}
-              <b ref={statusHubsRef}>00</b>
-              <em>/ {String(HUBS.length).padStart(2, "0")}</em>
-            </span>
-            <span>
-              ROUTES{" "}
-              <b ref={statusRoutesRef}>00</b>
-              <em>/ {String(CONNECTIONS.length).padStart(2, "0")}</em>
-            </span>
-            <span className="ult-global-language-network__status-dot" aria-hidden="true" />
-          </div>
         </header>
 
         <div className="ult-global-language-network__stage">
@@ -531,15 +529,15 @@ export default function GlobalLanguageNetwork() {
             </svg>
           </div>
 
-          <ul className="ult-global-language-network__rail ult-global-language-network__rail--right" aria-label="Services">
-            <li className="ult-global-language-network__rail-title">SERVICES</li>
-            {SERVICES.map((svc, i) => (
+          <ul className="ult-global-language-network__rail ult-global-language-network__rail--right" aria-label="Active global markets covered by the network">
+            <li className="ult-global-language-network__rail-title">ACTIVE MARKETS</li>
+            {MARKETS.map((market, i) => (
               <li
-                key={svc}
+                key={market}
                 className="ult-global-language-network__rail-item"
                 ref={(el) => (serviceRefs.current[i] = el)}
               >
-                {svc}
+                {market}
                 <span className="ult-global-language-network__rail-marker" aria-hidden="true" />
               </li>
             ))}
@@ -554,7 +552,7 @@ export default function GlobalLanguageNetwork() {
             className="ult-global-language-network__caption"
             ref={captionRef}
           >
-            Connecting languages, content and data across global markets.
+            Fluency, culture and context moving naturally across every market we reach.
           </p>
         </footer>
       </div>

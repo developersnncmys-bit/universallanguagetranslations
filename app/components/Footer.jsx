@@ -6,10 +6,12 @@ import "./Footer.css";
 
 const NAV = [
   {
-    heading: "About Us",
+    heading: "Pages",
     links: [
-      { label: "Company", href: "/about" },
-      { label: "Careers", href: "/careers" },
+      { label: "Home", href: "/" },
+      { label: "About Us", href: "/about" },
+      { label: "Services", href: "/services" },
+      { label: "Contact Us", href: "/contact" },
     ],
   },
   {
@@ -25,7 +27,6 @@ const NAV = [
   {
     heading: "Support",
     links: [
-      { label: "Contact us", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms & Conditions", href: "/terms" },
     ],
@@ -232,11 +233,6 @@ export default function Footer() {
 
       <div className="container site-footer__bottom">
         <p>© {year} Universal Language Translations. All rights reserved.</p>
-        <div className="site-footer__legal">
-          <Link href="/privacy">Privacy</Link>
-          <span aria-hidden="true">·</span>
-          <Link href="/terms">Terms</Link>
-        </div>
       </div>
 
       <div className="site-footer__wordmark-row">

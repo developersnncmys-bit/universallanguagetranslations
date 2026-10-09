@@ -33,9 +33,10 @@
 .ult-global-language-network__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 24px;
   padding-bottom: 32px;
+  text-align: center;
 }
 
 .ult-global-language-network__brand {
@@ -66,7 +67,7 @@
 }
 
 .ult-global-language-network__status b {
-  color: #0B8792;
+  color: #146673;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.06em;
@@ -82,7 +83,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #0B8792;
+  background: #146673;
   box-shadow: 0 0 0 2px rgba(11, 135, 146, 0.20);
   animation: ult-gln-pulse 2.4s ease-in-out infinite;
 }
@@ -159,11 +160,11 @@
 }
 
 .ult-global-language-network__rail-item.is-active {
-  color: #0B8792;
+  color: #146673;
 }
 
 .ult-global-language-network__rail-item.is-active .ult-global-language-network__rail-marker {
-  background: #0B8792;
+  background: #146673;
   box-shadow: 0 0 4px rgba(11, 135, 146, 0.40);
 }
 
@@ -175,70 +176,92 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Container stays visible; the individual dots handle the reveal via
-     the GSAP timeline (westâ†’east wave). Also ensures the map is visible
-     if JS is disabled â€” dots inherit their fill from CSS. */
   opacity: 1;
+
+  /* currentColor cascade target — the inline SVG dots use fill:currentColor,
+     so this value drives the entire dotted continent base. Dark teal blue
+     from the brand palette (--blue-500 territory). */
+  color: #146673;
+}
+
+/* Subtle radial atmosphere behind the map — gives the dots a sense of
+   depth and keeps them from floating on flat white. */
+.ult-global-language-network__map::before {
+  content: "";
+  position: absolute;
+  inset: -4%;
+  background:
+    radial-gradient(
+      ellipse at 50% 50%,
+      rgba(27, 122, 142, 0.08) 0%,
+      rgba(27, 122, 142, 0.03) 40%,
+      transparent 72%
+    );
+  pointer-events: none;
+  z-index: 0;
 }
 
 .ult-global-language-network__map-svg {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: auto;
   max-height: 60vh;
   display: block;
   overflow: visible;
-  /* Sub-pixel dots need explicit geometric precision to render as clean
-     circles rather than soft/fuzzy blobs when the SVG scales up. */
   shape-rendering: geometricPrecision;
 }
 
-/* Base dot cloud â€” #7fe4dc at 60% alpha per spec. Establishes the world
-   map as the dominant substrate; hubs and routes sit brighter on top. */
+/* Base dot cloud — dark teal blue (--blue-500 / #1B7A8E range) at ~0.55
+   alpha so the continents read as solid, substantive shapes against the
+   white section background. Previous light mint rendered as a faint
+   ghost; the deeper teal gives the map actual weight. */
 .ult-global-language-network__map-dots circle {
-  fill: rgba(127, 228, 220, 0.6);
+  fill: rgba(20, 102, 115, 0.55);
   pointer-events: none;
 }
 
-/* Connection arcs â€” 1px hairlines in #0B8792 @ 35% alpha per spec.
-   `non-scaling-stroke` keeps visual width at exactly 1 CSS px regardless
-   of how the SVG viewBox is scaled to fit the container. */
+/* Connection arcs — brighter teal than the dots so routes read as "live
+   signal" tracing over the "static" continent cloud. Slightly thicker
+   stroke (1 → 1.2) with a soft glow (filter) for the premium feel. */
 .ult-global-language-network__map-arcs path {
-  stroke: rgba(11, 135, 146, 0.35);
-  stroke-width: 1;
+  stroke: #1B7A8E;
+  stroke-opacity: 0.85;
+  stroke-width: 1.2;
   stroke-linecap: round;
   fill: none;
   opacity: 0;
   vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 1.5px rgba(27, 122, 142, 0.5));
 }
 
-/* Active hubs â€” central bright dot + subtle glow + expanding ring. */
+/* Active hubs — central bright dot + subtle glow + expanding ring. */
 .ult-global-language-network__hub {
   pointer-events: none;
 }
 
 .ult-global-language-network__hub-dot {
-  fill: rgba(11, 135, 146, 0.55);
+  fill: rgba(155, 198, 71, 0.7);
   transition: fill 0.5s ease;
   transform-origin: center;
   transform-box: fill-box;
 }
 
-/* Soft glow layer â€” spec fill rgba(53, 217, 208,0.16) â€” sits beneath the
-   bright core dot. Deliberately subtle so the hub reads as a connection
-   point rather than a glowing button. The glow fades naturally into the
-   surrounding map dots via low alpha (no hard edge). */
+/* Soft glow layer — sits beneath the bright core dot. Lime green at low
+   alpha so the hotspot reads as a warm "live" marker against the deeper
+   teal base dots. Fades naturally via low alpha (no hard edge). */
 .ult-global-language-network__hub-glow {
-  fill: rgba(53, 217, 208, 0.16);
+  fill: rgba(155, 198, 71, 0.32);
   opacity: 0;
   transform-origin: center;
   transform-box: fill-box;
   transition: opacity 0.5s ease;
 }
 
-/* Outer pulse ring â€” very thin (0.5px non-scaling), low base opacity. */
+/* Outer pulse ring — very thin (0.5px non-scaling), low base opacity. */
 .ult-global-language-network__hub-ring {
   fill: none;
-  stroke: rgba(53, 217, 208, 0);
+  stroke: rgba(155, 198, 71, 0);
   stroke-width: 0.5;
   transform-origin: center;
   transform-box: fill-box;
@@ -247,8 +270,9 @@
 }
 
 .ult-global-language-network__hub.is-active .ult-global-language-network__hub-dot {
-  fill: #0B8792;
+  fill: #9BC647;
   animation: ult-gln-hub-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  filter: drop-shadow(0 0 2.5px rgba(155, 198, 71, 0.75));
 }
 
 .ult-global-language-network__hub.is-active .ult-global-language-network__hub-glow {
@@ -281,13 +305,13 @@
   50%      { transform: scale(1.1);  opacity: 1;   }
 }
 
-/* Data-flow particles â€” small #35D9D0 beads travelling along routes.
-   Position (cx, cy) is set by JS each frame from getPointAtLength.
-   Subtle drop-shadow so the bead reads as a "signal" rather than a
-   glowing button. */
+/* Data-flow particles — bright cyan beads travelling along routes. Position
+   (cx, cy) is set by JS each frame from getPointAtLength. Drop-shadow uses
+   the brand cyan so the bead glows as a "live signal" against the darker
+   teal arcs. */
 .ult-global-language-network__particle {
-  fill: #35D9D0;
-  filter: drop-shadow(0 0 1.5px rgba(53, 217, 208, 0.55));
+  fill: #45B0BC;
+  filter: drop-shadow(0 0 2px rgba(69, 176, 188, 0.7));
   pointer-events: none;
 }
 
@@ -349,7 +373,7 @@
   }
   .ult-global-language-network__header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
     padding-bottom: 20px;
   }

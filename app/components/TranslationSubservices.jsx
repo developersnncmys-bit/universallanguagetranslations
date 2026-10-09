@@ -111,10 +111,11 @@ export default function TranslationSubservices() {
             Math.max(0, track.scrollWidth - scroller.offsetWidth);
 
           // Hold phase — extra scroll distance during which the section
-          // stays pinned but the cards don't move. Substantial hold so the
-          // user has time to read the headline and register the section
-          // before the horizontal reveal starts.
-          const HOLD_PX = 900;
+          // stays pinned but the cards don't move. Trimmed from 900px →
+          // 300px so the horizontal reveal starts almost immediately
+          // once the headline is visible; the previous hold felt like
+          // the section was stuck before anything happened.
+          const HOLD_PX = 300;
 
           const tl = gsap.timeline({
             scrollTrigger: {

@@ -121,78 +121,58 @@ export default function AboutAnimations() {
     const storySection = el(".about-story");
 
     if (storySection && !isMobile) {
-      const storyImage = el(".about-story-image-wrap");
-      const storyMuted = el(".story-headline-muted");
-      const storyBlack = el(".story-headline-black");
-      const storyTeal = el(".story-headline-teal");
-      const storyEyebrow = el(".about-story-eyebrow");
+      // Image, headline parts, and eyebrow are rendered at their natural
+      // CSS state — no `.from()` tween — so they're visible the moment
+      // the "Our Story" anchor jumps to this section. Only the body
+      // paragraphs + CTA are collected below for the scrub reveal.
       const storyParas = els(".about-story-copy .story-reveal");
       const storyCta = el(".about-story-cta");
       const storyBottom = el(".about-story-bottom");
 
+      // Shortened from 1500 → 800px of pin scroll and pulled every reveal
+      // forward in the timeline — the previous pacing left the right
+      // column mostly blank for 60%+ of the pin.
       const storyTl = gsap.timeline({
         scrollTrigger: {
           trigger: storySection,
           start: "top top",
-          end: "+=1500",
+          end: "+=800",
           pin: storySection,
           pinSpacing: true,
-          scrub: 1,
+          scrub: 0.6,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
-      if (storyImage)
-        storyTl.from(
-          storyImage,
-          { y: 80, opacity: 0, scale: 0.94, duration: 0.3, ease: "power2.out" },
-          0
-        );
-      if (storyMuted)
-        storyTl.from(
-          storyMuted,
-          { y: 50, opacity: 0, duration: 0.18, ease: "power3.out" },
-          0.08
-        );
-      if (storyBlack)
-        storyTl.from(
-          storyBlack,
-          { y: 50, opacity: 0, duration: 0.18, ease: "power3.out" },
-          0.16
-        );
-      if (storyTeal)
-        storyTl.from(
-          storyTeal,
-          { y: 50, opacity: 0, duration: 0.18, ease: "power3.out" },
-          0.24
-        );
-      if (storyEyebrow)
-        storyTl.from(
-          storyEyebrow,
-          { y: 25, opacity: 0, duration: 0.14, ease: "power2.out" },
-          0.12
-        );
+      // Image, headline parts, and eyebrow are intentionally NOT animated
+      // with `opacity: 0` — otherwise clicking "Our Story" (which jumps
+      // the browser to #our-story at the exact `start: "top top"` of the
+      // pin) lands the user on an invisible section until they scroll
+      // enough to advance the scrub. Keeping these visible by default
+      // means the hero image + "Language should connect, not separate."
+      // headline are there immediately when the anchor fires; only the
+      // body paragraphs + CTA below still scrub-reveal during the pin.
 
       storyParas.forEach((p, i) => {
         storyTl.from(
           p,
-          { y: 40, opacity: 0, duration: 0.18, ease: "power2.out" },
-          0.3 + i * 0.15
+          { y: 40, opacity: 0, duration: 0.14, ease: "power2.out" },
+          0.08 + i * 0.1
         );
       });
 
       if (storyCta)
         storyTl.from(
           storyCta,
-          { y: 25, opacity: 0, duration: 0.14, ease: "power2.out" },
-          0.78
+          { y: 25, opacity: 0, duration: 0.12, ease: "power2.out" },
+          0.55
         );
       if (storyBottom)
         storyTl.from(
           storyBottom,
-          { y: 18, opacity: 0, duration: 0.12, ease: "power2.out" },
-          0.88
+          { y: 18, opacity: 0, duration: 0.1, ease: "power2.out" },
+          0.72
         );
 
       tweens.push(storyTl);
@@ -242,18 +222,19 @@ export default function AboutAnimations() {
 
     const missionSection = el(".about-mission");
     if (missionSection && !isMobile) {
-      const missionLabel = el(".about-mission .about-section-label");
-      const missionLines = els(".mission-title-line");
-      const missionDesc = el(".mission-description");
       const missionPillars = els(".mission-pillar");
 
       // PINNED mission — timeline scrubs sequentially while section is
-      // held in the viewport, same mechanic as the story section pin.
+      // held in the viewport. Heading (label/lines/description) is NOT
+      // animated with opacity:0 — the section lands at `top top` of the
+      // pin so with opacity-fade reveals the whole area would be blank
+      // until the user scrolls to advance the scrub. Only the four
+      // pillars still scrub in during the pin.
       const missionTl = gsap.timeline({
         scrollTrigger: {
           trigger: missionSection,
           start: "top top",
-          end: "+=1200",
+          end: "+=1000",
           pin: missionSection,
           pinSpacing: true,
           scrub: 1,
@@ -262,37 +243,12 @@ export default function AboutAnimations() {
         },
       });
 
-      if (missionLabel)
-        missionTl.from(
-          missionLabel,
-          { y: 24, opacity: 0, duration: 0.15, ease: "power2.out" },
-          0
-        );
-      if (missionLines.length)
-        missionTl.from(
-          missionLines,
-          {
-            y: 50,
-            opacity: 0,
-            stagger: 0.08,
-            duration: 0.18,
-            ease: "power3.out",
-          },
-          0.08
-        );
-      if (missionDesc)
-        missionTl.from(
-          missionDesc,
-          { y: 24, opacity: 0, duration: 0.15, ease: "power2.out" },
-          0.3
-        );
-
       // Pillars reveal one-by-one across their own scroll windows
       missionPillars.forEach((pillar, i) => {
         missionTl.from(
           pillar,
           { y: 36, opacity: 0, duration: 0.16, ease: "power2.out" },
-          0.4 + i * 0.12
+          i * 0.14
         );
       });
 
@@ -347,19 +303,17 @@ export default function AboutAnimations() {
 
     const valuesSection = el(".about-values");
     if (valuesSection && !isMobile) {
-      const valuesHeadingParts = els(
-        ".about-values .about-heading-row > div > *"
-      );
-      const valuesHeadingPara = el(".about-values .about-heading-row > p");
       const valueCards = els(".about-value-card");
 
-      // PINNED values — scrubbed sequential reveal while section is held
-      // in the viewport, same mechanic as story + mission.
+      // PINNED values — heading row is intentionally NOT animated with
+      // opacity:0 so content isn't blank when the pin fires. Only the
+      // four value cards scrub in. Pin end tightened from 1200 → 1000
+      // so the whole reveal finishes with less dead scroll.
       const valuesTl = gsap.timeline({
         scrollTrigger: {
           trigger: valuesSection,
           start: "top top",
-          end: "+=1200",
+          end: "+=1000",
           pin: valuesSection,
           pinSpacing: true,
           scrub: 1,
@@ -367,25 +321,6 @@ export default function AboutAnimations() {
           invalidateOnRefresh: true,
         },
       });
-
-      if (valuesHeadingParts.length)
-        valuesTl.from(
-          valuesHeadingParts,
-          {
-            y: 30,
-            opacity: 0,
-            stagger: 0.08,
-            duration: 0.16,
-            ease: "power3.out",
-          },
-          0
-        );
-      if (valuesHeadingPara)
-        valuesTl.from(
-          valuesHeadingPara,
-          { y: 24, opacity: 0, duration: 0.15, ease: "power2.out" },
-          0.18
-        );
 
       // Each card reveals one-by-one across its own slice of the pin
       valueCards.forEach((card, i) => {
@@ -397,7 +332,7 @@ export default function AboutAnimations() {
             duration: 0.16,
             ease: "power2.out",
           },
-          0.35 + i * 0.12
+          i * 0.14
         );
       });
 
@@ -529,12 +464,59 @@ export default function AboutAnimations() {
     }
 
     /* =====================================================
+       CLIENTS — "TRUSTED BY TEAMS AT" wordmark strip
+       Label + each logo cell cascades in from below as the strip
+       enters view. The logos sit at opacity:0 / translateY(16) via
+       CSS, so this tween is the thing that actually reveals them.
+    ===================================================== */
+
+    const clientsSection = el(".about-clients");
+    if (clientsSection) {
+      const clientsLabel = el(".about-clients-label");
+      const clientItems = els(".about-client");
+
+      if (clientsLabel) {
+        tweens.push(
+          gsap.from(clientsLabel, {
+            y: 18,
+            opacity: 0,
+            duration: 0.55,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: clientsSection,
+              start: "top 85%",
+              once: true,
+            },
+          })
+        );
+      }
+
+      if (clientItems.length) {
+        tweens.push(
+          gsap.to(clientItems, {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.08,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: clientsSection,
+              start: "top 85%",
+              once: true,
+            },
+          })
+        );
+      }
+    }
+
+    /* =====================================================
        PROCESS
     ===================================================== */
 
     const processSection = el(".about-process");
     if (processSection && !isMobile) {
-      const processHeadingParts = els(".about-process-heading > *");
+      // Heading parts render at natural CSS state — no `.from()` tween
+      // so they're visible immediately when the section is reached.
       const processProgress = el(".process-progress");
       const processItems = els(".about-process-item");
       const processDots = els(".process-dot");
@@ -556,35 +538,24 @@ export default function AboutAnimations() {
         },
       });
 
-      if (processHeadingParts.length)
-        processTl.from(
-          processHeadingParts,
-          {
-            y: 30,
-            opacity: 0,
-            stagger: 0.08,
-            duration: 0.18,
-            ease: "power3.out",
-          },
-          0
-        );
+      // Heading parts stay visible by default so the section isn't
+      // blank when the pin fires. Progress rail still draws from 0,
+      // then each step card + dot reveal in lockstep across their
+      // own slice of the shortened pin.
       if (processProgress)
         processTl.from(
           processProgress,
           {
             scaleX: 0,
             transformOrigin: "left center",
-            duration: 0.4,
+            duration: 0.3,
             ease: "power2.inOut",
           },
-          0.22
+          0
         );
 
-      // Dots + step cards reveal in lockstep, one quartet at a time
-      // across their own slice of the pin so each step feels like a
-      // distinct beat as the user scrolls.
       processItems.forEach((item, i) => {
-        const slice = 0.4 + i * 0.14;
+        const slice = 0.15 + i * 0.14;
         processTl.from(
           item,
           { y: 40, opacity: 0, duration: 0.16, ease: "power2.out" },

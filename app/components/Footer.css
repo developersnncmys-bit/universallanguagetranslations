@@ -99,21 +99,6 @@
   flex-wrap: wrap;
 }
 
-.site-footer__legal {
-  display: inline-flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.site-footer__legal a {
-  color: rgba(10, 22, 56, 0.7);
-  transition: color 0.2s var(--ease);
-}
-
-.site-footer__legal a:hover {
-  color: #0a1638;
-}
-
 /* Big dotted wordmark row — canvas UNIVERSAL on the left, stacked small
    "LANGUAGE / TRANSLATIONS" labels on the right */
 .site-footer__wordmark-row {
@@ -182,10 +167,6 @@
     padding-top: 20px;
     padding-bottom: 130px;
     text-align: left;
-  }
-
-  .site-footer__legal {
-    gap: 18px;
   }
 
   /* Hide the dotted canvas wordmark on mobile — its scatter-on-hover

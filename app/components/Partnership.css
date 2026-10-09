@@ -1,0 +1,249 @@
+/* =========================================================
+   PARTNERSHIP — "One accountable team. Project after project."
+   Editorial section about the operating model (named account lead,
+   consistent team, terminology ownership, SLA). Light-background
+   bridge between dark Services and dark TranslationSubservices.
+   No languages, no stats, no map/globe/flag imagery.
+========================================================= */
+
+.partnership {
+  position: relative;
+  /* ZERO top padding — Services carries 120px bottom padding on its
+     outer section AND up to 96px bottom padding INSIDE its dark
+     offerings panel. Stacking anything here created ~300px+ of dead
+     white space above the eyebrow. The incoming Services whitespace
+     is more than enough breathing room on its own. */
+  padding: 0 0 clamp(80px, 9vw, 120px);
+  background: linear-gradient(180deg, #ffffff 0%, #f6fbfc 60%, #ffffff 100%);
+  overflow: hidden;
+}
+
+.partnership::before {
+  content: "";
+  position: absolute;
+  top: 15%;
+  right: -200px;
+  width: 460px;
+  height: 460px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(69, 176, 188, 0.1) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.partnership::after {
+  content: "";
+  position: absolute;
+  bottom: 10%;
+  left: -200px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(155, 198, 71, 0.08) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Edge-anchored container — breaks out of the standard .container
+   max-width so the heading can sit flush-left against the viewport
+   gutter and the description flush-right, matching the spread rhythm
+   of the Services and TranslationSubservices heads. */
+.partnership__container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: none;
+  padding-left: clamp(32px, 6vw, 100px);
+  padding-right: clamp(32px, 6vw, 100px);
+  margin: 0 auto;
+}
+
+/* ─── HEAD ─── two-column edge spread: eyebrow + title hard-left,
+   bolded description hard-right. Mirrors the same editorial rhythm
+   used elsewhere on the site (Services intro, Why Choose Us, etc.). */
+
+.partnership__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: end;
+  margin-bottom: clamp(48px, 6vw, 80px);
+}
+
+.partnership__head-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-self: start;
+  max-width: 620px;
+}
+
+.partnership__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--blue-500, #1B7A8E);
+}
+
+.partnership__eyebrow::before {
+  content: "";
+  width: 32px;
+  height: 1px;
+  background: var(--brand-cyan, #45B0BC);
+}
+
+.partnership__title {
+  margin: 18px 0 0;
+  font-family: var(--font-hero, var(--font-display)), sans-serif;
+  font-size: clamp(32px, 4.4vw, 56px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--navy-900, #043842);
+}
+
+.partnership__title span {
+  color: var(--blue-500, #1B7A8E);
+}
+
+.partnership__lede {
+  justify-self: end;
+  text-align: left;
+  max-width: 460px;
+  margin: 0;
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--ink-700, #2b3852);
+}
+
+/* ─── GRID ─── 2x2 editorial grid of pillars. Each pillar is a
+   short-form principle (number + title + 2–3 line body) rather than
+   a card — reads as an editorial list, not a product-feature grid. */
+
+.partnership__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(40px, 4vw, 64px) clamp(48px, 6vw, 96px);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  counter-reset: pillar;
+}
+
+.partnership__pillar {
+  position: relative;
+  padding-top: clamp(28px, 3vw, 40px);
+  border-top: 1px solid rgba(4, 56, 66, 0.1);
+}
+
+/* Hairline on the top of each pillar fills the FULL pillar width on
+   hover — starts as a 48px brand accent, sweeps across the row.
+   Subtle, editorial, no card chrome. */
+.partnership__pillar::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 48px;
+  height: 2px;
+  background: var(--blue-500, #1B7A8E);
+  transition: width 0.5s var(--ease, cubic-bezier(0.2, 0.7, 0.2, 1));
+}
+
+.partnership__pillar:hover::before {
+  width: 100%;
+}
+
+.partnership__num {
+  display: inline-block;
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--brand-cyan, #45B0BC);
+  margin-bottom: 16px;
+}
+
+.partnership__pillar-title {
+  margin: 0 0 14px;
+  font-family: var(--font-hero, var(--font-display)), sans-serif;
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--navy-900, #043842);
+}
+
+.partnership__pillar-text {
+  margin: 0;
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 15.5px;
+  font-weight: 500;
+  line-height: 1.65;
+  color: var(--ink-500, #566179);
+  max-width: 44ch;
+}
+
+/* ─── RESPONSIVE ─── */
+
+@media (max-width: 900px) {
+  .partnership__head {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .partnership__head-left {
+    max-width: none;
+  }
+  .partnership__lede {
+    justify-self: start;
+    max-width: none;
+  }
+  .partnership__grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  /* Mobile: hairline fills from 48px → 100% when the pillar scrolls
+     into view. GSAP adds `.is-filled` once per pillar as it crosses
+     the trigger line; the width transition on the base ::before rule
+     carries the animation. */
+  .partnership__pillar.is-filled::before {
+    width: 100%;
+  }
+}
+
+/* Touch devices: the sweep also runs on tap (hover fires briefly on
+   touch-start). Add :active and :focus-within so a tapped pillar also
+   plays the fill animation on devices where :hover is unreliable. */
+.partnership__pillar:active::before,
+.partnership__pillar:focus-within::before {
+  width: 100%;
+}
+
+@media (max-width: 560px) {
+  .partnership__pillar {
+    padding-top: 24px;
+  }
+  .partnership__pillar-title {
+    font-size: 20px;
+  }
+  .partnership__pillar-text {
+    font-size: 14.5px;
+  }
+}

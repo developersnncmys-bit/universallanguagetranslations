@@ -125,20 +125,24 @@ export default function WhyChooseUs() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      featRefs.current.forEach((el) => {
+      featRefs.current.forEach((el, i) => {
         if (!el) return;
+        // Snappier reveal — earlier trigger (top 92%), shorter y offset,
+        // half the duration, and no reverse-on-scroll-up so content stays
+        // visible once revealed.
         gsap.fromTo(
           el,
-          { opacity: 0, y: 60 },
+          { opacity: 0, y: 32 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.9,
+            duration: 0.5,
+            delay: i * 0.04,
             ease: "power3.out",
             scrollTrigger: {
               trigger: el,
-              start: "top 82%",
-              toggleActions: "play none none reverse",
+              start: "top 92%",
+              toggleActions: "play none none none",
             },
           }
         );

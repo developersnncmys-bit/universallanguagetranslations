@@ -973,10 +973,50 @@
     gap: 40px;
   }
 
+  /* Explicitly center the hero grid + normalize its width so content
+     doesn't drift to the right. The desktop width `min(1500px, calc(100% - 80px))`
+     paired with the hero's `place-items: center` was leaving uneven
+     left/right padding on narrow viewports where the grid cell was
+     wider than the content column intrinsically needed. */
+  .svc-hero-grid {
+    width: calc(100% - 40px);
+    margin-left: auto;
+    margin-right: auto;
+    justify-items: stretch;
+  }
+  .svc-hero-grid > div {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .svc-overview,
-  .svc-process {
+  .svc-process,
+  .svc-why,
+  .svc-cta {
+    /* These sections all have `min-height` floors (100vh / 70vh) on
+       desktop to give their pinned/scrubbed timelines a full viewport
+       to park in. On mobile the pins are disabled (see
+       ServicesAnimations.jsx), so those floors turn into dead empty
+       space that reads as "scroll stuck" — the user keeps scrolling
+       and nothing visible changes. Collapse to natural content height
+       and drop the `display: flex; align-items: center` wrapper too so
+       the sections flow as plain blocks (no vertical centering that
+       could re-introduce whitespace above the content). */
     min-height: auto;
     padding: 60px 0;
+    display: block;
+    align-items: initial;
+  }
+
+  /* Shrink the `.svc-services` dark-grid section on mobile — its
+     `clamp(80px, 10vw, 120px)` desktop padding plus the ambient blur
+     glows felt oversized next to the compacted neighbouring sections. */
+  .svc-services {
+    padding: 60px 0;
+  }
+  .svc-services::before,
+  .svc-services::after {
+    display: none;
   }
 
   .svc-hero {

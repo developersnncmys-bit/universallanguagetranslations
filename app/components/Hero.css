@@ -173,7 +173,13 @@
 }
 
 .hero__badges svg {
-  color: #4ade80;
+  /* Previous iterations (`#4ade80` mint, `#9BC647` brand lime) both
+     blended into the lime/cyan band at the bottom of the hero gradient
+     where these badges actually sit. Switched to pure white — maximum
+     contrast against every band of the teal → cyan → lime gradient —
+     with a stronger dark drop-shadow for depth. */
+  color: #ffffff;
+  filter: drop-shadow(0 1px 3px rgba(4, 56, 66, 0.65));
 }
 
 /* PLANET — large sphere anchored near the RIGHT edge of the viewport with a
@@ -305,7 +311,10 @@
     grid-template-columns: 1fr;
     gap: 32px;
     padding-top: 32px;
-    padding-bottom: 54vw;
+    /* Reserve enough bottom room to fully fit the globe (82vw tall + a
+       small clearance) so the sphere sits below the badges rather than
+       behind them. */
+    padding-bottom: 88vw;
     padding-left: 20px;
     padding-right: 20px;
   }
@@ -328,28 +337,28 @@
     display: inline;
   }
   .hero__planet {
-    /* On tablet/phone the copy is single-column, so drop the globe below and
-       behind the CTAs. More negative `bottom` pushes the sphere further
-       below the hero so its visible cap sits beneath the badges instead
-       of pressing up against them. */
+    /* Full round sphere, centered horizontally, sitting just above the
+       hero's bottom edge. The old 130vw × -42vw treatment pushed most of
+       the globe off-screen on narrow viewports — switched to a sanely-
+       sized square that fits inside the viewport with breathing room. */
     top: auto;
-    bottom: -42vw;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    width: min(680px, 130vw);
-    height: min(680px, 130vw);
-    aspect-ratio: auto;
-    opacity: 0.85;
+    width: min(440px, 82vw);
+    height: min(440px, 82vw);
+    aspect-ratio: 1;
+    opacity: 0.95;
   }
 }
 
 @media (max-width: 560px) {
   .hero__inner {
-    padding-bottom: 60vw;
+    padding-bottom: 86vw;
   }
   .hero__planet {
-    width: min(540px, 140vw);
-    height: min(540px, 140vw);
-    bottom: -44vw;
+    width: min(380px, 80vw);
+    height: min(380px, 80vw);
+    bottom: 16px;
   }
 }

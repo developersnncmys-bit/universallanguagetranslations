@@ -168,51 +168,49 @@ export default function Services() {
       if (ctaEl) gsap.set(ctaEl, { opacity: 0, y: 16 });
       if (stats.length) gsap.set(stats, { opacity: 0, y: 40 });
 
-      // Timeline is 4 discrete phases (no overlap). End extended to
-      // "+=180%" so each phase gets ~45% of the scroll for a clear
-      // "reveals one per scroll" feel rather than everything at once.
+      // Three distinct scroll "beats": (1) texts reveal, (2) stats reveal,
+      // (3) pin releases to the next section. Timeline length is tuned so
+      // each beat takes roughly one wheel/trackpad flick of scroll, and
+      // `snap` locks the pin to beat boundaries so a half-scroll always
+      // settles cleanly on the previous or next phase instead of mid-fade.
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: pinEl,
           start: "top top",
-          end: "+=220%",
+          // Longer pin (was +=75%) so beats 1 and 2 each get a proper
+          // scroll window instead of being crammed into one short burst.
+          end: "+=160%",
           pin: true,
           pinSpacing: true,
-          // refreshPriority: 10 forces this ScrollTrigger to refresh
-          // BEFORE downstream pins (GlobalLanguageNetwork, TranslationSubservices).
-          // Without this, GLN measures its "top top" position before this
-          // pin's pinSpacer is inserted, so GLN's start fires at a stale
-          // doc position — inside the offerings-panel's rendered area —
-          // producing the "sections overlap" symptom.
           refreshPriority: 10,
-          // Longer scrub = more inertia between scroll velocity and
-          // timeline progress → the reveal glides instead of tracking
-          // the wheel 1:1. Combined with the extended `+=220%` scroll
-          // range each phase gets more room to breathe.
-          scrub: 1.4,
+          // Slightly higher scrub (0.6 → 0.8) so progress eases smoothly
+          // into the snap target instead of snapping harshly on release.
+          scrub: 0.8,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          // DISABLED — the black→white flip is temporarily commented out
-          // per user request. The pin element renders permanently in the
-          // "released" (light) palette via a static className below, so
-          // there is no runtime state toggling and no transition to see.
-          // onUpdate: (self) => {
-          //   if (self.progress >= 0.05) {
-          //     pinEl.classList.add("services__intro-pin--released");
-          //   } else {
-          //     pinEl.classList.remove("services__intro-pin--released");
-          //   }
-          // },
+          // Snap to each beat so the user feels discrete clicks:
+          //   0.00 = pin start (texts hidden)
+          //   0.42 = beat 1 complete (texts visible)
+          //   0.85 = beat 2 complete (stats visible)
+          //   1.00 = pin release → next section
+          snap: {
+            snapTo: [0, 0.42, 0.85, 1],
+            duration: { min: 0.15, max: 0.4 },
+            delay: 0.08,
+            ease: "power1.inOut",
+          },
         },
       });
 
-      // ── Phase 1 (0.00 → 0.22) — HEADLINE brightens word by word.
+      // ── BEAT 1 (0.00 → 0.42) — all text reveals (title + description
+      //    + CTA) land in the first scroll. Words brighten word-by-word
+      //    for the lead-in; CTA fades in at the tail of the beat.
       if (titleWords.length) {
         tl.to(
           titleWords,
           {
             opacity: 1,
-            stagger: 0.02,
+            stagger: 0.012,
             ease: "none",
             duration: 0.22,
           },
@@ -220,35 +218,35 @@ export default function Services() {
         );
       }
 
-      // ── Phase 2 (0.28 → 0.55) — DESCRIPTION paragraphs brighten.
       if (descWords.length) {
         tl.to(
           descWords,
           {
             opacity: 1,
-            stagger: 0.012,
+            stagger: 0.008,
             ease: "none",
-            duration: 0.27,
+            duration: 0.22,
           },
-          0.28
+          0.14
         );
       }
 
-      // ── Phase 3 (0.60 → 0.72) — CTA button appears.
       if (ctaEl) {
         tl.to(
           ctaEl,
           {
             opacity: 1,
             y: 0,
-            duration: 0.12,
+            duration: 0.1,
             ease: "power2.out",
           },
-          0.60
+          0.32
         );
       }
 
-      // ── Phase 4 (0.78 → 1.00) — STAT cards fade up one by one.
+      // ── BEAT 2 (0.52 → 0.85) — stat cards fade up one by one on the
+      //    second scroll. Starts after a short hold so beat 1's final
+      //    frame has a moment to breathe before stats appear.
       if (stats.length) {
         tl.to(
           stats,
@@ -259,9 +257,14 @@ export default function Services() {
             ease: "power2.out",
             duration: 0.16,
           },
-          0.78
+          0.52
         );
       }
+
+      // ── BEAT 3 (0.85 → 1.00) — intentional hold. No new tweens.
+      //    The pin stays locked, stats stay fully visible, and the next
+      //    scroll flick snaps to progress 1.0 which releases the pin
+      //    and reveals the next section.
 
     }, pinEl);
     return () => ctx.revert();
