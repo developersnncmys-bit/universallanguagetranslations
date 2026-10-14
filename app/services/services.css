@@ -1055,6 +1055,26 @@
     padding: 110px 0 72px;
   }
 
+  /* Keep the two hero CTAs side-by-side on narrow viewports instead of
+     stacking. Each button takes an equal share of the row (flex: 1 1 0)
+     so neither overflows and the pair reads as a balanced choice. The
+     padding tightens so the labels still have room to breathe at this
+     width. */
+  .svc-hero-actions {
+    flex-wrap: nowrap;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .svc-hero-actions .svc-btn-primary,
+  .svc-hero-actions .svc-btn-secondary {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 14px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
   .svc-section {
     padding: 72px 0;
   }

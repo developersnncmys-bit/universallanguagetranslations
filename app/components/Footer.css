@@ -49,6 +49,16 @@
   border-color: #2563eb;
 }
 
+.site-footer__address {
+  display: block;
+  margin-top: 18px;
+  font-style: normal;
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(10, 22, 56, 0.65);
+  max-width: 320px;
+}
+
 .site-footer__nav {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

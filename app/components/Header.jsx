@@ -307,11 +307,24 @@ export default function Header() {
               />
             ))}
           </ul>
+
+          {/* Mobile-only CTA inside the drawer — the desktop
+              `.site-header__actions` button is hidden at narrow widths,
+              so the drawer needs its own "Get in touch" link. CSS
+              display-toggles this between hidden on desktop and visible
+              in the drawer on mobile. */}
+          <Link
+            href="/contact#enquiry"
+            className="btn btn-solid-light primary-nav__cta"
+            onClick={closeMenu}
+          >
+            Get in touch
+          </Link>
         </nav>
 
         <div className="site-header__actions">
           <Link
-            href="/contact"
+            href="/contact#enquiry"
             className="btn btn-solid-light"
             onClick={closeMenu}
           >

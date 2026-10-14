@@ -14,7 +14,9 @@
 }
 
 /* ─── READING PROGRESS BAR ─── fixed under the header,
-   scales from 0 → 1 on the X axis as the reader scrolls. */
+   scales from 0 → 1 on the X axis as the reader scrolls.
+   The `top` offset must match the header height exactly — any gap
+   leaves a visible floating strip detached from the nav bar. */
 .legal-progress {
   position: fixed;
   top: 82px;
@@ -24,6 +26,15 @@
   background: rgba(27, 122, 142, 0.08);
   z-index: 50;
   pointer-events: none;
+}
+
+/* Mobile header is shorter (~71px total: 14px top padding + 42px
+   nav-toggle + 14px bottom + 1px border). Pull the progress bar up
+   so it sits flush against the mobile nav bottom. */
+@media (max-width: 960px) {
+  .legal-progress {
+    top: 71px;
+  }
 }
 
 .legal-progress-bar {

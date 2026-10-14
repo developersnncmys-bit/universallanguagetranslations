@@ -13,16 +13,19 @@ const contactChannels = [
     note: "Project briefs, quotes, partnerships",
   },
   {
-    label: "WhatsApp",
-    value: "+00 00000 00000",
-    href: "https://wa.me/000000000000",
-    note: "Fastest replies — chat with a human",
+    // Direct call is the primary CTA — the WhatsApp channel was removed
+    // because it shared the same number and competed with the phone card.
+    label: "Phone",
+    value: "+91 95385 77775",
+    href: "tel:+919538577775",
+    note: "Tap to call — Mon–Fri, 09:00 – 18:00 (IST)",
   },
   {
-    label: "Phone",
-    value: "+00 00000 00000",
-    href: "tel:+000000000000",
-    note: "Mon–Fri, 09:00 – 18:00 (IST)",
+    label: "Visit",
+    value:
+      "No-13(16), Sidda Ganga School Main Road, Jai Maruthi Nagar, Nandhini Layout, Bangalore, Karnataka-560096",
+    href: "https://www.google.com/maps/search/?api=1&query=No-13%2C+Sidda+Ganga+School+Main+Road%2C+Jai+Maruthi+Nagar%2C+Nandhini+Layout%2C+Bangalore%2C+Karnataka+560096",
+    note: "Our office — walk-ins by appointment",
   },
 ];
 

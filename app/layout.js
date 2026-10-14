@@ -5,7 +5,7 @@ import Footer from "./components/Footer";
 import PageAnimations from "./components/PageAnimations";
 import SmoothScroll from "./components/SmoothScroll";
 import Preloader from "./components/Preloader";
-import WhatsAppButton from "./components/WhatsAppButton";
+import CallButton from "./components/CallButton";
 import ScrollToTop from "./components/ScrollToTop";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -59,7 +59,7 @@ export default function RootLayout({ children }) {
         <Header />
         <main>{children}</main>
         <Footer />
-        <WhatsAppButton />
+        <CallButton />
       </body>
     </html>
   );

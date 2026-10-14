@@ -996,13 +996,14 @@
   justify-content: center;
 
   /* Each cell takes an equal share of the row (`flex: 1`), capped so
-     wide logos (Uber, Accenture) don't blow up on huge screens. All 8
-     logos share the row, every cell is the same width, every logo lands
-     on the same baseline. */
+     wide logos (Uber, Accenture) don't blow up on huge screens. All
+     logos share the row, every cell is the same width, every logo
+     lands on the same baseline. Cell height bumped 60 → 72 so the
+     taller 56px max-height on emblem logos has room to breathe. */
   flex: 1 1 0;
   min-width: 0;
   max-width: 160px;
-  height: 60px;
+  height: 72px;
 
   /* GSAP reveal start state — reset to visible once the section's
      entrance tween in AboutAnimations.jsx fires. */
@@ -1047,9 +1048,14 @@
      caps wide logos (Uber, Accenture) to the cell width; `max-height`
      caps tall logos (Merck, Healofy). Both constraints + object-fit:
      contain = every logo renders at its natural aspect ratio within a
-     uniform box. */
+     uniform box.
+
+     Bumped from max-height 40px → 56px so emblem / square-format
+     logos (Chef's Power Bowl, circular marks) render at comparable
+     visual mass to the wide landscape marks like Amazon and Accenture.
+     Cell height also lifted below to accommodate. */
   max-width: 100%;
-  max-height: 40px;
+  max-height: 56px;
 
   width: auto;
   height: auto;
@@ -1125,16 +1131,20 @@
     margin: 0;
     padding: 0;
 
+    /* 3-column grid — divides the 9 client logos evenly as 3×3 instead
+       of leaving an orphan on a 5th row (what 2 columns was doing). */
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     justify-items: center;
     align-items: center;
-    gap: 20px 16px;
+    gap: 18px 10px;
   }
 
   .about-client {
     width: 100%;
-    max-width: 120px;
+    /* Max-width trimmed from 120 → 100 so three cells fit comfortably
+       across a 393px viewport without the logos touching. */
+    max-width: 100px;
     height: 40px;
     min-width: 0;
 
@@ -1144,7 +1154,7 @@
   }
 
   .about-client-logo {
-    max-width: 100px;
+    max-width: 86px;
     max-height: 30px;
     width: auto;
     height: auto;

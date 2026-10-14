@@ -18,6 +18,7 @@ const clients = [
   { name: "Merck", logo: "/about-logos/Merk.png" },
   { name: "Accenture", logo: "/about-logos/Accenture.png" },
   { name: "Cognizant", logo: "/about-logos/Cognizant.png" },
+  { name: "Chef's Power Bowl", logo: "/about-logos/Chef's-power-bowl.png" },
 ];
 
 const values = [

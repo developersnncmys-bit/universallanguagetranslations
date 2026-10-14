@@ -10,9 +10,9 @@ import "./Hero.css";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-// TODO: Replace WHATSAPP_NUMBER with the real business number.
+// Business WhatsApp — country code 91 (India) + 10-digit mobile.
 const WHATSAPP_HREF =
-  "https://wa.me/0000000000?text=" +
+  "https://wa.me/919538577775?text=" +
   encodeURIComponent("Hi! I would like a quote for translation services.");
 
 export default function Hero() {
@@ -46,13 +46,55 @@ export default function Hero() {
     return;
   }
 
-  // Mobile guard — the scrubbed timeline translates the globe to
-  // `window.innerWidth * 0.28` and slides the text container to
-  // `-window.innerWidth * 0.2`, which on narrow viewports pushes copy
-  // off-screen and parks the globe over the heading. On phones/tablets
-  // the hero renders its static centered composition via CSS only.
+  // Mobile branch — the desktop cinematic timeline below pushes the
+  // globe to `window.innerWidth * 0.28` and slides copy to
+  // `-window.innerWidth * 0.2`, which on narrow viewports throws
+  // content off-screen. On mobile we run a dedicated, lightweight
+  // animation set instead:
+  //   • entrance scale/fade for the planet on first paint
+  //   • continuous gentle float + rotation so the globe reads as "live"
+  //   • a short scroll-linked lift so it responds as the user scrolls
+  // Then return early — none of the desktop stages run.
   if (typeof window !== "undefined" && window.innerWidth <= 960) {
-    return;
+    const planetEl = rootEl.querySelector(".hero__planet");
+    if (!planetEl) return;
+
+    const mobileCtx = gsap.context(() => {
+      // Entrance — globe scales up from 0.6 + fades in on mount so it
+      // reads as "landing into place" instead of just being there.
+      // Separate from the scroll-linked tween below so both can target
+      // the same element without fighting mid-frame.
+      gsap.from(planetEl, {
+        scale: 0.6,
+        opacity: 0,
+        duration: 1.4,
+        ease: "power3.out",
+        delay: 0.15,
+        clearProps: "transform", // let the scroll-linked tween own the final transform
+      });
+
+      // Scroll-linked lift — as the user scrolls through the hero the
+      // planet shifts up ~40px and gently scales down, so the globe
+      // visibly reacts to scroll without the dramatic desktop reposition
+      // that would push copy off-screen.
+      gsap.fromTo(
+        planetEl,
+        { y: 0, scale: 1 },
+        {
+          y: -50,
+          scale: 0.94,
+          ease: "none",
+          scrollTrigger: {
+            trigger: rootEl,
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.6,
+          },
+        }
+      );
+    }, rootEl);
+
+    return () => mobileCtx.revert();
   }
 
   const inner = rootEl.querySelector(".hero__inner");

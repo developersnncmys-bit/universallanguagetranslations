@@ -151,6 +151,12 @@
   justify-self: end;
 }
 
+/* Mobile drawer CTA — hidden on desktop; the mobile media query below
+   flips it visible inside the open drawer. */
+.primary-nav__cta {
+  display: none;
+}
+
 /* ─── 24/7 AVAILABILITY BADGE ────────────────────────────────────────
    Pulsing green "live" dot + "24/7 · ONLINE NOW" status. No local time
    because that only reflects the visitor's own clock and doesn't prove
@@ -633,6 +639,34 @@
     display: none;
   }
 
+  /* Mobile drawer CTA — the duplicate "Get in touch" link inside
+     `.primary-nav` is visible only in the mobile drawer, sits below
+     the nav items, and matches the lime pill button treatment. The
+     `.btn-solid-light` default `box-shadow` is a lime glow tuned for
+     a white header; on the drawer's dark background it reads as a
+     muddy halo, so neutralise it here.
+     The universal `.site-header .primary-nav *` override further down
+     forces every descendant to `background: transparent` and
+     `color: #ffffff` — both tagged `!important`. We re-apply the lime
+     bg + dark text with `!important` here so the pill shows up. Also
+     carved out below with the explicit high-specificity selector. */
+  .primary-nav__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    margin-top: 12px;
+    min-width: 180px;
+    text-align: center;
+    box-shadow: none;
+  }
+
+  .site-header .primary-nav .primary-nav__cta {
+    background: #7EAF20 !important;
+    color: var(--navy-900) !important;
+    -webkit-text-fill-color: var(--navy-900) !important;
+  }
+
   .nav-toggle {
     display: flex;
     justify-self: end;
@@ -655,7 +689,10 @@
     justify-content: flex-start;
     align-items: stretch;
     background: linear-gradient(180deg, #050810 0%, #02030a 100%);
-    padding: 20px 20px calc(48px + env(safe-area-inset-bottom, 0px));
+    /* Zero top padding so the first nav item sits flush against the
+       header bottom — the earlier 20px was leaving a visible dark
+       band between the nav bar and the "Home" link. */
+    padding: 0 20px calc(48px + env(safe-area-inset-bottom, 0px));
     gap: 20px;
     transform: translateY(-10px);
     opacity: 0;

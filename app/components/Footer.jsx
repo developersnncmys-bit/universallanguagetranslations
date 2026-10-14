@@ -213,6 +213,13 @@ export default function Footer() {
           >
             hello@example.com
           </a>
+          <address className="site-footer__address">
+            No-13(16), Sidda Ganga School Main Road,
+            <br />
+            Jai Maruthi Nagar, Nandhini Layout,
+            <br />
+            Bangalore, Karnataka-560096
+          </address>
         </div>
 
         <div className="site-footer__nav">
