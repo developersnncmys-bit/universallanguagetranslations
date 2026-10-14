@@ -60,27 +60,34 @@ export default function Hero() {
     if (!planetEl) return;
 
     const mobileCtx = gsap.context(() => {
-      // Entrance — globe scales up from 0.6 + fades in on mount so it
-      // reads as "landing into place" instead of just being there.
-      // Separate from the scroll-linked tween below so both can target
-      // the same element without fighting mid-frame.
+      // CRITICAL: `.hero__planet` is centered via CSS `transform:
+      // translateX(-50%)`. If GSAP writes its OWN transform (scale/y)
+      // without `xPercent: -50`, it wipes the CSS translate and the
+      // globe shifts right by 50% of its width — this is what made the
+      // previous mobile animation "not proper". Setting `xPercent: -50`
+      // on every tween reproduces the centering inside GSAP's transform
+      // matrix so the globe stays centered through the animation.
+      gsap.set(planetEl, { xPercent: -50 });
+
+      // Entrance — globe scales up from 0.6 + fades in on mount, stays
+      // horizontally centered via xPercent.
       gsap.from(planetEl, {
+        xPercent: -50,
         scale: 0.6,
         opacity: 0,
         duration: 1.4,
         ease: "power3.out",
         delay: 0.15,
-        clearProps: "transform", // let the scroll-linked tween own the final transform
       });
 
-      // Scroll-linked lift — as the user scrolls through the hero the
-      // planet shifts up ~40px and gently scales down, so the globe
-      // visibly reacts to scroll without the dramatic desktop reposition
-      // that would push copy off-screen.
+      // Scroll-linked lift — planet shifts up and gently scales down as
+      // the user scrolls through the hero. `xPercent: -50` kept on both
+      // endpoints so the centering survives the scrub.
       gsap.fromTo(
         planetEl,
-        { y: 0, scale: 1 },
+        { xPercent: -50, y: 0, scale: 1 },
         {
+          xPercent: -50,
           y: -50,
           scale: 0.94,
           ease: "none",
