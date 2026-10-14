@@ -2,11 +2,10 @@
 "use client";
 
 import { useLayoutEffect } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function ScrollToTop() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useLayoutEffect(() => {
     // Prevent the browser from restoring an old scroll position.
@@ -89,7 +88,7 @@ export default function ScrollToTop() {
     return () => {
       cancelAnimationFrame(frame);
     };
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   return null;
 }

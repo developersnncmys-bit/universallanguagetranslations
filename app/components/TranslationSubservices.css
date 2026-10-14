@@ -365,3 +365,29 @@
     font-size: clamp(22px, 8vw, 30px);
   }
 }
+
+/* ─── TABLET-ONLY (iPad / 601–960px) ─── restore visual hierarchy that
+   the max-width:860px block had inverted at tablet widths: the
+   `.spec-card__title` was blowing up to 28px (uppercase) while the
+   parent `.subsvc__mega-title` sat at 26px, making section cards read
+   as larger than their own section heading. This range leaves the
+   max-width:460px small-phone and the desktop defaults untouched. */
+@media (min-width: 601px) and (max-width: 960px) {
+  .subsvc__mega-title {
+    font-size: clamp(32px, 4.6vw, 42px);
+  }
+
+  .subsvc__hscroll-intro {
+    font-size: 15px;
+  }
+  .subsvc__hscroll-intro p {
+    font-size: 15px;
+  }
+
+  .spec-card__title {
+    font-size: 18px;
+  }
+  .spec-card__desc {
+    font-size: 14px;
+  }
+}
