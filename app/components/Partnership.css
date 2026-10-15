@@ -228,6 +228,19 @@
   }
 }
 
+/* Tablet / iPad range (601–900px) — restore the 2x2 pillar grid.
+   The ≤900px rule above collapses everything to single-column for
+   mobile legibility, but at tablet widths (iPad Mini 768px, Air
+   820px, Pro 11" 834px) there is plenty of horizontal room for two
+   pillars side by side. Falls back to the single-column stack
+   below 600px where the pillars actually need the full width. */
+@media (min-width: 601px) and (max-width: 900px) {
+  .partnership__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 48px;
+  }
+}
+
 /* Touch devices: the sweep also runs on tap (hover fires briefly on
    touch-start). Add :active and :focus-within so a tapped pillar also
    plays the fill animation on devices where :hover is unreliable. */

@@ -29,17 +29,19 @@
   position: relative;
 
   width: 100%;
-  /* Fixed at 700px — the hero was previously pushed taller than this
-     floor by the 600px globe + 560px visual min-height + 190px padding
-     (adding up to ~790px). Those inner constraints are reduced below so
-     the floor actually kicks in. */
-  min-height: 700px;
+  /* Fill the full viewport height. The fixed nav sits ON TOP of the
+     hero (not above it), so subtracting its 82px from the floor just
+     left a visible gap below the gradient. 820px soft floor keeps
+     short viewports comfortable; 100vh ensures 900+ viewports have
+     zero white gap below the hero. */
+  min-height: max(820px, 100vh);
 
   display: flex;
-  /* Anchor content to the top of the hero instead of vertically centering
-     it — on tall viewports the centered flow pushed the headline halfway
-     down the screen. Padding-top handles navbar clearance. */
-  align-items: flex-start;
+  /* Vertically center the grid (content + globe) within the hero so
+     both columns sit balanced in the middle of the viewport. Previous
+     `flex-start + padding-top: 55px` anchored them to the top and
+     left ~250px of empty gradient below. */
+  align-items: center;
 
   padding: 55px 0 60px;
 
@@ -1074,6 +1076,50 @@
   }
 }
 
+/* Tablet-pro (961–1200px, iPad Pro 13 portrait at 1032×1376).
+   Stack content on top + globe below (same pattern as home + about
+   + services heroes). Fill the viewport so there's no empty strip
+   below the globe before the next section. */
+@media (min-width: 961px) and (max-width: 1200px) {
+  .contact-hero {
+    min-height: 100vh !important;
+    padding: 160px 0 40px !important;
+    align-items: center !important;
+  }
+  .contact-hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    justify-items: center !important;
+    width: calc(100% - 60px);
+  }
+  .contact-hero-content {
+    max-width: 720px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .contact-eyebrow,
+  .contact-hero-actions {
+    justify-content: center !important;
+  }
+  .contact-hero-description {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .contact-hero-visual {
+    width: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  .contact-globe-wrap {
+    width: min(780px, 82vw) !important;
+    margin: 0 auto !important;
+    transform: none !important;
+  }
+}
+
 @media (max-width: 900px) {
   .contact-hero {
     min-height: auto;
@@ -1138,5 +1184,113 @@
   .contact-hero-card-stats {
     grid-template-columns: 1fr;
     gap: 14px;
+  }
+}
+
+
+/* =========================================================
+   TABLET (iPad Mini 768 → 1024)
+   Mirror the About hero tablet treatment line-for-line:
+   bigger globe, equal-width stretched CTAs, matched title +
+   description sizing. Scoped to this exact range so mobile
+   (<768) and desktop (>1024) stay untouched.
+========================================================= */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .contact-hero {
+    min-height: 0;
+    height: auto;
+    padding: 110px 0 72px;
+    display: flex;
+    align-items: center;
+  }
+
+  .contact-hero-grid {
+    width: calc(100% - 40px);
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 0;
+  }
+
+  .contact-hero-content {
+    max-width: 640px;
+    padding-top: 0;
+    text-align: left;
+  }
+
+  .contact-hero-visual {
+    min-height: 0;
+    height: auto;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+  }
+
+  .contact-globe-wrap {
+    width: min(760px, 100vw);
+    max-width: 100vw;
+    margin: 32px auto 0;
+    transform: translateY(32px);
+  }
+
+  /* Pull the floating chips well inside the sphere at tablet. The base
+     mobile rule parks "100+ LANGUAGES" at right:2% which, over a 760px
+     globe that overflows a 728px grid cell, lands the chip past the
+     viewport right edge and gets clipped by .contact-hero's overflow:
+     hidden. 8% keeps them anchored on the sphere's visible curve. */
+  .contact-globe-chip--languages {
+    top: 12%;
+    right: 8%;
+  }
+
+  .contact-globe-chip--availability {
+    bottom: 12%;
+    left: 8%;
+  }
+
+  .contact-hero-actions {
+    flex-wrap: nowrap;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .contact-primary-btn,
+  .contact-secondary-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 52px;
+    padding: 0 14px;
+    font-size: 14px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .contact-hero-title {
+    font-size: clamp(32px, 6vw, 62px);
+    letter-spacing: 0.01em;
+    margin: 0 0 40px;
+    white-space: nowrap;
+  }
+
+  /* Collapse the two `.contact-hero-line` spans onto a single row at
+     tablet. The base rule uses `display: block` to stack them; here we
+     flow them inline and inject a space between so it reads as
+     "LET'S TALK TRANSLATION." on one line. */
+  .contact-hero-line {
+    display: inline;
+  }
+
+  .contact-hero-line + .contact-hero-line::before {
+    content: " ";
+  }
+
+  .contact-hero-description {
+    font-size: 17px;
+    max-width: 560px;
+    margin: 0 0 32px;
   }
 }

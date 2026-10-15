@@ -342,7 +342,8 @@
 }
 
 .primary-nav ul > li.has-dropdown:hover > .nav-dropdown--depth-1,
-.primary-nav ul > li.has-dropdown:focus-within > .nav-dropdown--depth-1 {
+.primary-nav ul > li.has-dropdown:focus-within > .nav-dropdown--depth-1,
+.primary-nav ul > li.has-dropdown.is-sub-open > .nav-dropdown--depth-1 {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -389,7 +390,8 @@
 }
 
 .nav-dropdown li.has-dropdown:hover > .nav-dropdown--depth-2,
-.nav-dropdown li.has-dropdown:focus-within > .nav-dropdown--depth-2 {
+.nav-dropdown li.has-dropdown:focus-within > .nav-dropdown--depth-2,
+.nav-dropdown li.has-dropdown.is-sub-open > .nav-dropdown--depth-2 {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -721,6 +723,11 @@
   .primary-nav > ul {
     flex-direction: column;
     gap: 2px;
+    /* Reset browser default `ul { margin-block: 1em; padding-inline-start: 40px }`
+       — otherwise the ~16px top margin leaves a visible dark gap between
+       the header bottom and the first drawer link. */
+    margin: 0;
+    padding: 0;
   }
 
   /* Match the EXACT selector of the base `.site-header.is-light .primary-nav > ul > li > a`

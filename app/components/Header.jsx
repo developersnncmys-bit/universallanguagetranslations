@@ -111,6 +111,20 @@ function NavItem({ item, depth, onNavigate, pathname, isMobile }) {
   // the parent <li> releases immediately — otherwise desktop dropdowns
   // stay visually open after click until the user interacts elsewhere.
   const handleClick = (e) => {
+    // Touch / coarse-pointer devices (iPad Pro portrait at 1032px, etc.)
+    // treat the first tap on a parent-with-children as "open the
+    // dropdown" rather than "navigate" — since there's no :hover to
+    // open the panel otherwise. Second tap (when `.is-sub-open` is
+    // already set) falls through to navigation.
+    const isTouch =
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: none), (pointer: coarse)").matches;
+    if (hasChildren && !isMobile && isTouch && !isSubOpen) {
+      e.preventDefault();
+      setIsSubOpen(true);
+      return;
+    }
+
     if (
       typeof document !== "undefined" &&
       document.activeElement instanceof HTMLElement
@@ -122,6 +136,8 @@ function NavItem({ item, depth, onNavigate, pathname, isMobile }) {
     if (hasChildren && !isMobile) {
       setJustClicked(true);
     }
+    // Clear the tap-opened state so the next visit requires a fresh tap.
+    if (isSubOpen) setIsSubOpen(false);
     onNavigate();
   };
 
@@ -130,6 +146,21 @@ function NavItem({ item, depth, onNavigate, pathname, isMobile }) {
   const handleMouseLeave = () => {
     if (justClicked) setJustClicked(false);
   };
+
+  // Touch devices: a tap anywhere outside this item closes the
+  // tap-opened dropdown. Without this the dropdown would stay open
+  // until the user tapped the parent label again.
+  useEffect(() => {
+    if (!isSubOpen || isMobile) return;
+    const handlePointerDown = (e) => {
+      if (!(e.target instanceof Element)) return;
+      if (!e.target.closest(`li.has-dropdown.is-sub-open`)) {
+        setIsSubOpen(false);
+      }
+    };
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [isSubOpen, isMobile]);
 
   // Caret click (mobile only, parent items with children) — toggles the
   // accordion panel without navigating. `e.preventDefault()` stops the

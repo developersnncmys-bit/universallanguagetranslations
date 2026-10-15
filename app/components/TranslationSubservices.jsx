@@ -99,9 +99,13 @@ export default function TranslationSubservices() {
     () => {
       const mm = gsap.matchMedia();
 
-      // Desktop-only: pin the horizontal scroller and translate the track.
+      // Wide-desktop only (≥1201px): pin the horizontal scroller and
+      // translate the track. At tablet widths (861–1200px, e.g. iPad
+      // Pro 13 portrait at 1032px) the pin reserves massive empty
+      // scroll runway below the visible cards — swap to a static grid
+      // layout via CSS at that range instead of running the pin.
       mm.add(
-        "(min-width: 861px) and (prefers-reduced-motion: no-preference)",
+        "(min-width: 1201px) and (prefers-reduced-motion: no-preference)",
         () => {
           const track = trackRef.current;
           const scroller = hscrollRef.current;

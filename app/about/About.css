@@ -36,10 +36,11 @@
   position: relative;
 
   width: 100%;
-  /* Trimmed from the original 100vh / 760px — settled at ~84vh with a
-     720px floor after a round-trip through 88vh and 78vh. */
-  height: calc(84vh - 82px);
-  min-height: 720px;
+  /* Fill the full viewport height. The fixed nav sits ON TOP of the
+     hero (not above it), so subtracting its 82px from the floor just
+     left a gap at the bottom. 820px soft floor keeps short viewports
+     comfortable; 100vh ensures 900+ viewports have zero white gap. */
+  min-height: max(820px, 100vh);
 
   display: flex;
   align-items: center;
@@ -132,6 +133,69 @@
   align-items: center;
 
   gap: 40px;
+}
+
+
+/* iPad Pro portrait (961–1200px) — the base `minmax(500px, 1.1fr)` on
+   the right column squeezes the content column down to ~410px at
+   1032px wide, forcing the headline to wrap to four lines. Rebalance
+   so the content side gets more room and the globe scales down. Mirrors
+   the identical block in services.css for the Services hero. */
+@media (min-width: 961px) and (max-width: 1200px) {
+  /* Make the About hero fill the full viewport like the home hero so
+     the gradient doesn't fall short on tall iPad Pro screens
+     (1032×1376). The base `calc(84vh - 82px) / min-height 720px` left
+     a visible gap below the globe before the next section started.
+     Switch from the desktop 2-column (content left / globe right)
+     layout to a stacked composition: content centered at the top,
+     globe centered below — mirrors the home hero's tablet treatment.
+     `!important` on grid-template-columns + globe width because a
+     later `@media (max-width: 1200px)` block at line ~2400 resets
+     them to 2-column + 580px globe (wins source-order otherwise). */
+  .about-hero {
+    min-height: 100vh !important;
+    height: auto !important;
+    /* Vertical centering so the eyebrow + title + description + CTAs
+       + globe sit in the MIDDLE of the viewport with breathing room
+       above (clear of nav) and below. The earlier `align-items:
+       flex-start` + 100px padding-top left only ~29px between the
+       fixed nav (71px) and the eyebrow — reading as "attached to
+       nav". Center alignment on 100vh gives ~90px gap below nav. */
+    padding: 160px 0 40px !important;
+    align-items: center !important;
+  }
+  .about-hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    justify-items: center !important;
+    width: calc(100% - 60px);
+    min-height: 0 !important;
+  }
+  .about-hero-content {
+    max-width: 720px !important;
+    padding-top: 0 !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .about-eyebrow,
+  .about-hero-actions {
+    justify-content: center !important;
+  }
+  .about-hero-description {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .about-hero-visual {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  .about-globe-wrap {
+    width: min(780px, 82vw) !important;
+    margin: 0 auto !important;
+  }
 }
 
 
@@ -1367,6 +1431,43 @@
   }
 }
 
+/* Tablet-pro (961–1200px, iPad Pro 13 portrait at 1032×1376).
+   The desktop 2-column (intro left | 2x2 pillars right) squeezes the
+   4 pillar cards into half the viewport width — each card ends up
+   ~190px wide and reads as cramped text next to a text column that
+   doesn't match its height. Stack to a single column at this width:
+   intro on top (centered, max-width 820px), then the 4 pillars as a
+   full-width 4-across grid below.
+   Also compact the mission + values sections' vertical padding — the
+   base `min-height: 100vh` + `padding: 180px 0 120px` left ~500px of
+   empty gradient on iPad Pro 13 (1376px tall viewport, ~800px of
+   content). The GSAP pins on both sections are also disabled at
+   this breakpoint via `isTabletOrBelow` in AboutAnimations.jsx. */
+@media (min-width: 961px) and (max-width: 1200px) {
+  .about-mission,
+  .about-values,
+  .about-process {
+    min-height: auto !important;
+    padding: 96px 0 96px !important;
+  }
+  .mission-grid {
+    grid-template-columns: 1fr !important;
+    gap: 48px !important;
+    justify-items: center;
+  }
+  .mission-intro {
+    max-width: 820px;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+  .mission-pillars {
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+  }
+}
+
 @media (max-width: 560px) {
   .mission-pillars {
     grid-template-columns: 1fr;
@@ -2409,6 +2510,46 @@
   }
 }
 
+/* Tablet-pro (961–1200px, iPad Pro 13 portrait at 1032×1376).
+   The 2-column (image+headline | eyebrow+text+cta) grid left the
+   image and headline mismatched in height with the right-side
+   eyebrow+text+button column. Stack to a single centered column at
+   this width: image on top, headline + eyebrow + text + CTA stacked
+   below — all sharing the same ~720px max-width centered in the
+   section so the image doesn't overpower the text block beneath it. */
+@media (min-width: 961px) and (max-width: 1200px) {
+  .about-story-reference-layout {
+    grid-template-columns: 1fr !important;
+    column-gap: 0 !important;
+    row-gap: 48px;
+    padding: clamp(100px, 12vh, 140px) 0 clamp(48px, 6vh, 72px) !important;
+    justify-items: center;
+  }
+  .about-story-left,
+  .about-story-right {
+    height: auto !important;
+    width: 100%;
+    max-width: 720px !important;
+    justify-content: flex-start !important;
+    gap: 32px !important;
+    margin: 0 auto;
+  }
+  /* Cap the image so it reads at the same visual weight as the text
+     block below, not as a full-bleed photo that dwarfs the headline. */
+  .about-story-image-wrap {
+    max-width: 100% !important;
+    width: 100%;
+    height: clamp(320px, 40vh, 440px) !important;
+  }
+  .about-story-headline {
+    max-width: none !important;
+    font-size: clamp(36px, 4.4vw, 52px) !important;
+  }
+  .about-story-right-top {
+    max-width: none !important;
+  }
+}
+
 
 /* =========================================================
    TABLET
@@ -2977,5 +3118,229 @@
 
   .about-globe-label {
     display: none;
+  }
+}
+
+
+/* =========================================================
+   TABLET / iPad RANGE (768–1024px)
+   Dedicated breakpoint added for the iPad Mini / iPad Air /
+   iPad Pro portrait widths. The mobile `@media (max-width: 900px)`
+   above collapses almost everything to single-column — which is right
+   for a 393px phone but wastes a lot of width on an 820px tablet.
+   This block RESTORES two-column layouts where the tablet has room,
+   while leaving the mobile (≤ 767px) and desktop (≥ 1025px) rules
+   completely untouched. Every rule here is scoped by `min-width: 768px`
+   so it never fires on phones.
+========================================================= */
+@media (min-width: 768px) and (max-width: 1024px) {
+
+  /* HERO — mirror the services hero AT THE SAME BREAKPOINT, line-for-line.
+     Verified against services.css @media(max-width:960px) rules:
+       .svc-hero       { height: auto; min-height: 0; padding: 110px 0 72px }
+       .svc-hero-grid  { grid-template-columns: 1fr; gap: 40px;
+                         width: calc(100% - 40px); margin: 0 auto }
+       .svc-hero-visual--globe { width: min(380px, 88vw); transform: translateY(32px) }
+     Previous attempts forced a fixed `calc(84vh - 82px)` height on About
+     which services does NOT use at this breakpoint — that mismatch left
+     the About hero either too short (showing a white tail of the next
+     section) or too tall (empty gradient band). Match EXACTLY here. */
+  .about-hero {
+    height: auto;
+    min-height: 0;
+    padding: 110px 0 72px;
+    display: flex;
+    align-items: center;
+  }
+
+  .about-hero-grid {
+    width: calc(100% - 40px);
+    height: auto;
+    min-height: 0;
+    margin: 0 auto;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 0;
+  }
+
+  .about-hero-content {
+    max-width: 640px;
+    padding-top: 0;
+    text-align: left;
+  }
+
+  .about-hero-visual {
+    min-height: 0;
+    height: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+  }
+
+  /* Globe sized larger at tablet so the sphere reads as the hero's
+     focal element rather than a decorative chip. 92vw cap means on
+     portrait iPad (768px) the globe lands at ~707px, clamped by the
+     460px absolute ceiling so it never overwhelms the column. */
+  .about-globe-wrap {
+    width: min(760px, 100vw);
+    max-width: 100vw;
+    margin: 32px auto 0;
+    transform: translateY(32px);
+  }
+
+  /* Globe labels — floating chips around the sphere; keep them visible
+     at tablet width since the globe is still large enough to carry them. */
+  .about-globe-label {
+    display: inline-flex;
+  }
+
+  /* CTAs — match services button sizing + layout exactly. Services uses
+     `.svc-btn-primary { min-height: 52px; padding: 0 24px; font-size: 15px }`
+     plus `.svc-hero-actions { flex-wrap: nowrap; gap: 10px; width: 100% }`
+     and `.svc-btn-primary { flex: 1 1 0 }` so the two buttons stretch to
+     equal width across the row. About buttons were `padding: 14px 22px`
+     with natural width — smaller and non-stretching, which made the About
+     hero read shorter than services. */
+  .about-hero-actions {
+    flex-wrap: nowrap;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .about-primary-btn,
+  .about-secondary-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 52px;
+    padding: 0 14px;
+    font-size: 14px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Headline sizing — match services' `.svc-hero-title { font-size:
+     clamp(32px, 6vw, 62px); margin: 0 0 40px }` exactly.
+     The 12px smaller title margin on About (28 vs 40) was contributing
+     to the ~68px hero-height gap vs services. */
+  .about-hero-title {
+    font-size: clamp(32px, 6vw, 62px);
+    letter-spacing: 0.01em;
+    margin: 0 0 40px;
+  }
+
+  /* Normal description→CTA spacing. Earlier revision pushed this to
+     90px to force the hero height to match services, but it rendered
+     as an awkward dead band between the paragraph and the buttons.
+     The bigger globe above now carries the extra vertical weight. */
+  .about-hero-description {
+    font-size: 17px;
+    max-width: 100%;
+    margin: 0 0 32px;
+  }
+
+
+  /* STORY — restore the image-left + copy-right two-column layout. The
+     mobile stack reads cramped on a 820px tablet; two columns use the
+     width properly. */
+  .about-story {
+    min-height: 0;
+    height: auto;
+    overflow: visible;
+  }
+
+  .about-story-reference-layout {
+    width: calc(100% - 56px);
+    height: auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 48px;
+    row-gap: 0;
+    padding: 96px 0 80px;
+  }
+
+  .about-story-left {
+    height: auto;
+    gap: 40px;
+  }
+
+  .about-story-right {
+    height: auto;
+  }
+
+  .about-story-image-wrap {
+    width: 100%;
+    max-width: none;
+    height: clamp(300px, 36vh, 400px);
+  }
+
+  .about-story-headline {
+    font-size: clamp(28px, 4vw, 42px);
+  }
+
+
+  /* CLIENTS — 3-column grid so the 8 logos lay out as 3 + 3 + 2 rows.
+     At iPad width each cell gets ~220px which lets the wider logos
+     (Uber, Accenture, Cognizant) render at a readable size instead of
+     being crushed to ~85px per cell. */
+  .about-clients {
+    padding: clamp(48px, 7vw, 72px) 0;
+  }
+
+  .about-clients-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    flex-wrap: initial;
+    gap: 28px 40px;
+    justify-items: center;
+    align-items: center;
+  }
+
+  .about-client {
+    width: 100%;
+    max-width: 180px;
+    height: 60px;
+    flex: initial;
+    min-width: 0;
+  }
+
+  .about-client-logo {
+    max-height: 44px;
+  }
+
+
+  /* MISSION — the pinned desktop timeline is disabled on tablet too
+     (mobile guard uses `innerWidth <= 900`, iPad Mini falls under it).
+     Tighten the section's `min-height: 100vh` floor so there's no tail
+     of empty whitespace below the pillars. */
+  .about-mission {
+    min-height: 0;
+    padding: clamp(72px, 10vw, 120px) 0;
+  }
+
+  .about-mission-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+  }
+
+
+  /* VALUES + PROCESS — same pin-released treatment: natural height so
+     no empty bottoms, but keep the multi-column card grids. */
+  .about-values,
+  .about-process {
+    min-height: 0;
+    padding: clamp(72px, 10vw, 120px) 0;
+  }
+
+  .about-values-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .about-process-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px 32px;
   }
 }

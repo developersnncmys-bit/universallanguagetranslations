@@ -212,9 +212,14 @@
   border-color: #0a1638;
 }
 
-/* Below two-column breakpoint the sticky title+help stop being useful.
-   Collapse to a single column: title, then the accordion, then help. */
-@media (max-width: 960px) {
+/* Below the sticky-title breakpoint the three-column layout stops
+   being useful. Was `max-width: 960px` — at 1024-1100px the three
+   columns (0.9fr / 2.2fr / 0.9fr) left the accordion middle column
+   only ~500px wide, forcing long questions to wrap awkwardly and
+   making the sticky side rails feel cramped. Raised to 1100px so
+   iPad Pro portrait + narrow laptops collapse to the cleaner single-
+   column stack. */
+@media (max-width: 1100px) {
   .faq__container {
     grid-template-columns: 1fr;
     gap: 40px;

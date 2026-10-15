@@ -162,10 +162,11 @@
   /* Pin disabled on mobile (see Services.jsx guard) — without it the
      100vh min-height + 200-280px top padding (meant to park the pinned
      section below the fixed navbar) becomes a huge empty band above
-     the heading. Collapse to natural height + modest padding. */
+     the heading. Collapse to natural height + tight padding so the
+     section tucks right under the hero. */
   .services__intro-pin {
     min-height: 0;
-    padding: 48px 0 56px;
+    padding: 20px 0 48px;
   }
 
   /* Scrub-word words start at opacity: 0.18 and are revealed by the
@@ -173,6 +174,29 @@
      to full opacity so the heading isn't rendered as faded text. */
   .scrub-word {
     opacity: 1;
+  }
+}
+
+/* Tablet-pro range (961–1200px, iPad Pro 13 portrait at 1032×1376).
+   The pin still runs at this width (Services.jsx guard is `≤900px`),
+   so we keep the pin behavior but shrink the container to the actual
+   content height. Without this override:
+     • `min-height: 100vh` = 1376px, but content takes ~700px → ~676px
+       of empty gradient below the stats row inside the pinned
+       viewport
+     • `padding-top: clamp(200px, 24vh, 280px)` = 280px above the
+       headline — meant to clear the fixed nav on tall desktop screens
+       but reads as a huge empty top band on tablet
+   Setting `min-height: auto` lets the pinned element size to its
+   content; the fixed-nav clearance is tightened to 140px. */
+@media (min-width: 961px) and (max-width: 1200px) {
+  .services__intro-pin {
+    min-height: auto;
+    padding: 140px 0 72px;
+  }
+  .services__intro {
+    padding-bottom: 48px;
+    margin-bottom: 56px;
   }
 }
 
@@ -608,7 +632,11 @@
   background: var(--hero-bg);
   color: #ffffff;
   border-radius: 40px 40px 0 0;
-  margin-top: clamp(-140px, -14vw, -80px);
+  /* Was `clamp(-140px, -14vw, -80px)` — at 1024px that resolved to
+     -143px, overlapping the stats row so hard it visually crushed the
+     spacing when the stats were short. Dial back to a subtle overlap
+     that reads as a rounded top cap rather than a collision. */
+  margin-top: clamp(-100px, -10vw, -60px);
   padding: clamp(72px, 9vw, 140px) 0 clamp(48px, 6vw, 96px);
   will-change: transform, opacity;
 }
@@ -827,16 +855,57 @@
     grid-template-columns: 1fr;
     gap: 32px;
   }
+  /* Drop the 460px cap so the preview's eyebrow/title/image span the
+     full container width at tablet — otherwise the head reads as a
+     left-stuck column inside a wider card. */
   .svc-split__preview {
     position: static;
     order: -1;
+    max-width: none;
+    width: 100%;
+    justify-self: stretch;
   }
+  /* Lift the 42vh max-height ceiling so the stage expands to the full
+     container width via its 4:3 aspect ratio — otherwise the image is
+     capped at ~573px wide while the cards below span the full ~720px,
+     reading as a left-stuck thumbnail with a trailing right gutter. */
+  .svc-split__stage {
+    max-height: none;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+  }
+  /* Match the font-size of other section headings at tablet
+     (.subsvc__mega-title uses clamp(32px, 4.6vw, 42px) → 35px here).
+     The base clamp(22px, 2.3vw, 32px) floored at 22px, making this
+     section's heading read as weaker than every other section. */
+  .offerings-panel .svc-grid-title,
+  .svc-split__head .svc-grid-title {
+    font-size: clamp(28px, 5vw, 40px);
+  }
+  /* Zero the extra 20px padding-left inside .offerings-panel so each
+     row's "01" lines up with the eyebrow/title above it (both now at
+     container x=24px instead of x=44px vs x=24px). */
+  .offerings-panel .svc-split__row {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+  /* Stack num above title so a tiny 13px eyebrow doesn't sit beside a
+     44px headline with mismatched baselines. 22px horizontal padding
+     keeps the num/title/desc off the divider line edges (previously
+     `padding: 40px 0` let the description text run flush to the card
+     edge, which read as text touching the border). */
   .svc-split__row {
-    padding: 48px 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 40px 22px;
     opacity: 1;
   }
+  .svc-split__num {
+    min-width: 0;
+  }
   .svc-split__title {
-    font-size: clamp(30px, 8vw, 44px);
+    font-size: clamp(22px, 4.2vw, 30px);
   }
 }
 
@@ -1211,6 +1280,7 @@
   }
 }
 
+
 @media (max-width: 860px) {
   .services {
     padding: 96px 0;
@@ -1231,7 +1301,10 @@
   }
   .services__intro-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px 20px;
+    /* Row gap bumped from 24px → 48px so the second stats row (99.4% /
+       24/7) has breathing room from the first (100+ / 2,500+) on
+       tablet/iPad widths where the two rows previously felt cramped. */
+    gap: 48px 20px;
   }
   .intro-stat {
     padding: 0;

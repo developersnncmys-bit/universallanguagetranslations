@@ -376,12 +376,28 @@
   }
 }
 
-@media (max-width: 960px) {
-  /* GSAP hero timeline is disabled on mobile (see Hero.jsx guard), so
-     the 240vh of extra scroll above the sticky hero becomes dead space
-     where the user scrolls but nothing changes ("scroll stuck in hero"
-     feel). Drop the stage height so the hero behaves as a normal section
-     — one viewport tall, releases on first scroll. */
+/* Narrow-desktop + short viewport (e.g. 1512×982 laptop). The desktop
+   cinematic timeline is running here but the base `.hero { align-items:
+   flex-start }` + `padding-top: 220px` pushes content into the top
+   half, and the JSX now reduces the globe's upward shift at this
+   viewport too — so both land near the vertical centre instead of
+   crowding the top. */
+@media (min-width: 1201px) and (max-height: 1000px) {
+  .hero {
+    align-items: center;
+    padding-top: clamp(100px, 10vh, 140px);
+  }
+}
+
+@media (max-width: 1200px) {
+  /* GSAP hero timeline is disabled on mobile + tablet-pro (see
+     Hero.jsx guard at 1200px cutoff), so the 240vh of extra scroll
+     above the sticky hero becomes dead space where the user scrolls
+     but nothing changes ("scroll stuck in hero" feel). Drop the stage
+     height so the hero behaves as a normal section — one viewport
+     tall, releases on first scroll. Cutoff raised from 960 → 1200 so
+     iPad Pro 13 portrait (1032px) gets the clean static layout
+     instead of the clipped desktop composition. */
   .hero-scroll-stage {
     height: auto;
   }
@@ -390,19 +406,21 @@
     top: auto;
     min-height: unset;
     height: auto;
-    /* Trimmed vs. the desktop `clamp(140px, 18vh, 220px)` — leaves a
-       comfortable gap under the nav without the big empty band. */
-    padding-top: 56px;
+    /* 85px clears the ~71px fixed header with a small breathing gap.
+       Slightly tighter than 100px to lift the content up, as the globe
+       below needs the vertical room. */
+    padding-top: 85px;
     padding-bottom: 0;
   }
   .hero__inner {
     grid-template-columns: 1fr;
     gap: 32px;
     padding-top: 32px;
-    /* Reserve enough bottom room to fully fit the globe (82vw tall + a
-       small clearance) so the sphere sits below the badges rather than
-       behind them. */
-    padding-bottom: 88vw;
+    /* Reserve enough bottom room to fully fit the globe below the
+       badges. Reduced from 88vw → 72vw so the hero isn't a near-full
+       screenful of empty gradient — the globe sits closer to the
+       content and the next section peeks on load. */
+    padding-bottom: 72vw;
     padding-left: 20px;
     padding-right: 20px;
   }
@@ -434,28 +452,64 @@
     display: inline;
   }
   .hero__planet {
-    /* Full round sphere, centered horizontally, sitting just above the
-       hero's bottom edge. The old 130vw × -42vw treatment pushed most of
-       the globe off-screen on narrow viewports — switched to a sanely-
-       sized square that fits inside the viewport with breathing room. */
+    /* Full round sphere, centered horizontally, sitting with breathing
+       room above the hero's bottom edge. `right: auto` + `inset-block`
+       auto explicitly override the desktop `top: 38vh` and any
+       lingering edge offsets so bottom-anchored positioning wins. */
     top: auto;
-    bottom: 20px;
+    right: auto;
+    bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
-    width: min(440px, 82vw);
-    height: min(440px, 82vw);
+    width: min(360px, 70vw);
+    height: min(360px, 70vw);
     aspect-ratio: 1;
-    opacity: 0.95;
+    opacity: 1;
   }
 }
 
 @media (max-width: 560px) {
   .hero__inner {
-    padding-bottom: 86vw;
+    /* Globe is 70vw tall + 20px bottom offset = needs ~75vw of
+       reserved space. Bumped to 82vw so there's a ~7vw gap between
+       the trust badges and the globe's top (was overlapping at 68vw
+       because the reserve was shorter than the globe itself). */
+    padding-bottom: 82vw;
   }
   .hero__planet {
-    width: min(380px, 80vw);
-    height: min(380px, 80vw);
-    bottom: 16px;
+    width: min(320px, 70vw);
+    height: min(320px, 70vw);
+    bottom: 20px;
+  }
+}
+
+/* Tablet / iPad range (601–1200px). The ≤1200px rule above caps the
+   globe at min(360px, 70vw) which maxes out at 360px on viewports
+   wider than ~515px, so iPad Mini (768px), iPad Air/Pro 11 (820–834px)
+   and iPad Pro 13 portrait (1032px) all render a tiny 360px sphere —
+   small for the available width. Bump the globe size and reserve
+   proper padding so the sphere reads as a proper hero element.
+   `min-height: calc(100vh - 71px)` makes the hero fill the viewport
+   below the fixed header so the gradient doesn't fall short on tall
+   tablet viewports (1032×1376 iPad Pro 13 was leaving a visible white
+   gap below the globe before the next section started). */
+@media (min-width: 601px) and (max-width: 1200px) {
+  .hero {
+    /* Full viewport height — pads the hero past the fixed nav so the
+       gradient covers the whole screen (no white strip below the
+       globe) and the next section is only revealed when the user
+       actually scrolls. Extra padding-top pushes the headline down a
+       bit so it isn't crowded against the nav bar. */
+    min-height: 100vh;
+    padding-top: 120px;
+  }
+  .hero__inner {
+    padding-top: 48px;
+    padding-bottom: 76vw;
+  }
+  .hero__planet {
+    width: min(760px, 70vw);
+    height: min(760px, 70vw);
+    bottom: 40px;
   }
 }

@@ -46,16 +46,16 @@ export default function Hero() {
     return;
   }
 
-  // Mobile branch — the desktop cinematic timeline below pushes the
-  // globe to `window.innerWidth * 0.28` and slides copy to
-  // `-window.innerWidth * 0.2`, which on narrow viewports throws
-  // content off-screen. On mobile we run a dedicated, lightweight
-  // animation set instead:
-  //   • entrance scale/fade for the planet on first paint
-  //   • continuous gentle float + rotation so the globe reads as "live"
-  //   • a short scroll-linked lift so it responds as the user scrolls
-  // Then return early — none of the desktop stages run.
-  if (typeof window !== "undefined" && window.innerWidth <= 960) {
+  // Mobile + tablet-pro branch — the desktop cinematic timeline below
+  // pushes the globe to `window.innerWidth * 0.28` and slides copy to
+  // `-window.innerWidth * 0.2`, which on anything narrower than wide
+  // desktop throws content off the viewport (iPad Pro 13 portrait at
+  // 1032px clips the left side of the headline). Cutoff raised from
+  // 960 → 1200 so tablets and iPad Pro portrait use the static layout
+  // (headline centered, globe below, buttons visible) with no scrubbed
+  // timeline. Wide desktop (≥1201px) still runs the cinematic
+  // zoom + right-crop composition.
+  if (typeof window !== "undefined" && window.innerWidth <= 1200) {
     const planetEl = rootEl.querySelector(".hero__planet");
     if (!planetEl) return;
 
@@ -65,40 +65,23 @@ export default function Hero() {
       // without `xPercent: -50`, it wipes the CSS translate and the
       // globe shifts right by 50% of its width — this is what made the
       // previous mobile animation "not proper". Setting `xPercent: -50`
-      // on every tween reproduces the centering inside GSAP's transform
-      // matrix so the globe stays centered through the animation.
+      // reproduces the centering inside GSAP's transform matrix.
       gsap.set(planetEl, { xPercent: -50 });
 
-      // Entrance — globe scales up from 0.6 + fades in on mount, stays
-      // horizontally centered via xPercent.
+      // Entrance — opacity fade only. The earlier `scale: 0.6 → 1` tween
+      // combined with the scroll-linked `scale: 1 → 0.94` scrub left the
+      // globe stuck at a smaller intermediate size (especially while the
+      // preloader was still active), which read as "globe is small and
+      // overlaps the trust badges". Fade-in alone keeps the globe at full
+      // size from first paint. Scroll-linked scrub tween removed entirely
+      // on mobile — not needed, and it was fighting the entrance tween.
       gsap.from(planetEl, {
         xPercent: -50,
-        scale: 0.6,
         opacity: 0,
-        duration: 1.4,
+        duration: 0.9,
         ease: "power3.out",
         delay: 0.15,
       });
-
-      // Scroll-linked lift — planet shifts up and gently scales down as
-      // the user scrolls through the hero. `xPercent: -50` kept on both
-      // endpoints so the centering survives the scrub.
-      gsap.fromTo(
-        planetEl,
-        { xPercent: -50, y: 0, scale: 1 },
-        {
-          xPercent: -50,
-          y: -50,
-          scale: 0.94,
-          ease: "none",
-          scrollTrigger: {
-            trigger: rootEl,
-            start: "top top",
-            end: "bottom top",
-            scrub: 0.6,
-          },
-        }
-      );
     }, rootEl);
 
     return () => mobileCtx.revert();
@@ -120,9 +103,28 @@ export default function Hero() {
     : [];
 
   if (!inner || !copy || !planet) return;
-  
+
 
   const ctx = gsap.context(() => {
+    // Decoupled thresholds: the text and the planet have different
+    // tolerances for how aggressively they can shift before colliding
+    // with each other or the viewport edges.
+    //
+    //  isNarrowText(): extended to <1400 so the copy's leftward shift
+    //    stays gentle. At 1300 the full `-0.20` shift pushed the 900px
+    //    inner by -260px, parking the copy's left edge ~4px from the
+    //    viewport (text touched the screen edge).
+    //
+    //  isNarrowPlanet(): kept at <1200 so the globe still shifts
+    //    rightward aggressively on 1200-1400 widths. Shrinking BOTH
+    //    thresholds (prior bug) left the text at -104 AND the globe at
+    //    +239, which put them on top of each other near viewport
+    //    center. Keeping the planet's rightward shift at `0.28` on
+    //    1200-1400 restores the designed clearance.
+     const isNarrowText = () => window.innerWidth < 1400;
+     const isNarrowPlanet = () => window.innerWidth < 1200;
+     const isNarrow = isNarrowPlanet;
+
     // PEAK zoom — globe fills the viewport (still centered) mid-transition
     const peakPlanet = () => ({
       x: 0,
@@ -130,16 +132,29 @@ export default function Hero() {
       scale: 1.6,
     });
 
-    // FINAL globe position — right-cropped, still large
+    // FINAL globe position — right-cropped, still large.
+    // Y shift gated on viewport SHORTNESS, not width — on narrow-tall
+    // viewports the designed -0.28 shift leaves the globe near the top
+    // with huge empty gradient below (e.g. 1512×982 laptop: -275px up
+    // = globe at 98px from hero top, with 500px+ of empty space
+    // beneath). Short viewports get a gentler -0.08 shift so the globe
+    // stays closer to the vertical centre.
+    const isShortDesktop = () => window.innerHeight < 1000;
     const finalPlanet = () => ({
-      x: window.innerWidth * 0.28,
-      y: -window.innerHeight * 0.28,
+      x: window.innerWidth * (isNarrow() ? 0.18 : 0.28),
+      y: -window.innerHeight * (isShortDesktop() ? 0.08 : 0.28),
       scale: 1.1,
     });
 
-    // FINAL text position
+    // FINAL text position — uses the wider `isNarrowText` threshold
+    // (<1400). Bumped the narrow shift from 0.08 → 0.14 so copy
+    // moves further left and clears the globe (which only shifts
+    // 0.18 at this width, meaning it stays more toward center-right).
+    // At 1330: -186px keeps copy padded ~79px from the viewport edge
+    // while leaving a 100px gap between copy's right edge and the
+    // globe's left edge instead of the ~0px gap at the old 0.08.
     const finalInner = () => ({
-      x: -window.innerWidth * 0.2,
+      x: -window.innerWidth * (isNarrowText() ? 0.14 : 0.2),
       y: window.innerHeight * 0.02,
     });
 
@@ -365,13 +380,7 @@ export default function Hero() {
 
       const tl = gsap.timeline({ delay: 0.2 });
 
-      // The `.hero__copy .eyebrow` tween was removed — that element is
-      // commented out in the JSX below, so animating it logged a "GSAP
-      // target not found" warning on every mount. Timeline now starts
-      // directly on the headline letter reveal.
       tl
-        // Letters reveal in from BLUE and settle to their final WHITE color,
-        // staggered left-to-right so it reads as a wipe-in reveal.
         .fromTo(
           ".hero__letter",
           {

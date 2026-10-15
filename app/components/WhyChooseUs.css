@@ -26,7 +26,17 @@
   position: sticky;
   top: clamp(96px, 14vh, 140px);
   align-self: start;
-  margin-left: clamp(-64px, -3vw, -24px);
+  /* Negative margin pulls the sticky title column leftward on WIDE
+     desktop viewports (≥1200px) to balance the container padding.
+     On tablet (901–1199px, e.g. iPad Pro 13 portrait at 1032px) the
+     -31px was pulling the title off-screen; limited to wide-only
+     via media query below. */
+}
+
+@media (min-width: 1200px) {
+  .why__sticky {
+    margin-left: clamp(-64px, -3vw, -24px);
+  }
 }
 
 @media (max-width: 900px) {

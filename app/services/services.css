@@ -71,10 +71,12 @@
 .svc-hero {
   position: relative;
   width: 100%;
-  /* Trimmed from the original 100vh / 760px — settled at ~84vh with a
-     720px floor after a round-trip through 88vh and 78vh. */
-  height: calc(84vh - 82px);
-  min-height: 720px;
+  /* Fill the full viewport height. The fixed nav sits ON TOP of the
+     hero (not above it), so subtracting its 82px from the floor just
+     left a visible gap below the gradient. 820px soft floor keeps
+     short viewports comfortable; 100vh ensures 900+ viewports have
+     zero white gap below the hero. */
+  min-height: max(820px, 100vh);
   display: grid;
   place-items: center;
   color: #ffffff;
@@ -133,6 +135,93 @@
   gap: 40px;
   align-items: center;
   z-index: 1;
+}
+
+/* Tablet-pro / iPad Pro range (961–1200px). The default
+   `minmax(500px, 1.1fr)` right-column minimum squeezes the content
+   column down to ~410px at 1032px (iPad Pro 13 portrait), which forced
+   the hero headline to wrap to 4 lines. Rebalance so the content
+   column gets slightly more room and the globe scales down to fit. */
+@media (min-width: 961px) and (max-width: 1200px) {
+  /* Tablet-pro: stack content on top + globe below like the home hero,
+     and fill the viewport so there's no empty gradient strip at the
+     bottom on tall iPad Pro screens (1032×1376). */
+  .svc-hero {
+    min-height: 100vh !important;
+    height: auto !important;
+    padding: 160px 0 40px !important;
+    place-items: center !important;
+  }
+  .svc-hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    justify-items: center !important;
+    width: calc(100% - 60px);
+  }
+  /* `.svc-hero-content` covers the /services landing page; sub-service
+     pages (medical, e-commerce, etc.) use a plain `<div>` as the first
+     child of `.svc-hero-grid`, so target both. */
+  .svc-hero-content,
+  .svc-hero-grid > div:first-child {
+    max-width: 720px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .svc-hero-title,
+  .svc-hero-lead {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+  .svc-hero-actions {
+    justify-content: center;
+  }
+  /* Eyebrow uses `inline-flex` by default with a leading line prefix —
+     wrap it so the whole eyebrow (line + text) centers as one unit. */
+  .svc-hero-grid > div:first-child > .svc-eyebrow {
+    align-self: center;
+  }
+  .svc-hero-visual--globe {
+    width: min(780px, 82vw) !important;
+    max-width: none !important;
+    margin: 0 auto !important;
+  }
+
+  /* The pinned-timeline sections carry `min-height: 100vh` on desktop
+     so their scrubbed GSAP timelines have a full viewport to park in.
+     At iPad Pro 13 portrait (1032×1376) `100vh` resolves to 1376px —
+     the content takes ~500px and the flex-centered layout parks it in
+     the vertical middle, leaving ~440px of blank space above (reads as
+     "huge empty padding"). Collapse to natural content height, like
+     the ≤960px block does.
+     Top padding stays generous (120px) so the first section after the
+     hero clears the fixed 82px nav with breathing room — 72px parked
+     the eyebrow right under the nav and read as cramped. */
+  .svc-overview,
+  .svc-process,
+  .svc-why,
+  .svc-cta {
+    min-height: auto !important;
+    padding: 120px 0 !important;
+    display: block !important;
+    align-items: initial !important;
+  }
+  /* CTA inner card — the base has `justify-content: center` but was
+     reading as top-aligned at tablet because the inner's `min-height:
+     70vh` wasn't enough to produce a visible empty-space gap for the
+     flex centring to work against the content. Explicitly re-center
+     + add proper padding so the eyebrow + heading + description +
+     button sit at the vertical middle of the dark card. */
+  .svc-cta-inner {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 60vh !important;
+    padding: 80px clamp(32px, 6vw, 96px) !important;
+  }
 }
 
 .svc-hero-content {
@@ -1135,9 +1224,14 @@
     gap: 24px;
   }
 
-  .svc-why-head > p,
-  .svc-process-head > p,
-  .svc-formats-head > p {
+  /* Must match the 2-class specificity of the base rule
+     `.svc-section-head.svc-why-head > p { justify-self: end }` —
+     otherwise the base `end` wins and the description stays
+     right-anchored even after the grid collapses to 1 column,
+     producing the misaligned headline-left / description-right look. */
+  .svc-section-head.svc-why-head > p,
+  .svc-section-head.svc-process-head > p,
+  .svc-section-head.svc-formats-head > p {
     justify-self: start;
     max-width: none;
   }

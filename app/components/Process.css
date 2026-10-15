@@ -151,10 +151,15 @@
   color: var(--ink-500);
 }
 
-@media (max-width: 1024px) {
+/* Was `max-width: 1024px` — exactly 1024px is a common laptop width
+   (iPad Pro 13 portrait is 1032px) and parking the 4-col→2-col break
+   on that edge produces an awkward jump between 1024 and 1025. Push
+   the break out to 1200px so iPad Pro portrait and smaller laptops
+   get the 2-col layout cleanly, and the gap scales proportionally. */
+@media (max-width: 1200px) {
   .process__steps {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: clamp(20px, 2.4vw, 28px);
   }
   /* Two rows — a single horizontal track no longer maps cleanly. Hide it. */
   .process__track {

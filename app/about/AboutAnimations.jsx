@@ -221,7 +221,14 @@ export default function AboutAnimations() {
     ===================================================== */
 
     const missionSection = el(".about-mission");
-    if (missionSection && !isMobile) {
+    // Pin + scrub only on wide desktop (≥1201px). At tablet-pro
+    // widths (901–1200px, e.g. iPad Pro 13 portrait at 1032×1376)
+    // `pinSpacing: true` + `end: +=1000` reserved ~1000px of empty
+    // gradient scroll runway below the pillars, reading as "so much
+    // negative space". Below 1201px the pillars just reveal via a
+    // scroll-triggered stagger (see mobile branch further down).
+    const isTabletOrBelow = typeof window !== "undefined" && window.innerWidth <= 1200;
+    if (missionSection && !isMobile && !isTabletOrBelow) {
       const missionPillars = els(".mission-pillar");
 
       // PINNED mission — timeline scrubs sequentially while section is
@@ -255,9 +262,11 @@ export default function AboutAnimations() {
       tweens.push(missionTl);
     }
 
-    /* MOBILE Mission reveal — label, heading lines, description, then
-       pillars stagger up as the section enters view. */
-    if (missionSection && isMobile) {
+    /* MOBILE + TABLET-PRO Mission reveal — label, heading lines,
+       description, then pillars stagger up as the section enters view.
+       Covers everything below wide desktop (≤1200px) since the pin is
+       now wide-desktop-only. */
+    if (missionSection && (isMobile || isTabletOrBelow)) {
       const missionLabel = el(".about-mission .about-section-label");
       const missionLines = els(".mission-title-line");
       const missionDesc = el(".mission-description");
@@ -302,7 +311,11 @@ export default function AboutAnimations() {
     ===================================================== */
 
     const valuesSection = el(".about-values");
-    if (valuesSection && !isMobile) {
+    // Same tablet-pro guard as the mission section — the pin's
+    // `pinSpacing: true` + `end: +=1000` reserved ~1000px of empty
+    // gradient below the value cards at 1032×1376, reading as "so
+    // much negative space". Wide desktop (≥1201px) keeps the pin.
+    if (valuesSection && !isMobile && !isTabletOrBelow) {
       const valueCards = els(".about-value-card");
 
       // PINNED values — heading row is intentionally NOT animated with
@@ -339,8 +352,10 @@ export default function AboutAnimations() {
       tweens.push(valuesTl);
     }
 
-    /* MOBILE Values reveal — heading row first, then cards stagger up. */
-    if (valuesSection && isMobile) {
+    /* MOBILE + TABLET-PRO Values reveal — heading row first, then
+       cards stagger up. Covers everything below wide desktop (≤1200px)
+       since the pin is now wide-desktop-only. */
+    if (valuesSection && (isMobile || isTabletOrBelow)) {
       const valuesHeadingParts = els(".about-values .about-heading-row > div > *");
       const valuesHeadingPara = el(".about-values .about-heading-row > p");
       const valueCards = els(".about-value-card");
@@ -514,7 +529,11 @@ export default function AboutAnimations() {
     ===================================================== */
 
     const processSection = el(".about-process");
-    if (processSection && !isMobile) {
+    // Same tablet-pro guard as mission + values — the pin's
+    // `pinSpacing: true` + `end: +=1200` reserved ~1200px of empty
+    // space below the process timeline at 1032×1376. Wide desktop
+    // (≥1201px) keeps the pinned scrub.
+    if (processSection && !isMobile && !isTabletOrBelow) {
       // Heading parts render at natural CSS state — no `.from()` tween
       // so they're visible immediately when the section is reached.
       const processProgress = el(".process-progress");
@@ -580,7 +599,7 @@ export default function AboutAnimations() {
 
     /* MOBILE Process reveal — no pin; heading, progress rail, dots and
        step cards cascade in as the section crosses into view. */
-    if (processSection && isMobile) {
+    if (processSection && (isMobile || isTabletOrBelow)) {
       const processHeadingParts = els(".about-process-heading > *");
       const processItems = els(".about-process-item");
 

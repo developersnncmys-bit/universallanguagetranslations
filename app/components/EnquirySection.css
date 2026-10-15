@@ -19,11 +19,20 @@
 .enq__intro {
   position: relative;
   padding: 60px 0;
-  margin-left: clamp(-40px, -3vw, -12px);
+  /* Negative margin pulls the intro leftward on WIDE desktop viewports
+     (≥1200px) to counter container padding. At 1032px (iPad Pro 13
+     portrait) the -31px pulled the "T" of "Tell us about your project"
+     off the left edge — scoped to wide-only via media query below. */
   text-align: left;
   word-spacing: normal;
   letter-spacing: normal;
   isolation: isolate;
+}
+
+@media (min-width: 1200px) {
+  .enq__intro {
+    margin-left: clamp(-40px, -3vw, -12px);
+  }
 }
 
 /* Concentric radar-ring backdrop removed — the heading now sits on a
