@@ -376,6 +376,20 @@
   }
 }
 
+/* Narrow laptop (e.g. 1347×856, 1512×982). Scoped BOTH to narrower
+   widths AND shorter heights so that wide desktops with slightly
+   short viewports (1920×900 etc.) keep the designed 900px globe.
+   Here the base `width: min(75vw, 900px) + aspect-ratio: 1.4` builds
+   a 900×643px sphere that gets cropped at the bottom on 856px-tall
+   viewports — cap width + lift the base position so the globe stays
+   inside the hero. */
+@media (min-width: 1201px) and (max-width: 1600px) and (max-height: 1000px) {
+  .hero__planet {
+    width: min(840px, 62vw);
+    top: 28vh;
+  }
+}
+
 /* Narrow-desktop + short viewport (e.g. 1512×982 laptop). The desktop
    cinematic timeline is running here but the base `.hero { align-items:
    flex-start }` + `padding-top: 220px` pushes content into the top

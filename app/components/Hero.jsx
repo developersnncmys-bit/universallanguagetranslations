@@ -132,17 +132,21 @@ export default function Hero() {
       scale: 1.6,
     });
 
-    // FINAL globe position — right-cropped, still large.
+    // FINAL globe position — right-cropped, slightly larger sphere.
+    // Scale 1.1 — gentle size bump above the natural CSS width.
     // Y shift gated on viewport SHORTNESS, not width — on narrow-tall
     // viewports the designed -0.28 shift leaves the globe near the top
     // with huge empty gradient below (e.g. 1512×982 laptop: -275px up
     // = globe at 98px from hero top, with 500px+ of empty space
     // beneath). Short viewports get a gentler -0.08 shift so the globe
     // stays closer to the vertical centre.
+    // Tall-desktop final-Y bumped from -0.28 → -0.36 so the right-
+    // settled globe lifts clear of the viewport bottom edge instead
+    // of brushing it on common laptop heights (768–1030 range).
     const isShortDesktop = () => window.innerHeight < 1000;
     const finalPlanet = () => ({
       x: window.innerWidth * (isNarrow() ? 0.18 : 0.28),
-      y: -window.innerHeight * (isShortDesktop() ? 0.08 : 0.28),
+      y: -window.innerHeight * (isShortDesktop() ? 0.14 : 0.36),
       scale: 1.1,
     });
 
@@ -202,7 +206,9 @@ export default function Hero() {
     tl.fromTo(
       planet,
       {
-        y: () => window.innerHeight * 0.12,
+        // Initial centered state — only shifted DOWN (`y: 0.18vh`
+        // below the CSS base). Size unchanged (natural scale 1).
+        y: () => window.innerHeight * 0.18,
       },
       {
         x: () => peakPlanet().x,
