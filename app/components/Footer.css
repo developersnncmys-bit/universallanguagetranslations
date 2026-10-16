@@ -109,6 +109,22 @@
   flex-wrap: wrap;
 }
 
+.site-footer__credit {
+  margin: 0;
+}
+
+.site-footer__credit a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(10, 22, 56, 0.3);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.site-footer__credit a:hover {
+  color: var(--navy-900);
+  border-bottom-color: var(--navy-900);
+}
+
 /* Big dotted wordmark row — canvas UNIVERSAL on the left, stacked small
    "LANGUAGE / TRANSLATIONS" labels on the right */
 .site-footer__wordmark-row {

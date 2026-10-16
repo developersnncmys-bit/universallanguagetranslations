@@ -240,6 +240,16 @@ export default function Footer() {
 
       <div className="container site-footer__bottom">
         <p>© {year} Universal Language Translations. All rights reserved.</p>
+        <p className="site-footer__credit">
+          Developed by{" "}
+          <a
+            href="https://Nakshatranamahacreations.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Nakshatranamahacreations.com
+          </a>
+        </p>
       </div>
 
       <div className="site-footer__wordmark-row">
