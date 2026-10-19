@@ -1376,7 +1376,7 @@
 }
 
 /* Six-card variant — the sub-service pages (Transcription, Subtitles,
-   Voiceover, Data Annotation, Data Evolution, Multilingual) have
+   Voiceover, Data Annotation, Data Evaluation, Multilingual) have
    exactly 6 cards which lay out as an unbalanced 4+2 in a 4-column
    grid. Detect "exactly 6 children" via `:has()` and switch to a
    3-column grid so they read as a clean 3+3. */

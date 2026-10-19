@@ -66,11 +66,11 @@ const SERVICES = [
     img: "/images/data-annotation.png",
   },
   {
-    key: "evolution",
-    title: "Data Evolution",
+    key: "evaluation",
+    title: "Data Evaluation",
     subtitle:
-      "Cleanse, enrich, and evolve multilingual datasets so your models keep improving with every release cycle.",
-    img: "/images/data-evolution.png",
+      "Dataset audits, label quality scoring, inter-annotator agreement and bias reviews — a defensible read on what your training data is really worth.",
+    img: "/images/data-evaluation.png",
   },
   {
     key: "multilingual",

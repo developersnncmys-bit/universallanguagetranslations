@@ -191,7 +191,7 @@ export default function LanguageStory() {
         <p>
           Content of every kind enters our language core, transforms across
           seven interlocking services — translation, transcription, subtitles,
-          voiceover, data annotation, data evolution, and multilingual data
+          voiceover, data annotation, data evaluation, and multilingual data
           creation — and ships across a global delivery network.
         </p>
       </div>

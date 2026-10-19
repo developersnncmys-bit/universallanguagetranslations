@@ -403,6 +403,39 @@
   }
 }
 
+/* Tall-desktop (height ≥ 1001px, covers MacBook Air 15" at 1680×1050,
+   FHD at 1920×1080, MacBook Pro 16" at 1728×1117, QHD/4K monitors).
+   The base `.hero { align-items: flex-start; padding-top: 220px }`
+   top-aligns content into the upper half of a 100vh hero, leaving
+   ~200–300px of empty gradient below the content block AND below the
+   right-settled globe. Centering vertically splits that empty space
+   top + bottom so the hero feels balanced instead of bottom-heavy. */
+@media (min-width: 1201px) and (min-height: 1001px) {
+  .hero {
+    align-items: center;
+    padding-top: clamp(100px, 10vh, 160px);
+    padding-bottom: clamp(60px, 8vh, 120px);
+  }
+}
+
+/* Large monitor (≥ 2000px wide AND ≥ 1200px tall, e.g. QHD 2560×1440,
+   large external displays). The base globe cap of 900px looks small
+   next to a 2250+ wide hero and the content block ends up isolated
+   with wide gradient bands on all sides. Scale the globe to fit the
+   larger canvas and widen the content column so the hero reads full
+   instead of sparse. */
+@media (min-width: 2000px) and (min-height: 1200px) {
+  .hero__planet {
+    width: min(1200px, 56vw);
+  }
+  .hero__copy {
+    max-width: 900px;
+  }
+  .hero__title {
+    font-size: clamp(62px, 5.2vw, 96px);
+  }
+}
+
 @media (max-width: 1200px) {
   /* GSAP hero timeline is disabled on mobile + tablet-pro (see
      Hero.jsx guard at 1200px cutoff), so the 240vh of extra scroll

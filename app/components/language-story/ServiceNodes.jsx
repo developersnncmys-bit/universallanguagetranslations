@@ -14,7 +14,7 @@ const SERVICES = [
   { key: "subtitles", label: "SUBTITLES", pos: [R * 0.87, -R * 0.5, 0] },
   { key: "voiceover", label: "VOICEOVER", pos: [0, -R, 0] },
   { key: "annotation", label: "DATA ANNOTATION", pos: [-R * 0.87, -R * 0.5, 0] },
-  { key: "evolution", label: "DATA EVOLUTION", pos: [-R * 0.87, R * 0.5, 0] },
+  { key: "evaluation", label: "DATA EVALUATION", pos: [-R * 0.87, R * 0.5, 0] },
   { key: "multilingual", label: "MULTILINGUAL DATA", pos: [0, 0, 1.6] },
 ];
 

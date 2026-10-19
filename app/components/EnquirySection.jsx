@@ -9,7 +9,7 @@ const SERVICES = [
   "Subtitles",
   "Voiceover",
   "Data Annotation",
-  "Data Evolution",
+  "Data Evaluation",
   "Multilingual Data Creation",
 ];
 

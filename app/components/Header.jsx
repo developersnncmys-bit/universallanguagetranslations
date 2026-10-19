@@ -30,7 +30,7 @@ const NAV = [
       { label: "Subtitles", href: "/services/subtitles" },
       { label: "Voiceover", href: "/services/voiceover" },
       { label: "Data Annotation", href: "/services/data-annotation" },
-      { label: "Data Evolution", href: "/services/data-evolution" },
+      { label: "Data Evaluation", href: "/services/data-evaluation" },
       { label: "Multilingual Data Creation", href: "/services/multilingual-data-creation" },
     ],
   },

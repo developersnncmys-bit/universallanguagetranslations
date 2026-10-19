@@ -55,12 +55,12 @@ const services = [
       "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01",
   },
   {
-    slug: "data-evolution",
-    image: "/images/data-evolution.png",
-    title: "Data Evolution",
+    slug: "data-evaluation",
+    image: "/images/data-evaluation.png",
+    title: "Data Evaluation",
     blurb:
-      "Audit, clean, re-balance, re-label and augment existing ML datasets to lift model performance.",
-    tag: "Dataset lifecycle",
+      "Dataset audits, label quality scoring, agreement analysis and bias reviews — so you know what your training data is really worth.",
+    tag: "Dataset quality",
     iconPath: "M3 3v18h18M7 15l4-4 4 4 5-5M18 10h3v3",
   },
   {

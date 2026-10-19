@@ -231,7 +231,7 @@ export default function AboutPage() {
 
                 <p className="story-reveal">
                   Our core services include Translation, Transcription,
-                  Subtitles, Voiceover, Data Annotation, Data Evolution
+                  Subtitles, Voiceover, Data Annotation, Data Evaluation
                   and Multilingual Data Creation.
                 </p>
 

@@ -140,13 +140,30 @@ export default function Hero() {
     // = globe at 98px from hero top, with 500px+ of empty space
     // beneath). Short viewports get a gentler -0.08 shift so the globe
     // stays closer to the vertical centre.
-    // Tall-desktop final-Y bumped from -0.28 → -0.36 so the right-
-    // settled globe lifts clear of the viewport bottom edge instead
-    // of brushing it on common laptop heights (768–1030 range).
-    const isShortDesktop = () => window.innerHeight < 1000;
+    // The final-Y shift is tuned per viewport-height band (see inline
+    // comments on `finalPlanet` below). Short viewports need gentler
+    // upward lift so the globe doesn't crop past the viewport bottom;
+    // tall viewports also need gentler lift because the content block
+    // is vertically centred (via `.hero { align-items: center }`
+    // media query) and the globe's visual centre needs to match.
     const finalPlanet = () => ({
       x: window.innerWidth * (isNarrow() ? 0.18 : 0.28),
-      y: -window.innerHeight * (isShortDesktop() ? 0.14 : 0.36),
+      // Upward shifts tuned per height band to keep the globe's
+      // visual centre aligned with the vertically-centred content
+      // block (content gets a +21px Stage 3 downward shift from
+      // `finalInner.y`, so globe needs less upward lift than a naive
+      // 50% calculation):
+      //   • very short (<950, e.g. 1440×800):     0.10
+      //   • mid-short (950–1000, e.g. 1512×982):  0.055 — the taller
+      //     end of the short range needs much less lift because
+      //     content centre is proportionally higher in the viewport
+      //   • tall (≥1001, e.g. 1680×1050,
+      //     1920×1080, 1728×1117):                0.15
+      y: -window.innerHeight * (
+        window.innerHeight >= 1001 ? 0.15 :
+        window.innerHeight >= 950 ? 0.055 :
+        0.10
+      ),
       scale: 1.1,
     });
 
@@ -370,6 +387,19 @@ export default function Hero() {
     });
 
   }, rootEl);
+
+  // Pin-release glitch fix — on first scroll ScrollTrigger occasionally
+  // releases the sticky hero briefly before correcting itself. Caused
+  // by measurements being taken before web fonts load (Big Shoulders +
+  // Jakarta): once the fonts swap in, the content block height
+  // changes, which shifts the trigger's start/end positions. Forcing a
+  // refresh after `document.fonts.ready` re-measures everything with
+  // the final text metrics so the pin stays stable on the first scroll.
+  if (typeof document !== "undefined" && document.fonts?.ready) {
+    document.fonts.ready.then(() => {
+      ScrollTrigger.refresh();
+    });
+  }
 
   return () => ctx.revert();
 }, []);
