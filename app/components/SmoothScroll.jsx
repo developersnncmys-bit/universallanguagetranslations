@@ -42,7 +42,23 @@ export default function SmoothScroll() {
     const isMobile = window.matchMedia("(max-width: 960px)").matches;
     const isTouch =
       "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    if (isMobile || isTouch) {
+    // Skip Lenis on Safari (macOS + iOS). WebKit's programmatic-scroll
+    // event timing is out of sync with Lenis's eased rAF loop, so the
+    // `lenis.on("scroll", ScrollTrigger.update)` bridge below delivers
+    // stale `scrollY` values. Net effect: scrubbed timelines (notably
+    // Hero's globe-zoom + text-slide at Hero.jsx) never advance progress
+    // → animation looks frozen while the sticky pin still works, then
+    // the pin releases past the scroll range and the next section
+    // appears abruptly. Falling back to native scroll lets ScrollTrigger
+    // listen to the real scroll event (which WebKit emits correctly) and
+    // the scrub fires normally. Trade-off: Safari loses Lenis's eased
+    // wheel feel but macOS trackpad momentum already provides smoothness
+    // at the OS level, so it's barely perceptible.
+    // Detection: UA includes "safari" but NOT "chrome" (Chrome's UA
+    // string also contains "safari"). Case-insensitive, Android-safe.
+    const ua = navigator.userAgent || "";
+    const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+    if (isMobile || isTouch || isSafari) {
       return;
     }
 
