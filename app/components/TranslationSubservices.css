@@ -287,6 +287,20 @@
   }
 }
 
+/* Mid-size laptop viewports in the 1201–1600 width range with a
+   taller-than-average screen (≥951px tall, e.g. 1512×982). Falls
+   between the two other media queries — the 1440×900 rule above
+   requires max-height 950, so 982-tall viewports miss it; the
+   1680+ rule below requires min-width 1601, so a 1512-wide viewport
+   misses that too. Same shift-everything-down treatment as the
+   1680×1050 band so the content block doesn't hug the top of the
+   viewport at this size either. */
+@media (min-width: 1201px) and (max-width: 1600px) and (min-height: 951px) {
+  .subsvc__hscroll {
+    padding-top: clamp(100px, 12vh, 180px);
+  }
+}
+
 /* Larger laptop + desktop viewports (≥1601px wide AND ≥1001px tall —
    e.g. 1680×1050, 1920×1080, 2250×1440). The hscroll's own `padding:
    0 0 120px` has no top padding, so the header (eyebrow + headline)

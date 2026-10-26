@@ -211,7 +211,7 @@ export default function TranslationSubservices() {
             while cards slide horizontally behind it. */}
         <div className="subsvc__sticky-cta" aria-hidden="false">
           <Link
-            href="/services"
+            href="/services/translation"
             className="btn btn-outline btn-outline--on-dark subsvc__cta"
           >
             Our translations

@@ -341,6 +341,26 @@
   transform: translate(-50%, 8px);
 }
 
+/* Hover bridge — invisible pseudo-element that spans the 4-8px gap
+   between the nav item's bottom edge and the dropdown's visible top
+   edge (created by `transform: translate(-50%, 4px)` above). Without
+   it the cursor crosses dead space on its way down, the parent <li>'s
+   `:hover` releases, and the dropdown fades out before the user
+   reaches it. The pseudo lives INSIDE the dropdown so hovering it
+   keeps `:hover` on the <li> alive. Only active when the dropdown is
+   actually open so idle nav items don't catch stray clicks. */
+.primary-nav ul > li.has-dropdown:hover > .nav-dropdown--depth-1::before,
+.primary-nav ul > li.has-dropdown:focus-within > .nav-dropdown--depth-1::before,
+.primary-nav ul > li.has-dropdown.is-sub-open > .nav-dropdown--depth-1::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 16px;
+  pointer-events: auto;
+}
+
 .primary-nav ul > li.has-dropdown:hover > .nav-dropdown--depth-1,
 .primary-nav ul > li.has-dropdown:focus-within > .nav-dropdown--depth-1,
 .primary-nav ul > li.has-dropdown.is-sub-open > .nav-dropdown--depth-1 {
@@ -453,9 +473,32 @@
 }
 
 .nav-dropdown a:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
+  background: rgba(56, 189, 248, 0.08);
+  color: #38bdf8;
+  opacity: 1;
   padding-left: 20px;
+}
+
+/* `.reveal-word` spans dropped by PageAnimations carry INLINE color
+   styles (`style="color: #...blue"`), which beat the plain selector
+   above because inline styles outrank external CSS. Universal
+   descendant selector + !important forces the hovered sky-blue all the
+   way through to the inner spans — AND matches the sky-blue
+   (#38bdf8) at the top of the left accent bar's gradient so the
+   hovered text + indicator line read as one coherent blue. */
+.nav-dropdown a:hover,
+.nav-dropdown a:hover * {
+  color: #38bdf8 !important;
+  -webkit-text-fill-color: #38bdf8 !important;
+  opacity: 1 !important;
+}
+
+/* Collapse the indicator bar's gradient to the same solid #38bdf8
+   so the vertical line and the hovered text are an exact color match
+   (previously the bar faded from #38bdf8 → #8ab4ff, which made the
+   two reads look close but not identical). */
+.nav-dropdown a:hover::before {
+  background: #38bdf8;
 }
 
 .nav-dropdown a:hover::before {
@@ -676,7 +719,11 @@
 
   .primary-nav {
     position: fixed;
-    top: 70px;
+    /* Was `top: 70px` — the mobile header is only ~56px tall (14px
+       vertical padding × 2 + ~28px content), so a 70px offset left a
+       visible ~14px dark gap between the header's bottom edge and the
+       drawer's top. 56px lands the drawer flush against the header. */
+    top: 56px;
     left: 0;
     right: 0;
     /* Use dynamic viewport height on supporting browsers (iOS Safari 15.4+,
@@ -685,8 +732,8 @@
        toolbar is hidden — otherwise the drawer bottom slides out of view
        when the toolbar is visible on iPhone / Safari. Fallback to 100vh
        for older browsers via the first declaration. */
-    height: calc(100vh - 70px);
-    height: calc(100dvh - 70px);
+    height: calc(100vh - 56px);
+    height: calc(100dvh - 56px);
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
