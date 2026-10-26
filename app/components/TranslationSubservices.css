@@ -287,6 +287,25 @@
   }
 }
 
+/* Larger laptop + desktop viewports (≥1601px wide AND ≥1001px tall —
+   e.g. 1680×1050, 1920×1080, 2250×1440). The hscroll's own `padding:
+   0 0 120px` has no top padding, so the header (eyebrow + headline)
+   sits ~48px below the hscroll's top edge and the track + cards
+   follow right under it, leaving the whole content block hugging the
+   top of the viewport. Add viewport-scaled top padding to the hscroll
+   itself so the ENTIRE content block (header + description + cards)
+   shifts down together — a single uniform offset, no gap introduced
+   between headline and cards. The CTA (`.subsvc__sticky-cta`) stays
+   where it is (absolute-positioned from the hscroll bottom), so this
+   just slides the top-of-section content closer to the vertical
+   center without touching anything else. */
+@media (min-width: 1601px) and (min-height: 1001px) {
+  .subsvc__hscroll {
+    padding-top: clamp(100px, 12vh, 180px);
+  }
+}
+
+
 /* Intro column — first slide in the track, sits BEFORE Medical Translation.
    Same visual weight as a card so the scroll rhythm is consistent. */
 .subsvc__hscroll-intro {
