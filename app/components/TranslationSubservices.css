@@ -8,6 +8,22 @@
   position: relative;
   z-index: 2;
   background: var(--hero-bg);
+  /* Pin-release seam fix — this section's natural height balloons to
+     ~3500px because `pinSpacing: true` on the horizontal-scroll pin
+     adds ~2600px of padding below the pinned `.subsvc__hscroll`. The
+     `--hero-bg` gradient would otherwise stretch across that full
+     3500px (each viewport slice looking like near-uniform teal),
+     while `.subsvc__hscroll`'s copy of the same gradient compresses
+     into 100vh (full teal→lime range visible). At the hscroll's bottom
+     edge the two gradients disagree → a visible horizontal seam
+     appears right after the pin releases.
+     `background-attachment: fixed` locks THIS section's gradient to
+     the viewport (always 100vh-sized, stable while scrolling), so it
+     matches `.subsvc__hscroll`'s gradient everywhere and the seam
+     disappears. Scoped tightly to `.subsvc.section` — no other section
+     or page is affected, and the horizontal-scroll pin keeps working
+     exactly as before. */
+  background-attachment: fixed;
 }
 
 .subsvc__container {
@@ -255,6 +271,20 @@
   padding: 0 clamp(48px, 7vw, 120px);
   width: max-content;
   will-change: transform;
+}
+
+/* 1440×900-class laptop viewports — the stock track sits with 0 top
+   padding (shorthand above zeros out the earlier `padding-top: 60px`),
+   leaving the description + cards tucked up right under the headline.
+   Push the whole track (description column + cards together) down ~48px
+   at this viewport band so there's visible breathing room between the
+   headline and the content. Only `.subsvc__hscroll-track` is targeted
+   — the headline (lives in `.subsvc__hscroll-header`) and the bottom
+   CTA (absolute-positioned via `.subsvc__sticky-cta`) are untouched. */
+@media (min-width: 1201px) and (max-width: 1600px) and (max-height: 950px) {
+  .subsvc__hscroll-track {
+    padding-top: 48px;
+  }
 }
 
 /* Intro column — first slide in the track, sits BEFORE Medical Translation.
