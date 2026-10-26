@@ -250,14 +250,6 @@ export default function PrivacyPage() {
           </aside>
 
           <div className="legal-content">
-            <div className="legal-notice">
-              <strong>Template notice.</strong> This document is a working
-              template drafted for Universal Language Translations and must be
-              reviewed and approved by qualified legal counsel in the relevant
-              jurisdiction(s) before it is published or relied upon. Replace
-              placeholders (contact address, dates, regulatory references)
-              before go-live.
-            </div>
 
             <p className="legal-intro">
               This Privacy Policy explains how Universal Language Translations

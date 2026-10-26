@@ -321,15 +321,6 @@ export default function TermsPage() {
           </aside>
 
           <div className="legal-content">
-            <div className="legal-notice">
-              <strong>Template notice.</strong> This document is a working
-              template drafted for Universal Language Translations and must be
-              reviewed and approved by qualified legal counsel in the relevant
-              jurisdiction(s) before it is published or relied upon. Replace
-              placeholders (jurisdiction, payment terms, notice periods) with
-              values that reflect your actual contracting position before
-              go-live.
-            </div>
 
             <p className="legal-intro">
               These Terms & Conditions set out the agreement between Universal
