@@ -131,7 +131,11 @@
   display: flex;
   align-items: center;
   gap: clamp(16px, 2.4vw, 40px);
-  padding: 0 clamp(20px, 4vw, 60px);
+  /* Shifted further left — left padding dropped to 0 and right padding
+     bumped to clamp(120, 12vw, 220) so the whole row (dotted UNIVERSAL
+     + LANGUAGE / TRANSLATIONS sub-wordmark) anchors tight to the left
+     edge and clears the floating call-button pill on the right. */
+  padding: 0 clamp(120px, 12vw, 220px) 0 0;
 }
 
 .site-footer__wordmark {
@@ -151,12 +155,18 @@
   display: flex;
   flex-direction: column;
   gap: clamp(2px, 0.4vw, 8px);
-  font-family: var(--font-audiowide), "Audiowide", var(--font-display);
-  font-size: clamp(16px, 2vw, 34px);
+  /* Big Shoulders — same display face used by every section heading
+     (About hero, Contact hero, services titles, etc.), so the "LANGUAGE
+     / TRANSLATIONS" wordmark reads as part of the same typographic
+     system instead of a stray Audiowide outlier. */
+  font-family: var(--font-hero), var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2.4vw, 40px);
   line-height: 1;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
   color: #0a1638;
   white-space: nowrap;
+  text-transform: uppercase;
 }
 
 @media (max-width: 960px) {

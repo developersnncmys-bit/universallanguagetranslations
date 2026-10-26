@@ -83,16 +83,28 @@ function DottedWordmark({ text }) {
       off.height = canvas.height;
       const octx = off.getContext("2d");
       octx.fillStyle = "#000";
-      octx.textAlign = "center";
+      /* Right-align the "UNIVERSAL" text inside its flex-filled canvas
+         so it hugs the right edge of its cell, sitting flush against
+         the "LANGUAGE / TRANSLATIONS" wordmark-sub to its right.
+         Previous `textAlign: "center"` centered the text inside a wide
+         canvas, leaving ~200px of blank canvas between the text and
+         the sub-wordmark that read as a mystery gap. */
+      octx.textAlign = "right";
       octx.textBaseline = "middle";
       let fontSize = Math.floor(canvas.height * 0.9);
       octx.font = `400 ${fontSize}px ${FONT_STACK}`;
-      const targetW = canvas.width * 0.94;
+      /* Right-inset — leave a gap between UNIVERSAL's right edge and
+         the LANGUAGE / TRANSLATIONS sub-wordmark so the "L" of
+         UNIVERSAL doesn't collide with the sub-wordmark's left edge.
+         The fit-to-width target also shrinks by the same amount so the
+         text sizes down instead of being clipped. */
+      const rightInset = Math.round(60 * dpr);
+      const targetW = canvas.width - rightInset * 2;
       while (octx.measureText(text).width > targetW && fontSize > 20) {
         fontSize -= 2;
         octx.font = `400 ${fontSize}px ${FONT_STACK}`;
       }
-      octx.fillText(text, canvas.width / 2, canvas.height / 2);
+      octx.fillText(text, canvas.width - rightInset, canvas.height / 2);
 
       const step = Math.round(SPACING * dpr);
       const data = octx.getImageData(0, 0, canvas.width, canvas.height).data;

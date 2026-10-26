@@ -93,9 +93,39 @@ export default function Services() {
   // list row's vertical center is closest to the viewport's vertical center
   // and mark it active. Drives which preview image is shown in the sticky
   // left column and which row title reads bright vs muted on the right.
+  //
+  // SEQUENTIAL CATCH-UP WITH DWELL — the active state advances by at most
+  // one row at a time toward the target, AND each row is held for a
+  // minimum dwell period before the next transition fires. On fast
+  // scrolls (or Lenis's eased scroll overshooting) the raw
+  // "closest-to-center" row can jump from 0 → 3 in one frame, skipping
+  // rows 1 and 2 entirely so those services never get activated. Just
+  // advancing one-per-frame (~16ms each) is still imperceptible — the
+  // user sees the final target without ever registering the intermediates.
+  // The dwell gate forces each row to be visibly active for at least
+  // DWELL_MS before the next step is allowed, so a fast flick visibly
+  // walks through every service on both forward and reverse scroll.
   useEffect(() => {
     let rafId = 0;
+    // Mirror of activeIdx held outside React so the compute loop can read
+    // + step it without racing with the async setState cycle.
+    let localActive = 0;
+    // Timestamp of the last state change; the dwell gate below compares
+    // against `performance.now()` to decide whether another step is
+    // allowed yet.
+    let lastChangeTime = 0;
+    // Minimum visible-active time per row during a catch-up walk.
+    // Tuned to be long enough to read as a distinct activation (not a
+    // flicker) but short enough that a user scrolling past the entire
+    // list to reach the next section doesn't feel the lag.
+    //   7 services × 140ms ≈ 1s to walk the full list after a flick.
+    const DWELL_MS = 140;
+
     const compute = () => {
+      const now = typeof performance !== "undefined"
+        ? performance.now()
+        : Date.now();
+
       const viewportCenter = window.innerHeight / 2;
       let closestIdx = 0;
       let closestDist = Infinity;
@@ -109,12 +139,45 @@ export default function Services() {
           closestIdx = idx;
         }
       });
-      setActiveIdx(closestIdx);
-    };
-    const onScroll = () => {
-      cancelAnimationFrame(rafId);
+
+      // Already at the target — nothing to do, stop the loop.
+      if (closestIdx === localActive) {
+        rafId = 0;
+        return;
+      }
+
+      // Dwell gate — too soon since the last transition. Keep the RAF
+      // loop alive so we re-check on the next frame; don't change state.
+      if (now - lastChangeTime < DWELL_MS) {
+        rafId = requestAnimationFrame(compute);
+        return;
+      }
+
+      // Advance exactly one row toward the target. Direction follows
+      // the sign of the gap, so forward and reverse scroll both get
+      // the same step-by-step walk-through.
+      const next = closestIdx > localActive
+        ? localActive + 1
+        : localActive - 1;
+      localActive = next;
+      lastChangeTime = now;
+      setActiveIdx(next);
+
+      // Still catching up — keep the loop alive. Once localActive ===
+      // closestIdx, the early-return at the top of the next tick will
+      // park the loop (rafId = 0) until the next scroll event.
       rafId = requestAnimationFrame(compute);
     };
+
+    const onScroll = () => {
+      // Don't stack frames — if a compute is already queued (either
+      // from a prior scroll event or from the self-driven catch-up),
+      // let it run; it will read the latest scroll position on its own.
+      if (!rafId) {
+        rafId = requestAnimationFrame(compute);
+      }
+    };
+
     compute();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
