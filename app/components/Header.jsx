@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import "./Header.css";
 
@@ -316,9 +317,19 @@ export default function Header() {
     <header className={`site-header ${pastHero ? "is-light" : ""}`}>
       <div className="site-header__inner">
         <Link href="/" className="brand" onClick={handleBrandClick}>
-          <span className="brand__wordmark">
-            UNIVERSAL LANGUAGE TRANSLATIONS
-          </span>
+          {/* Scaled-down intrinsic size so Next.js serves the right
+              image dimensions AND the img tag renders at its final size
+              from first paint (no flash of full-size logo while CSS
+              catches up). CSS height override still kicks in for the
+              responsive mobile shrink. */}
+          <Image
+            src="/logo.png"
+            alt="Universal Language Translations"
+            className="brand__logo"
+            width={288}
+            height={96}
+            priority
+          />
         </Link>
 
         <nav

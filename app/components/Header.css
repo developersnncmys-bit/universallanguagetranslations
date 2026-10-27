@@ -66,7 +66,10 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 32px;
-  padding: 16px 40px 16px 32px;
+  /* Tightened vertical padding (16 → 8) so the header stays compact
+     around the 72px logo — total header height ~88px instead of ~104px.
+     Horizontal padding kept generous. */
+  padding: 8px 40px 8px 32px;
 }
 
 /* Brand — wordmark only */
@@ -86,6 +89,26 @@
   color: var(--navy-900);
   line-height: 1;
   white-space: nowrap;
+}
+
+/* Logo image — height-capped so it fits the ~56px mobile / ~64px
+   desktop header; width auto-sizes from the 3:1 aspect ratio of the
+   source PNG (2172×724). `display: block` drops the inline-image
+   baseline gap. Both `height: auto` and `width: auto` are declared on
+   the base + the mobile cap so Next.js' aspect-ratio warning stays
+   quiet whichever dimension CSS clamps. */
+.brand__logo {
+  display: block;
+  height: 72px;
+  width: auto;
+  max-width: 100%;
+}
+
+@media (max-width: 960px) {
+  .brand__logo {
+    height: 56px;
+    width: auto;
+  }
 }
 
 /* Nav — centered */
@@ -719,11 +742,10 @@
 
   .primary-nav {
     position: fixed;
-    /* Was `top: 70px` — the mobile header is only ~56px tall (14px
-       vertical padding × 2 + ~28px content), so a 70px offset left a
-       visible ~14px dark gap between the header's bottom edge and the
-       drawer's top. 56px lands the drawer flush against the header. */
-    top: 56px;
+    /* Matches mobile header height — 56px logo + 14px top padding +
+       14px bottom padding = 84px. Drops the drawer flush against the
+       header's bottom edge with no dark gap. */
+    top: 84px;
     left: 0;
     right: 0;
     /* Use dynamic viewport height on supporting browsers (iOS Safari 15.4+,
@@ -732,8 +754,8 @@
        toolbar is hidden — otherwise the drawer bottom slides out of view
        when the toolbar is visible on iPhone / Safari. Fallback to 100vh
        for older browsers via the first declaration. */
-    height: calc(100vh - 56px);
-    height: calc(100dvh - 56px);
+    height: calc(100vh - 84px);
+    height: calc(100dvh - 84px);
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;

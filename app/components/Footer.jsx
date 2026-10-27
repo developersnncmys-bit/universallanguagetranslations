@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import "./Footer.css";
 
 const NAV = [
@@ -212,9 +213,13 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="container site-footer__inner">
         <div className="site-footer__brand">
-          <p className="site-footer__brand-name">
-            UNIVERSAL LANGUAGE TRANSLATIONS
-          </p>
+          <Image
+            src="/logo.png"
+            alt="Universal Language Translations"
+            className="site-footer__brand-logo"
+            width={360}
+            height={120}
+          />
           <p className="site-footer__tagline">
             Premium translation, transcription, and multilingual data services
             for global teams. Human quality, delivered on time.

@@ -25,6 +25,23 @@
   line-height: 1.2;
 }
 
+/* Footer logo — larger than the header's since the footer column has
+   room, width:auto preserves the 3:1 aspect ratio and `display: block`
+   drops the inline-image baseline gap. */
+.site-footer__brand-logo {
+  display: block;
+  height: 88px;
+  width: auto;
+  max-width: 100%;
+}
+
+@media (max-width: 600px) {
+  .site-footer__brand-logo {
+    height: 68px;
+    width: auto;
+  }
+}
+
 .site-footer__tagline {
   margin-top: 14px;
   font-size: 14px;
